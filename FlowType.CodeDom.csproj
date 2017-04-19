@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{85B3D72B-4C52-4B0B-92BA-0D22138E0B6A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SKBKontur.Catalogue.FlowType.CodeDom</RootNamespace>
+    <AssemblyName>Catalogue.FlowType.CodeDom</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Assemblies\Temp\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FlowTypeArgumentDeclaration.cs" />
+    <Compile Include="FlowTypeArrayType.cs" />
+    <Compile Include="FlowTypeBuildInType.cs" />
+    <Compile Include="FlowTypeClassDeclaration.cs" />
+    <Compile Include="FlowTypeClassDefinition.cs" />
+    <Compile Include="FlowTypeClassMemberDefinition.cs" />
+    <Compile Include="FlowTypeConstantDefinition.cs" />
+    <Compile Include="FlowTypeConstantExpression.cs" />
+    <Compile Include="FlowTypeDefinition.cs" />
+    <Compile Include="FlowTypeDefinitionsBuilder.cs" />
+    <Compile Include="FlowTypeExportStatement.cs" />
+    <Compile Include="FlowTypeExportTypeStatement.cs" />
+    <Compile Include="FlowTypeExpression.cs" />
+    <Compile Include="FlowTypeFileBuilder.cs" />
+    <Compile Include="FlowTypeFunctionDefinition.cs" />
+    <Compile Include="FlowTypeFunctionType.cs" />
+    <Compile Include="FlowTypeImportStatement.cs" />
+    <Compile Include="FlowTypeInterfaceDeclaration.cs" />
+    <Compile Include="FlowTypeInterfaceDefinition.cs" />
+    <Compile Include="FlowTypeInterfaceFunctionMember.cs" />
+    <Compile Include="FlowTypeMethodCallExpression.cs" />
+    <Compile Include="FlowTypeNullableType.cs" />
+    <Compile Include="FlowTypeObjectLiteral.cs" />
+    <Compile Include="FlowTypeObjectLiteralInitializer.cs" />
+    <Compile Include="FlowTypeObjectLiteralProperty.cs" />
+    <Compile Include="FlowTypeObjectLiteralSpread.cs" />
+    <Compile Include="FlowTypePromiseOfType.cs" />
+    <Compile Include="FlowTypeReturnStatement.cs" />
+    <Compile Include="FlowTypeStatement.cs" />
+    <Compile Include="FlowTypeStringLiteral.cs" />
+    <Compile Include="FlowTypeTemplateStringLiteral.cs" />
+    <Compile Include="FlowTypeThisReference.cs" />
+    <Compile Include="FlowTypeType.cs" />
+    <Compile Include="FlowTypeTypeDeclaration.cs" />
+    <Compile Include="FlowTypeTypeDefintion.cs" />
+    <Compile Include="FlowTypeTypeKeysOfType.cs" />
+    <Compile Include="FlowTypeTypeMemberDeclaration.cs" />
+    <Compile Include="FlowTypeTypeMemberDeclarationBase.cs" />
+    <Compile Include="FlowTypeTypeOfValue.cs" />
+    <Compile Include="FlowTypeTypePropertyGetterDeclaration.cs" />
+    <Compile Include="FlowTypeTypeReference.cs" />
+    <Compile Include="FlowTypeTypeSpreadMemberDeclaration.cs" />
+    <Compile Include="FlowTypeVariableReference.cs" />
+    <Compile Include="FlowTypeVaribaleDefinition.cs" />
+    <Compile Include="ICodeGenerationContext.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StringBuilderUtils.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
