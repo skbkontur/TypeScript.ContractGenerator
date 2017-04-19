@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 
 using SKBKontur.Catalogue.FlowType.CodeDom;
+using SKBKontur.Catalogue.FlowType.ContractGenerator.Extensions;
 
 namespace SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders
 {
@@ -53,7 +54,7 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders
 
         private string BuildPropertyName(string propertyName)
         {
-            return propertyName[0].ToString().ToLower() + propertyName.Substring(1);
+            return propertyName.ToLowerCamelCase();
         }
 
         protected virtual PropertyInfo[] CreateTypeProperties(Type type)
