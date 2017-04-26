@@ -28,6 +28,10 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders
 
         public override void Initialize(ITypeGenerator typeGenerator)
         {
+            if (Type.BaseType != typeof(object) && Type.BaseType != null)
+            {
+                typeGenerator.ResolveType(Type.BaseType);
+            }
             Declaration = CreateComplexFlowTypeDeclarationWithoutDefintion(Type);
             Unit.Body.Add(new FlowTypeExportTypeStatement {Declaration = Declaration});
         }
@@ -59,7 +63,7 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders
 
         protected virtual PropertyInfo[] CreateTypeProperties(Type type)
         {
-            return type.GetProperties();
+            return type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
         }
     }
 }
