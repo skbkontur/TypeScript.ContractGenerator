@@ -15,7 +15,7 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator
 
         public FlowTypeTypeReference AddTypeImport(Type sourceType, FlowTypeTypeDeclaration typeDeclaration, FlowTypeUnit sourceUnit)
         {
-            if(!imports.ContainsKey(sourceType))
+            if(sourceUnit != this && !imports.ContainsKey(sourceType))
             {
                 imports.Add(sourceType, new FlowTypeImportFromUnitStatement
                     {

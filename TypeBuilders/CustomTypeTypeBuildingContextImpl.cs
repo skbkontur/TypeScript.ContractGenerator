@@ -28,7 +28,7 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders
 
         public override void Initialize(ITypeGenerator typeGenerator)
         {
-            if (Type.BaseType != typeof(object) && Type.BaseType != null)
+            if (Type.BaseType != typeof(object) && Type.BaseType != typeof(ValueType) && Type.BaseType != typeof(MarshalByRefObject) && Type.BaseType != null)
             {
                 typeGenerator.ResolveType(Type.BaseType);
             }
