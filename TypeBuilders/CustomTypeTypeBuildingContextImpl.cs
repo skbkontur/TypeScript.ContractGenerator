@@ -41,7 +41,7 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders
             Declaration.Definition = CreateComplexFlowTypeDefintion(typeGenerator);
         }
 
-        private FlowTypeTypeDefintion CreateComplexFlowTypeDefintion(ITypeGenerator typeGenerator)
+        protected virtual FlowTypeTypeDefintion CreateComplexFlowTypeDefintion(ITypeGenerator typeGenerator)
         {
             var result = new FlowTypeTypeDefintion();
             var properties = CreateTypeProperties(Type);
