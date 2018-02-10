@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -22,6 +23,7 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders
                 {
                     Name = type.IsGenericType ? new Regex("`.*$").Replace(type.GetGenericTypeDefinition().Name, "") : type.Name,
                     Definition = null,
+                    GenericTypeArguments = Type.IsGenericTypeDefinition ? Type.GetGenericArguments().Select(x => x.Name).ToArray() : null
                 };
             return result;
         }
@@ -50,7 +52,9 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders
                 result.Members.Add(new FlowTypeTypeMemberDeclaration
                     {
                         Name = BuildPropertyName(property.Name),
-                        Type = typeGenerator.BuildAndImportType(Unit, property, property.PropertyType),
+                        Type = property.PropertyType.IsGenericParameter
+                                   ? new FlowTypeTypeReference(property.PropertyType.Name)
+                                   : typeGenerator.BuildAndImportType(Unit, property, property.PropertyType),
                     });
             }
             return result;

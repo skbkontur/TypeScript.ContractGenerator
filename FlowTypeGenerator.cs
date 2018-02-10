@@ -92,6 +92,19 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator
                     var targetUnit = flowTypeUnitFactory.GetOrCreateTypeUnit(typeLocation);
                     typeBuildingContext = new EnumTypeBuildingContextImpl(targetUnit, type);
                 }
+                if (type.IsGenericType && !type.IsGenericTypeDefinition)
+                {
+                    typeBuildingContext = new GenericTypeTypeBuildingContextImpl(type);
+                }
+                if (type.IsGenericParameter)
+                {
+                    typeBuildingContext = new GenericParameterTypeBuildingContextImpl(type);
+                }
+                if (type.IsGenericTypeDefinition)
+                {
+                    var targetUnit = flowTypeUnitFactory.GetOrCreateTypeUnit(typeLocation);
+                    typeBuildingContext = new CustomTypeTypeBuildingContextImpl(targetUnit, type);
+                }
                 if (typeBuildingContext == null)
                 {
                     var targetUnit = flowTypeUnitFactory.GetOrCreateTypeUnit(typeLocation);

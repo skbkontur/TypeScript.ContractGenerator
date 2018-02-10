@@ -49,6 +49,8 @@
     <Compile Include="Internals\NullCustomTypeGenerator.cs" />
     <Compile Include="TypeBuilders\ArrayTypeBuildingContext.cs" />
     <Compile Include="TypeBuilders\BuildInTypeBuildingContext.cs" />
+    <Compile Include="TypeBuilders\GenericParameterTypeBuildingContextImpl.cs" />
+    <Compile Include="TypeBuilders\GenericTypeTypeBuildingContextImpl.cs" />
     <Compile Include="TypeBuilders\CustomTypeTypeBuildingContextImpl.cs" />
     <Compile Include="TypeBuilders\EnumTypeBuildingContextImpl.cs" />
     <Compile Include="TypeBuilders\ITypeBuildingContext.cs" />
