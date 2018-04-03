@@ -15,7 +15,7 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator
 
         public FlowTypeTypeReference AddTypeImport(Type sourceType, FlowTypeTypeDeclaration typeDeclaration, FlowTypeUnit sourceUnit)
         {
-            if (sourceUnit != this && !imports.ContainsKey(sourceType))
+            if(sourceUnit != this && !imports.ContainsKey(sourceType))
             {
                 imports.Add(sourceType, new FlowTypeImportFromUnitStatement
                     {
@@ -30,7 +30,7 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator
         public FlowTypeVariableReference AddDefaultSymbolImport(string localName, string path)
         {
             var importedSymbol = new ImportedSymbol("default", localName, path);
-            if (!symbolImports.ContainsKey(importedSymbol))
+            if(!symbolImports.ContainsKey(importedSymbol))
             {
                 symbolImports.Add(importedSymbol, new FlowTypeImportDefaultFromPathStatement
                     {
@@ -46,17 +46,17 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator
         {
             var result = new StringBuilder();
 
-            foreach (var import in Imports)
+            foreach(var import in Imports)
             {
                 result.Append(import.GenerateCode(context)).Append(context.NewLine);
             }
-            foreach (var import in symbolImports.Values)
+            foreach(var import in symbolImports.Values)
             {
                 result.Append(import.GenerateCode(context)).Append(context.NewLine);
             }
             result.Append(context.NewLine);
 
-            foreach (var statement in body)
+            foreach(var statement in body)
             {
                 result.Append(statement.GenerateCode(context)).Append(context.NewLine);
             }

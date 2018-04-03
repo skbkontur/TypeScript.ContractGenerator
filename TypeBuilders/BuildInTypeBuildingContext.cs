@@ -19,21 +19,21 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders
 
         public FlowTypeType ReferenceFrom(FlowTypeUnit targetUnit, ITypeGenerator typeGenerator)
         {
-            if (type == typeof(string))
+            if(type == typeof(string))
                 return new FlowTypeBuildInType("string");
-            else if (type == typeof(bool))
+            else if(type == typeof(bool))
                 return new FlowTypeBuildInType("boolean");
-            else if (type == typeof(int))
+            else if(type == typeof(int))
                 return new FlowTypeBuildInType("number");
-            else if (type == typeof(decimal))
+            else if(type == typeof(decimal))
                 return new FlowTypeBuildInType("number");
-            else if (type == typeof(Int64))
+            else if(type == typeof(Int64))
                 return new FlowTypeBuildInType("string");
-            else if (type == typeof(DateTime))
+            else if(type == typeof(DateTime))
                 return new FlowTypeBuildInType("(Date | string)");
-            else if (type == typeof(byte[]))
+            else if(type == typeof(byte[]))
                 return new FlowTypeBuildInType("string");
-            else if (type == typeof(void))
+            else if(type == typeof(void))
                 return new FlowTypeBuildInType("void");
             throw new ArgumentOutOfRangeException();
         }

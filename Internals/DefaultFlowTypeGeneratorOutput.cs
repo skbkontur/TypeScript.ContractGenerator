@@ -10,7 +10,7 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.Internals
         public FlowTypeUnit GetOrCreateTypeUnit(string path)
         {
             FlowTypeUnit result;
-            if (units.TryGetValue(path, out result))
+            if(units.TryGetValue(path, out result))
                 return result;
             result = new FlowTypeUnit
                 {

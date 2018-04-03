@@ -45,7 +45,7 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders
         {
             var result = new FlowTypeTypeDefintion();
             var properties = CreateTypeProperties(Type);
-            foreach (var property in properties)
+            foreach(var property in properties)
             {
                 result.Members.Add(new FlowTypeTypeMemberDeclaration
                     {
