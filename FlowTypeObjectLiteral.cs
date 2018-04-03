@@ -18,7 +18,7 @@ namespace SKBKontur.Catalogue.FlowType.CodeDom
             var result = new StringBuilder();
             result.Append("{").Append(context.NewLine);
             var propertiesString = string.Join("," + context.NewLine, Properties.Select(x => x.GenerateCode(context)));
-            if(propertiesString.Length > 0)
+            if (propertiesString.Length > 0)
                 propertiesString += ",";
             result.AppendWithTab(context.Tab, propertiesString, context.NewLine).Append(context.NewLine);
             result.Append("}");
