@@ -19,12 +19,12 @@ namespace SKBKontur.Catalogue.FlowType.CodeDom
         public override string GenerateCode(string name, ICodeGenerationContext context)
         {
             var result = new StringBuilder();
-            if (IsAsync)
+            if(IsAsync)
             {
                 result.Append("async ");
             }
             result.AppendFormat("{0}({1}): {2} {{", name, GenerateArgumentListCode(context), Result.GenerateCode(context)).Append(context.NewLine);
-            foreach (var statement in Body)
+            foreach(var statement in Body)
             {
                 result.AppendWithTab(context.Tab, statement.GenerateCode(context), context.NewLine).Append(context.NewLine);
             }
