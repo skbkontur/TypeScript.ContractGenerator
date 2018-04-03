@@ -8,14 +8,14 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.Internals
         {
             Directory.CreateDirectory(targetDir);
             var files = Directory.GetFiles(targetDir, "*.js", SearchOption.AllDirectories);
-            foreach(var file in files)
+            foreach (var file in files)
             {
-                if(File.ReadAllText(file).Contains(generatedContentMarkerString))
+                if (File.ReadAllText(file).Contains(generatedContentMarkerString))
                 {
                     File.Delete(file);
                 }
             }
-            foreach(var unit in output.Units)
+            foreach (var unit in output.Units)
             {
                 var targetFileName = Path.Combine(targetDir, unit.Path + ".js");
                 Directory.CreateDirectory(Path.GetDirectoryName(targetFileName));
