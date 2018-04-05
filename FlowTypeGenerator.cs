@@ -21,13 +21,13 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator
 
         public FlowTypeUnit[] Generate()
         {
-            foreach(var type in rootTypes)
+            foreach (var type in rootTypes)
                 RequestTypeBuild(type);
-            while(flowTypeDeclarations.Values.Any(x => !x.IsDefinitionBuilded))
+            while (flowTypeDeclarations.Values.Any(x => !x.IsDefinitionBuilded))
             {
-                foreach(var currentType in flowTypeDeclarations.ToArray())
+                foreach (var currentType in flowTypeDeclarations.ToArray())
                 {
-                    if(!currentType.Value.IsDefinitionBuilded)
+                    if (!currentType.Value.IsDefinitionBuilded)
                         currentType.Value.BuildDefiniion(this);
                 }
             }
@@ -36,13 +36,13 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator
 
         public void GenerateFiles(string targetPath)
         {
-            foreach(var type in rootTypes)
+            foreach (var type in rootTypes)
                 RequestTypeBuild(type);
-            while(flowTypeDeclarations.Values.Any(x => !x.IsDefinitionBuilded))
+            while (flowTypeDeclarations.Values.Any(x => !x.IsDefinitionBuilded))
             {
-                foreach(var currentType in flowTypeDeclarations.ToArray())
+                foreach (var currentType in flowTypeDeclarations.ToArray())
                 {
-                    if(!currentType.Value.IsDefinitionBuilded)
+                    if (!currentType.Value.IsDefinitionBuilded)
                         currentType.Value.BuildDefiniion(this);
                 }
             }
@@ -56,28 +56,28 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator
 
         public ITypeBuildingContext ResolveType(Type type)
         {
-            if(flowTypeDeclarations.ContainsKey(type))
+            if (flowTypeDeclarations.ContainsKey(type))
             {
                 return flowTypeDeclarations[type];
             }
             var typeLocation = customTypeGenerator.GetTypeLocation(type);
             var typeBuildingContext = customTypeGenerator.ResolveType(typeLocation, type, flowTypeUnitFactory);
-            if(typeBuildingContext == null)
+            if (typeBuildingContext == null)
             {
-                if(BuildInTypeBuildingContext.Accept(type))
+                if (BuildInTypeBuildingContext.Accept(type))
                 {
                     typeBuildingContext = new BuildInTypeBuildingContext(type);
                 }
-                if(type.IsArray)
+                if (type.IsArray)
                 {
                     typeBuildingContext = new ArrayTypeBuildingContext(type.GetElementType());
                 }
-                if(type.IsEnum)
+                if (type.IsEnum)
                 {
                     var targetUnit = flowTypeUnitFactory.GetOrCreateTypeUnit(typeLocation);
                     typeBuildingContext = new EnumTypeBuildingContextImpl(targetUnit, type);
                 }
-                if(typeBuildingContext == null)
+                if (typeBuildingContext == null)
                 {
                     var targetUnit = flowTypeUnitFactory.GetOrCreateTypeUnit(typeLocation);
                     typeBuildingContext = new CustomTypeTypeBuildingContextImpl(targetUnit, type);
@@ -90,22 +90,22 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator
 
         public FlowTypeType BuildAndImportType(FlowTypeUnit targetUnit, ICustomAttributeProvider attributeProvider, Type type)
         {
-            if(type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
                 var un = GetFlowTypeType(targetUnit, type.GetGenericArguments()[0]);
                 return new FlowTypeNullableType(un);
             }
             var result = GetFlowTypeType(targetUnit, type);
-            if(attributeProvider != null && IsNullable(attributeProvider, type))
+            if (attributeProvider != null && IsNullable(attributeProvider, type))
                 result = new FlowTypeNullableType(result);
             return result;
         }
 
         private FlowTypeType GetFlowTypeType(FlowTypeUnit targetUnit, Type type)
         {
-            if(flowTypeDeclarations.ContainsKey(type))
+            if (flowTypeDeclarations.ContainsKey(type))
                 return flowTypeDeclarations[type].ReferenceFrom(targetUnit, this);
-            if(type.IsGenericTypeDefinition && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            if (type.IsGenericTypeDefinition && type.GetGenericTypeDefinition() == typeof(Nullable<>))
                 return new FlowTypeNullableType(GetFlowTypeType(targetUnit, type.GetGenericArguments()[0]));
             var context = ResolveType(type);
             return context.ReferenceFrom(targetUnit, this);
