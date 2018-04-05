@@ -11,7 +11,7 @@ namespace SKBKontur.Catalogue.FlowType.CodeDom
         {
             var result = new StringBuilder();
             result.AppendFormat("{{").Append(context.NewLine);
-            foreach(var member in Members)
+            foreach (var member in Members)
             {
                 result.AppendWithTab(context.Tab, member.GenerateCode(context), context.NewLine).Append(context.NewLine);
             }
