@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -47,6 +47,21 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator
                 }
             }
             FilesGenerator.GenerateFiles(targetPath, flowTypeUnitFactory);
+        }
+
+        public void GenerateTypeScriptFiles(string targetPath)
+        {
+            foreach (var type in rootTypes)
+                RequestTypeBuild(type);
+            while (flowTypeDeclarations.Values.Any(x => !x.IsDefinitionBuilded))
+            {
+                foreach (var currentType in flowTypeDeclarations.ToArray())
+                {
+                    if (!currentType.Value.IsDefinitionBuilded)
+                        currentType.Value.BuildDefiniion(this);
+                }
+            }
+            FilesGenerator.GenerateTypeScriptFiles(targetPath, flowTypeUnitFactory);
         }
 
         private void RequestTypeBuild(Type type)

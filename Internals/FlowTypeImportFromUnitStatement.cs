@@ -6,7 +6,11 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.Internals
     {
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return string.Format("import type {{ {0} }} from '{1}';", TypeName, context.GetReferenceFromUnitToAnother(CurrentUnit.Path, TargetUnit.Path));
+            if (context.TypeChecker == JavaScriptTypeChecker.TypeScript)
+            {
+                return $"import {{ {TypeName} }} from '{context.GetReferenceFromUnitToAnother(CurrentUnit.Path, TargetUnit.Path)}';";
+            }
+            return $"import type {{ {TypeName} }} from '{context.GetReferenceFromUnitToAnother(CurrentUnit.Path, TargetUnit.Path)}';";
         }
 
         public string TypeName { get; set; }

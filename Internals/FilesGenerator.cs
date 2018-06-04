@@ -1,4 +1,6 @@
-﻿using System.IO;
+using System.IO;
+
+using SKBKontur.Catalogue.FlowType.CodeDom;
 
 namespace SKBKontur.Catalogue.FlowType.ContractGenerator.Internals
 {
@@ -21,7 +23,27 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.Internals
                 Directory.CreateDirectory(Path.GetDirectoryName(targetFileName));
                 File.WriteAllText(targetFileName, "// @flow" + "\n");
                 File.AppendAllText(targetFileName, generatedContentMarkerString + "\n");
-                File.AppendAllText(targetFileName, unit.GenerateCode(new DefaultCodeGenerationContext()));
+                File.AppendAllText(targetFileName, unit.GenerateCode(new DefaultCodeGenerationContext(JavaScriptTypeChecker.Flow)));
+            }
+        }
+
+        public static void GenerateTypeScriptFiles(string targetDir, DefaultFlowTypeGeneratorOutput output)
+        {
+            Directory.CreateDirectory(targetDir);
+            var files = Directory.GetFiles(targetDir, "*.tsx", SearchOption.AllDirectories);
+            foreach (var file in files)
+            {
+                if (File.ReadAllText(file).Contains(generatedContentMarkerString))
+                {
+                    File.Delete(file);
+                }
+            }
+            foreach (var unit in output.Units)
+            {
+                var targetFileName = Path.Combine(targetDir, unit.Path + ".tsx");
+                Directory.CreateDirectory(Path.GetDirectoryName(targetFileName));
+                File.AppendAllText(targetFileName, generatedContentMarkerString + "\n");
+                File.AppendAllText(targetFileName, unit.GenerateCode(new DefaultCodeGenerationContext(JavaScriptTypeChecker.TypeScript)));
             }
         }
 

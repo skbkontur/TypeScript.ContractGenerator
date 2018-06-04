@@ -14,31 +14,35 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders
 
         public override void Initialize(ITypeGenerator typeGenerator)
         {
-            var enumType = Type;
-            Unit.Body.Add(new FlowTypeExportStatement
+            var values = Type.GetEnumNames();
+            var enumResult = new FlowTypeTypeDeclaration
                 {
-                    Declaration = new FlowTypeConstantDefinition
-                        {
-                            Name = enumType.Name + "s",
-                            Value = new FlowTypeObjectLiteral(Type.GetEnumNames().Select(x => new FlowTypeObjectLiteralProperty
-                                {
-                                    Name = new FlowTypeStringLiteral {Value = x},
-                                    Value = new FlowTypeStringLiteral {Value = x},
-                                }))
-                        }
-                });
-            Declaration = new FlowTypeTypeDeclaration
-                {
-                    Name = enumType.Name,
-                    Definition = new FlowTypeTypeKeysOfType
-                        {
-                            TargetType = new FlowTypeTypeOfValue
-                                {
-                                    TargetValue = new FlowTypeVariableReference(Type.Name + "s"),
-                                }
-                        },
+                    Name = Type.Name,
+                    Definition = new FlowTypeUnionType(values.Select(x => new FlowTypeStringLiteralType(x)).Cast<FlowTypeType>().ToArray()),
                 };
-            Unit.Body.Add(new FlowTypeExportTypeStatement {Declaration = Declaration});
+            Unit.Body.Add(
+                new FlowTypeExportTypeStatement
+                    {
+                        Declaration = enumResult
+                    });
+            Unit.Body.Add(
+                new FlowTypeExportStatement
+                    {
+                        Declaration = new FlowTypeConstantDefinition
+                            {
+                                Name = Type.Name + "s",
+                                Value = new FlowTypeObjectLiteral(values.Select(x => new FlowTypeObjectLiteralProperty
+                                    {
+                                        Name = new FlowTypeStringLiteral {Value = x},
+                                        Value = new FlowTypeCastExpression(new FlowTypeStringLiteral
+                                            {
+                                                Value = x,
+                                            }, new FlowTypeTypeReference(Type.Name)),
+                                    }))
+                            }
+                    }
+                );
+            Declaration = enumResult;
         }
     }
 }

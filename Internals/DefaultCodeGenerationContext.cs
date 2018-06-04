@@ -6,8 +6,15 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.Internals
 {
     public class DefaultCodeGenerationContext : ICodeGenerationContext
     {
-        public string Tab { get { return "    "; } }
-        public string NewLine { get { return "\n"; } }
+        public DefaultCodeGenerationContext(JavaScriptTypeChecker typeChecker)
+        {
+            TypeChecker = typeChecker;
+        }
+
+        public JavaScriptTypeChecker TypeChecker { get; }
+
+        public string Tab => "    ";
+        public string NewLine => "\n";
 
         public string GetReferenceFromUnitToAnother(FlowTypeUnit currentUnit, FlowTypeUnit targetUnit)
         {
