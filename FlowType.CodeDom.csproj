@@ -37,6 +37,7 @@
     <Compile Include="FlowTypeArgumentDeclaration.cs" />
     <Compile Include="FlowTypeArrayType.cs" />
     <Compile Include="FlowTypeBuildInType.cs" />
+    <Compile Include="FlowTypeCastExpression.cs" />
     <Compile Include="FlowTypeClassDeclaration.cs" />
     <Compile Include="FlowTypeClassDefinition.cs" />
     <Compile Include="FlowTypeClassMemberDefinition.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="FlowTypeReturnStatement.cs" />
     <Compile Include="FlowTypeStatement.cs" />
     <Compile Include="FlowTypeStringLiteral.cs" />
+    <Compile Include="FlowTypeStringLiteralType.cs" />
     <Compile Include="FlowTypeTemplateStringLiteral.cs" />
     <Compile Include="FlowTypeThisReference.cs" />
     <Compile Include="FlowTypeType.cs" />
@@ -76,9 +78,11 @@
     <Compile Include="FlowTypeTypePropertyGetterDeclaration.cs" />
     <Compile Include="FlowTypeTypeReference.cs" />
     <Compile Include="FlowTypeTypeSpreadMemberDeclaration.cs" />
+    <Compile Include="FlowTypeUnionType.cs" />
     <Compile Include="FlowTypeVariableReference.cs" />
     <Compile Include="FlowTypeVaribaleDefinition.cs" />
     <Compile Include="ICodeGenerationContext.cs" />
+    <Compile Include="JavaScriptTypeChecker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringBuilderUtils.cs" />
   </ItemGroup>

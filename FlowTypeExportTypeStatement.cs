@@ -3,7 +3,6 @@ namespace SKBKontur.Catalogue.FlowType.CodeDom
     public class FlowTypeExportTypeStatement : FlowTypeStatement
     {
         public FlowTypeTypeDeclaration Declaration { get; set; }
-        public FlowTypeTypeReference Type { get; set; }
 
         public override string GenerateCode(ICodeGenerationContext context)
         {

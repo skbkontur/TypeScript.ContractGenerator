@@ -9,6 +9,10 @@ namespace SKBKontur.Catalogue.FlowType.CodeDom
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
+            if (context.TypeChecker == JavaScriptTypeChecker.TypeScript)
+            {
+                return $"Nullable<{innerType.GenerateCode(context)}>";
+            }
             return "?" + innerType.GenerateCode(context);
         }
 

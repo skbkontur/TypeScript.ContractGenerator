@@ -7,7 +7,15 @@ namespace SKBKontur.Catalogue.FlowType.CodeDom
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return string.Format("[{0}]: {1};", Argument.GenerateCode(context), ResultType.GenerateCode(context));
+            if (context.TypeChecker == JavaScriptTypeChecker.TypeScript)
+            {
+                var argument = Argument.GenerateCode(context);
+                if (argument != "stirng" || argument != "number")
+                {
+                    return $"[key: string]: {ResultType.GenerateCode(context)};";
+                }
+            }
+            return $"[{Argument.GenerateCode(context)}]: {ResultType.GenerateCode(context)};";
         }
     }
 }
