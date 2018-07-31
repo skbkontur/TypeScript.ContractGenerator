@@ -43,6 +43,7 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.Internals
                 var targetFileName = Path.Combine(targetDir, unit.Path + ".tsx");
                 Directory.CreateDirectory(Path.GetDirectoryName(targetFileName));
                 File.AppendAllText(targetFileName, generatedContentMarkerString + "\n");
+                File.AppendAllText(targetFileName, "// tslint:disable" + "\n");
                 File.AppendAllText(targetFileName, unit.GenerateCode(new DefaultCodeGenerationContext(JavaScriptTypeChecker.TypeScript)));
             }
         }
