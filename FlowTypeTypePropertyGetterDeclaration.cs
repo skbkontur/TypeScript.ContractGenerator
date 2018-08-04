@@ -9,10 +9,10 @@ namespace SKBKontur.Catalogue.FlowType.CodeDom
         {
             if (context.TypeChecker == JavaScriptTypeChecker.TypeScript)
             {
-                var argument = Argument.GenerateCode(context);
+                var argument = Argument.Type.GenerateCode(context);
                 if (argument != "stirng" || argument != "number")
                 {
-                    return $"[key: string]: {ResultType.GenerateCode(context)};";
+                    return $"[key in {Argument.Type.GenerateCode(context)}]: {ResultType.GenerateCode(context)};";
                 }
             }
             return $"[{Argument.GenerateCode(context)}]: {ResultType.GenerateCode(context)};";
