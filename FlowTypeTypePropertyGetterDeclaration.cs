@@ -4,6 +4,7 @@ namespace SKBKontur.Catalogue.FlowType.CodeDom
     {
         public FlowTypeArgumentDeclaration Argument { get; set; }
         public FlowTypeType ResultType { get; set; }
+        public bool Optional { get; set; }
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
@@ -12,7 +13,7 @@ namespace SKBKontur.Catalogue.FlowType.CodeDom
                 var argument = Argument.Type.GenerateCode(context);
                 if (argument != "stirng" || argument != "number")
                 {
-                    return $"[key in {Argument.Type.GenerateCode(context)}]: {ResultType.GenerateCode(context)};";
+                    return $"[key in {Argument.Type.GenerateCode(context)}]{(Optional ? "?" : "")}: {ResultType.GenerateCode(context)};";
                 }
             }
             return $"[{Argument.GenerateCode(context)}]: {ResultType.GenerateCode(context)};";
