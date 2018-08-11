@@ -120,8 +120,8 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator
         {
             var (isNullable, resultType) = FlowTypeGeneratorHelpers.ProcessNullable(attributeProvider, type);
             var result = GetFlowTypeType(targetUnit, resultType);
-            if (isNullable)            
-                result = new FlowTypeNullableType(result);            
+            if (isNullable)
+                result = new FlowTypeNullableType(result);
             return result;
         }
 
