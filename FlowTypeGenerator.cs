@@ -118,14 +118,10 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator
 
         public FlowTypeType BuildAndImportType(FlowTypeUnit targetUnit, ICustomAttributeProvider attributeProvider, Type type)
         {
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
-            {
-                var un = GetFlowTypeType(targetUnit, type.GetGenericArguments()[0]);
-                return new FlowTypeNullableType(un);
-            }
-            var result = GetFlowTypeType(targetUnit, type);
-            if (attributeProvider != null && IsNullable(attributeProvider, type))
-                result = new FlowTypeNullableType(result);
+            var (isNullable, resultType) = FlowTypeGeneratorHelpers.ProcessNullable(attributeProvider, type);
+            var result = GetFlowTypeType(targetUnit, resultType);
+            if (isNullable)            
+                result = new FlowTypeNullableType(result);            
             return result;
         }
 
@@ -137,11 +133,6 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator
                 return new FlowTypeNullableType(GetFlowTypeType(targetUnit, type.GetGenericArguments()[0]));
             var context = ResolveType(type);
             return context.ReferenceFrom(targetUnit, this);
-        }
-
-        private static bool IsNullable(ICustomAttributeProvider attributeContainer, Type type)
-        {
-            return type.IsClass && attributeContainer.GetCustomAttributes(true).All(x => x.GetType().Name != "NotNullAttribute");
         }
 
         private readonly Type[] rootTypes;

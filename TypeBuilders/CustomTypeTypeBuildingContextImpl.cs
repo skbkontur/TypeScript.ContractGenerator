@@ -15,7 +15,7 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders
         {
         }
 
-        public override bool IsDefinitionBuilded { get { return Declaration.Definition != null; } }
+        public override bool IsDefinitionBuilded => Declaration.Definition != null;
 
         private FlowTypeTypeDeclaration CreateComplexFlowTypeDeclarationWithoutDefintion(Type type)
         {
@@ -49,15 +49,30 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders
             var properties = CreateTypeProperties(Type);
             foreach (var property in properties)
             {
+                var (isNullable, type) = FlowTypeGeneratorHelpers.ProcessNullable(property, property.PropertyType);
+
+                var propertyType = typeGenerator.BuildAndImportType(Unit, null, type);
                 result.Members.Add(new FlowTypeTypeMemberDeclaration
                     {
                         Name = BuildPropertyName(property.Name),
+                        Optional = isNullable,
                         Type = property.PropertyType.IsGenericParameter
                                    ? new FlowTypeTypeReference(property.PropertyType.Name)
-                                   : typeGenerator.BuildAndImportType(Unit, property, property.PropertyType),
+                                   : isNullable ? OrNull(propertyType) : propertyType,
                     });
             }
             return result;
+        }
+
+        private FlowTypeUnionType OrNull(FlowTypeType buildAndImportType)
+        {
+            return new FlowTypeUnionType(
+                new[]
+                    {
+                        new FlowTypeBuildInType("null"),
+                        buildAndImportType
+                    }
+                );
         }
 
         private string BuildPropertyName(string propertyName)
