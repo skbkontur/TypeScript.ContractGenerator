@@ -61,6 +61,7 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator
                         currentType.Value.BuildDefiniion(this);
                 }
             }
+            FilesGenerator.DeleteOldFiles(targetPath);
             FilesGenerator.GenerateTypeScriptFiles(targetPath, flowTypeUnitFactory);
         }
 

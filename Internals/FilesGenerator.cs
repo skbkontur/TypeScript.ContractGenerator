@@ -48,6 +48,19 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.Internals
             }
         }
 
+        public static void DeleteOldFiles(string targetDir)
+        {
+            Directory.CreateDirectory(targetDir);
+            var files = Directory.GetFiles(targetDir, "*.js", SearchOption.AllDirectories);
+            foreach (var file in files)
+            {
+                if (File.ReadAllText(file).Contains(generatedContentMarkerString))
+                {
+                    File.Delete(file);
+                }
+            }
+        }
+
         private static readonly string generatedContentMarkerString = "// FlowTypeContractGenerator's generated content";
     }
 }
