@@ -30,14 +30,6 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.Internals
         public static void GenerateTypeScriptFiles(string targetDir, DefaultFlowTypeGeneratorOutput output)
         {
             Directory.CreateDirectory(targetDir);
-            var files = Directory.GetFiles(targetDir, "*.tsx", SearchOption.AllDirectories);
-            foreach (var file in files)
-            {
-                if (File.ReadAllText(file).Contains(generatedContentMarkerString))
-                {
-                    File.Delete(file);
-                }
-            }
             foreach (var unit in output.Units)
             {
                 var targetFileName = Path.Combine(targetDir, unit.Path + ".tsx");
@@ -48,10 +40,9 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.Internals
             }
         }
 
-        public static void DeleteOldFiles(string targetDir)
+        public static void DeleteFiles(string targetDir, string searchPattern)
         {
-            Directory.CreateDirectory(targetDir);
-            var files = Directory.GetFiles(targetDir, "*.js", SearchOption.AllDirectories);
+            var files = Directory.GetFiles(targetDir, searchPattern, SearchOption.AllDirectories);
             foreach (var file in files)
             {
                 if (File.ReadAllText(file).Contains(generatedContentMarkerString))

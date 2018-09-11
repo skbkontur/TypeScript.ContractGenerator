@@ -61,7 +61,8 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator
                         currentType.Value.BuildDefiniion(this);
                 }
             }
-            FilesGenerator.DeleteOldFiles(targetPath);
+            FilesGenerator.DeleteFiles(targetPath, "*.js");
+            FilesGenerator.DeleteFiles(targetPath, "*.tsx");
             FilesGenerator.GenerateTypeScriptFiles(targetPath, flowTypeUnitFactory);
         }
 
