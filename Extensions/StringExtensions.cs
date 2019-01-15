@@ -12,6 +12,12 @@ namespace SKBKontur.Catalogue.FlowType.ContractGenerator.Extensions
             var stringBuilder = new StringBuilder();
             for (var startIndex = 0; startIndex < input.Length; ++startIndex)
             {
+                if (char.IsLower(input[startIndex]))
+                {
+                    stringBuilder.Append(input.Substring(startIndex));
+                    break;
+                }
+
                 var flag = startIndex + 1 < input.Length;
                 if (startIndex == 0 || !flag || char.IsUpper(input[startIndex + 1]))
                 {
