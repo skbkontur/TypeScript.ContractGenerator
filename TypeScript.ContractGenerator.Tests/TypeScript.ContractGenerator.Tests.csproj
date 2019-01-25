@@ -1,0 +1,179 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+      <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\TypeScript.ContractGenerator\TypeScript.ContractGenerator.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FluentAssertions" Version="5.6.0" />
+      <PackageReference Include="NUnit" Version="3.11.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Files\CustomGenerator\array-types.expected.js" />
+      <Content Include="Files\CustomGenerator\array-types.expected.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\CustomGenerator\array-types.expected.ts" />
+      <Content Include="Files\CustomGenerator\array-types.expected.ts">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\CustomGenerator\nullable-types.expected.js" />
+      <Content Include="Files\CustomGenerator\nullable-types.expected.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\CustomGenerator\nullable-types.expected.ts" />
+      <Content Include="Files\CustomGenerator\nullable-types.expected.ts">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\CustomGenerator\simple-types.expected.js" />
+      <Content Include="Files\CustomGenerator\simple-types.expected.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\CustomGenerator\simple-types.expected.ts" />
+      <Content Include="Files\CustomGenerator\simple-types.expected.ts">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\FlatTypeLocator.Expected\Flow\CommonType.js" />
+      <Content Include="Files\FlatTypeLocator.Expected\Flow\CommonType.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\FlatTypeLocator.Expected\Flow\CommonUsingRootType.js" />
+      <Content Include="Files\FlatTypeLocator.Expected\Flow\CommonUsingRootType.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\FlatTypeLocator.Expected\Flow\CommonUsingRootType2.js" />
+      <Content Include="Files\FlatTypeLocator.Expected\Flow\CommonUsingRootType2.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\FlatTypeLocator.Expected\Flow\CommonUsingRootType3.js" />
+      <Content Include="Files\FlatTypeLocator.Expected\Flow\CommonUsingRootType3.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\FlatTypeLocator.Expected\TypeScript\CommonType.tsx" />
+      <Content Include="Files\FlatTypeLocator.Expected\TypeScript\CommonType.tsx">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\FlatTypeLocator.Expected\TypeScript\CommonUsingRootType.tsx" />
+      <Content Include="Files\FlatTypeLocator.Expected\TypeScript\CommonUsingRootType.tsx">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\FlatTypeLocator.Expected\TypeScript\CommonUsingRootType2.tsx" />
+      <Content Include="Files\FlatTypeLocator.Expected\TypeScript\CommonUsingRootType2.tsx">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\FlatTypeLocator.Expected\TypeScript\CommonUsingRootType3.tsx" />
+      <Content Include="Files\FlatTypeLocator.Expected\TypeScript\CommonUsingRootType3.tsx">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleGenerator\array-types.expected.js" />
+      <Content Include="Files\SimpleGenerator\array-types.expected.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleGenerator\array-types.expected.ts" />
+      <Content Include="Files\SimpleGenerator\array-types.expected.ts">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleGenerator\complex-types.expected.js" />
+      <Content Include="Files\SimpleGenerator\complex-types.expected.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleGenerator\complex-types.expected.ts" />
+      <Content Include="Files\SimpleGenerator\complex-types.expected.ts">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleGenerator\enum-types.expected.js" />
+      <Content Include="Files\SimpleGenerator\enum-types.expected.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleGenerator\enum-types.expected.ts" />
+      <Content Include="Files\SimpleGenerator\enum-types.expected.ts">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleGenerator\generic-root.expected.js" />
+      <Content Include="Files\SimpleGenerator\generic-root.expected.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleGenerator\generic-root.expected.ts" />
+      <Content Include="Files\SimpleGenerator\generic-root.expected.ts">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleGenerator\generic-types.expected.js" />
+      <Content Include="Files\SimpleGenerator\generic-types.expected.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleGenerator\generic-types.expected.ts" />
+      <Content Include="Files\SimpleGenerator\generic-types.expected.ts">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleGenerator\notnull-types.expected.js" />
+      <Content Include="Files\SimpleGenerator\notnull-types.expected.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleGenerator\notnull-types.expected.ts" />
+      <Content Include="Files\SimpleGenerator\notnull-types.expected.ts">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleGenerator\nullable-types.expected.js" />
+      <Content Include="Files\SimpleGenerator\nullable-types.expected.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleGenerator\nullable-types.expected.ts" />
+      <Content Include="Files\SimpleGenerator\nullable-types.expected.ts">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleGenerator\simple-types.expected.js" />
+      <Content Include="Files\SimpleGenerator\simple-types.expected.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleGenerator\simple-types.expected.ts" />
+      <Content Include="Files\SimpleGenerator\simple-types.expected.ts">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleGenerator\type-names.expected.js" />
+      <Content Include="Files\SimpleGenerator\type-names.expected.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleGenerator\type-names.expected.ts" />
+      <Content Include="Files\SimpleGenerator\type-names.expected.ts">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleStructureTypeLocator.Expected\Flow\CommonType\CommonType.js" />
+      <Content Include="Files\SimpleStructureTypeLocator.Expected\Flow\CommonType\CommonType.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleStructureTypeLocator.Expected\Flow\CommonUsingRootType\CommonUsingRootType.js" />
+      <Content Include="Files\SimpleStructureTypeLocator.Expected\Flow\CommonUsingRootType\CommonUsingRootType.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleStructureTypeLocator.Expected\Flow\CommonUsingRootType2\CommonUsingRootType2.js" />
+      <Content Include="Files\SimpleStructureTypeLocator.Expected\Flow\CommonUsingRootType2\CommonUsingRootType2.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleStructureTypeLocator.Expected\Flow\CommonUsingRootType3\CommonUsingRootType3.js" />
+      <Content Include="Files\SimpleStructureTypeLocator.Expected\Flow\CommonUsingRootType3\CommonUsingRootType3.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleStructureTypeLocator.Expected\TypeScript\CommonType\CommonType.tsx" />
+      <Content Include="Files\SimpleStructureTypeLocator.Expected\TypeScript\CommonType\CommonType.tsx">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleStructureTypeLocator.Expected\TypeScript\CommonUsingRootType\CommonUsingRootType.tsx" />
+      <Content Include="Files\SimpleStructureTypeLocator.Expected\TypeScript\CommonUsingRootType\CommonUsingRootType.tsx">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleStructureTypeLocator.Expected\TypeScript\CommonUsingRootType2\CommonUsingRootType2.tsx" />
+      <Content Include="Files\SimpleStructureTypeLocator.Expected\TypeScript\CommonUsingRootType2\CommonUsingRootType2.tsx">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Files\SimpleStructureTypeLocator.Expected\TypeScript\CommonUsingRootType3\CommonUsingRootType3.tsx" />
+      <Content Include="Files\SimpleStructureTypeLocator.Expected\TypeScript\CommonUsingRootType3\CommonUsingRootType3.tsx">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+</Project>
