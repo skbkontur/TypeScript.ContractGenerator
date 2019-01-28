@@ -38,7 +38,7 @@ namespace TypeScript.ContractGenerator.Tests
         {
             var rootTypes = new[] {typeof(CommonUsingRootType), typeof(CommonUsingRootType2), typeof(CommonUsingRootType3)};
             GenerateFiles((ICustomTypeGenerator)Activator.CreateInstance(type), $"{type.Name}.Actual", rootTypes);
-            CheckDirectoriesEquivalence($"FlowTypeGeneratorTests/Files/{type.Name}.Expected", $"{type.Name}.Actual");
+            CheckDirectoriesEquivalence($"Files/{type.Name}.Expected", $"{type.Name}.Actual");
         }
 
         [TestCase(typeof(SimpleRootType), "simple-types.expected")]

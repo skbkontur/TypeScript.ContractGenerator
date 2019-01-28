@@ -75,7 +75,7 @@ namespace TypeScript.ContractGenerator.Tests
 
         protected string GetFilePath(string filename)
         {
-            return $"{TestContext.CurrentContext.TestDirectory}/FlowTypeGeneratorTests/Files/{filename}.{fileExtension}";
+            return $"{TestContext.CurrentContext.TestDirectory}/Files/{filename}.{fileExtension}";
         }
 
         private readonly JavaScriptTypeChecker javaScriptTypeChecker;
