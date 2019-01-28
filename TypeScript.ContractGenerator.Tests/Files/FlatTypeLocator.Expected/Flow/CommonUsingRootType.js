@@ -1,5 +1,5 @@
 // @flow
-// FlowTypeContractGenerator's generated content
+// TypeScriptContractGenerator's generated content
 import type { CommonType } from './CommonType';
 
 export type CommonUsingRootType = {

@@ -1,5 +1,5 @@
 // @flow
-// FlowTypeContractGenerator's generated content
+// TypeScriptContractGenerator's generated content
 
 export type CommonType = {
     count: number;

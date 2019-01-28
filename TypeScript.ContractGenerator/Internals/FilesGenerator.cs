@@ -51,6 +51,6 @@ namespace TypeScript.ContractGenerator.Internals
             }
         }
 
-        private static readonly string generatedContentMarkerString = "// FlowTypeContractGenerator's generated content";
+        private static readonly string generatedContentMarkerString = "// TypeScriptContractGenerator's generated content";
     }
 }

@@ -1,4 +1,4 @@
-// FlowTypeContractGenerator's generated content
+// TypeScriptContractGenerator's generated content
 // tslint:disable
 import { CommonType } from './../CommonType/CommonType';
 import { CommonUsingRootType } from './../CommonUsingRootType/CommonUsingRootType';
