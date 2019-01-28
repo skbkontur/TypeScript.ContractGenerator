@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace TypeScript.CodeDom
+namespace SKBKontur.Catalogue.FlowType.CodeDom
 {
     public class FlowTypeFunctionDefinition : FlowTypeDefinition
     {

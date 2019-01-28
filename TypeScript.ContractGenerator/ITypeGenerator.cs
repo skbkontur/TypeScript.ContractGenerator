@@ -1,9 +1,10 @@
 using System;
 using System.Reflection;
-using TypeScript.CodeDom;
-using TypeScript.ContractGenerator.TypeBuilders;
 
-namespace TypeScript.ContractGenerator
+using SKBKontur.Catalogue.FlowType.CodeDom;
+using SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders;
+
+namespace SKBKontur.Catalogue.FlowType.ContractGenerator
 {
     public interface ITypeGenerator
     {

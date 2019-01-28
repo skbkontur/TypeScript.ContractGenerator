@@ -1,4 +1,4 @@
-namespace TypeScript.CodeDom
+namespace SKBKontur.Catalogue.FlowType.CodeDom
 {
     public class FlowTypeNullableType : FlowTypeType
     {

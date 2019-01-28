@@ -1,4 +1,4 @@
-namespace TypeScript.ContractGenerator
+namespace SKBKontur.Catalogue.FlowType.ContractGenerator
 {
     public interface IFlowTypeUnitFactory
     {

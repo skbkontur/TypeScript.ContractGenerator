@@ -1,7 +1,8 @@
 using System.IO;
-using TypeScript.CodeDom;
 
-namespace TypeScript.ContractGenerator.Internals
+using SKBKontur.Catalogue.FlowType.CodeDom;
+
+namespace SKBKontur.Catalogue.FlowType.ContractGenerator.Internals
 {
     internal static class FilesGenerator
     {

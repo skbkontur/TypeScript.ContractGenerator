@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace TypeScript.CodeDom
+namespace SKBKontur.Catalogue.FlowType.CodeDom
 {
     public class FlowTypeInterfaceDeclaration : FlowTypeTypeDeclaration
     {

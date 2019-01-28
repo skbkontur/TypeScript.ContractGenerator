@@ -1,6 +1,6 @@
 using System;
 
-namespace TypeScript.ContractGenerator.Tests.Types
+namespace SKBKontur.Catalogue.WebWorms.Tests.FlowTypeGeneratorTests.Types
 {
     public class SimpleRootType
     {

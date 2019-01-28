@@ -1,4 +1,4 @@
-﻿namespace TypeScript.ContractGenerator.Extensions
+﻿namespace SKBKontur.Catalogue.FlowType.ContractGenerator.Extensions
 {
     public static class StringExtensions
     {

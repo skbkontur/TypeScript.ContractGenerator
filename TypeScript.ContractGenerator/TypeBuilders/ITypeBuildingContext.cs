@@ -1,6 +1,6 @@
-using TypeScript.CodeDom;
+using SKBKontur.Catalogue.FlowType.CodeDom;
 
-namespace TypeScript.ContractGenerator.TypeBuilders
+namespace SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders
 {
     public interface ITypeBuildingContext
     {

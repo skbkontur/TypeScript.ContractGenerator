@@ -1,7 +1,8 @@
 using System;
-using TypeScript.CodeDom;
 
-namespace TypeScript.ContractGenerator.TypeBuilders
+using SKBKontur.Catalogue.FlowType.CodeDom;
+
+namespace SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders
 {
     public class GenericParameterTypeBuildingContextImpl : ITypeBuildingContext
     {

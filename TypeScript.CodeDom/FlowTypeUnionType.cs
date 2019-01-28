@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace TypeScript.CodeDom
+namespace SKBKontur.Catalogue.FlowType.CodeDom
 {
     public class FlowTypeUnionType : FlowTypeType
     {

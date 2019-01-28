@@ -1,6 +1,6 @@
-using TypeScript.CodeDom;
+using SKBKontur.Catalogue.FlowType.CodeDom;
 
-namespace TypeScript.ContractGenerator.Internals
+namespace SKBKontur.Catalogue.FlowType.ContractGenerator.Internals
 {
     internal class FlowTypeImportDefaultFromPathStatement : FlowTypeImportStatement
     {

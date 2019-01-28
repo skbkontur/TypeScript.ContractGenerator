@@ -2,10 +2,11 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using TypeScript.CodeDom;
-using TypeScript.ContractGenerator.Extensions;
 
-namespace TypeScript.ContractGenerator.TypeBuilders
+using SKBKontur.Catalogue.FlowType.CodeDom;
+using SKBKontur.Catalogue.FlowType.ContractGenerator.Extensions;
+
+namespace SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders
 {
     public class CustomTypeTypeBuildingContextImpl : TypeBuildingContext
     {

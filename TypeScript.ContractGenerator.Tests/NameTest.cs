@@ -1,8 +1,10 @@
 using FluentAssertions;
-using NUnit.Framework;
-using TypeScript.ContractGenerator.Extensions;
 
-namespace TypeScript.ContractGenerator.Tests
+using NUnit.Framework;
+
+using SKBKontur.Catalogue.FlowType.ContractGenerator.Extensions;
+
+namespace SKBKontur.Catalogue.WebWorms.Tests.FlowTypeGeneratorTests
 {
     public class NameTest
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace TypeScript.ContractGenerator.Internals
+namespace SKBKontur.Catalogue.FlowType.ContractGenerator.Internals
 {
     internal class DefaultFlowTypeGeneratorOutput : IFlowTypeUnitFactory
     {
