@@ -1,4 +1,4 @@
-namespace SKBKontur.Catalogue.FlowType.ContractGenerator.Internals
+namespace TypeScript.ContractGenerator.Internals
 {
     internal class ImportedSymbol
     {

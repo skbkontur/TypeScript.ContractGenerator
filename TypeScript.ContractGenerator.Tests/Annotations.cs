@@ -1,6 +1,6 @@
 using System;
 
-namespace SKBKontur.Catalogue.WebWorms.Tests.FlowTypeGeneratorTests
+namespace TypeScript.ContractGenerator.Tests
 {
     internal class NotNullAttribute : Attribute
     {

@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TypeScript.CodeDom;
+using TypeScript.ContractGenerator.Internals;
 
-using SKBKontur.Catalogue.FlowType.CodeDom;
-using SKBKontur.Catalogue.FlowType.ContractGenerator.Internals;
-
-namespace SKBKontur.Catalogue.FlowType.ContractGenerator
+namespace TypeScript.ContractGenerator
 {
     public class FlowTypeUnit
     {

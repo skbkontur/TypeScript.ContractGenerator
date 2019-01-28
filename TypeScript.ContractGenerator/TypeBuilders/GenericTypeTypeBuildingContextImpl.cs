@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TypeScript.CodeDom;
 
-using SKBKontur.Catalogue.FlowType.CodeDom;
-
-namespace SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders
+namespace TypeScript.ContractGenerator.TypeBuilders
 {
     public class GenericTypeTypeBuildingContextImpl : ITypeBuildingContext
     {

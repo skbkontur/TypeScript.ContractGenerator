@@ -1,8 +1,7 @@
 using System;
+using TypeScript.CodeDom;
 
-using SKBKontur.Catalogue.FlowType.CodeDom;
-
-namespace SKBKontur.Catalogue.FlowType.ContractGenerator.Internals
+namespace TypeScript.ContractGenerator.Internals
 {
     public class DefaultCodeGenerationContext : ICodeGenerationContext
     {

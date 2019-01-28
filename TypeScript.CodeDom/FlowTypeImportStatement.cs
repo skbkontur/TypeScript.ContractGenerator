@@ -1,4 +1,4 @@
-namespace SKBKontur.Catalogue.FlowType.CodeDom
+namespace TypeScript.CodeDom
 {
     public abstract class FlowTypeImportStatement : FlowTypeStatement
     {

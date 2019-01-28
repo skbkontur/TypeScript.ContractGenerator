@@ -1,11 +1,8 @@
 using FluentAssertions;
-
 using NUnit.Framework;
+using TypeScript.ContractGenerator.Tests.Types;
 
-using SKBKontur.Catalogue.FlowType.ContractGenerator;
-using SKBKontur.Catalogue.WebWorms.Tests.FlowTypeGeneratorTests.Types;
-
-namespace SKBKontur.Catalogue.WebWorms.Tests.FlowTypeGeneratorTests
+namespace TypeScript.ContractGenerator.Tests
 {
     public class GenericTypesTest
     {

@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace SKBKontur.Catalogue.FlowType.ContractGenerator
+namespace TypeScript.ContractGenerator
 {
     public static class FlowTypeGeneratorHelpers
     {

@@ -1,18 +1,12 @@
 using System;
-using System.CodeDom;
 using System.IO;
 using System.Linq;
-
 using FluentAssertions;
-
 using NUnit.Framework;
-using NUnit.Framework.Internal;
+using TypeScript.CodeDom;
+using TypeScript.ContractGenerator.Internals;
 
-using SKBKontur.Catalogue.FlowType.CodeDom;
-using SKBKontur.Catalogue.FlowType.ContractGenerator;
-using SKBKontur.Catalogue.FlowType.ContractGenerator.Internals;
-
-namespace SKBKontur.Catalogue.WebWorms.Tests.FlowTypeGeneratorTests
+namespace TypeScript.ContractGenerator.Tests
 {
     [TestFixture(JavaScriptTypeChecker.Flow)]
     [TestFixture(JavaScriptTypeChecker.TypeScript)]

@@ -1,17 +1,13 @@
 using System;
 using System.IO;
 using System.Linq;
-
 using FluentAssertions;
-
 using NUnit.Framework;
+using TypeScript.CodeDom;
+using TypeScript.ContractGenerator.Tests.CustomTypeGenerators;
+using TypeScript.ContractGenerator.Tests.Types;
 
-using SKBKontur.Catalogue.FlowType.CodeDom;
-using SKBKontur.Catalogue.FlowType.ContractGenerator;
-using SKBKontur.Catalogue.WebWorms.Tests.FlowTypeGeneratorTests.CustomTypeGenerators;
-using SKBKontur.Catalogue.WebWorms.Tests.FlowTypeGeneratorTests.Types;
-
-namespace SKBKontur.Catalogue.WebWorms.Tests.FlowTypeGeneratorTests
+namespace TypeScript.ContractGenerator.Tests
 {
     public class EndToEndTests : FlowTypeTestBase
     {

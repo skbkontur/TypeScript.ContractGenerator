@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
+using TypeScript.ContractGenerator.TypeBuilders;
 
-using SKBKontur.Catalogue.FlowType.ContractGenerator;
-using SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders;
-
-namespace SKBKontur.Catalogue.WebWorms.Tests.FlowTypeGeneratorTests.CustomTypeGenerators
+namespace TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 {
     public class CustomTypeGenerator : ICustomTypeGenerator
     {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SKBKontur.Catalogue.FlowType.CodeDom
+namespace TypeScript.CodeDom
 {
     public class FlowTypeInterfaceDefinition : FlowTypeType
     {
