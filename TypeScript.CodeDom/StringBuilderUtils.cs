@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Text;
 
-namespace SKBKontur.Catalogue.FlowType.CodeDom
+namespace TypeScript.CodeDom
 {
     public static class StringBuilderUtils
     {

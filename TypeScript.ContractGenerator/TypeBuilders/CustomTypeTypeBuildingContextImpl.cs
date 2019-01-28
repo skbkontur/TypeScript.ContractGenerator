@@ -3,10 +3,10 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-using SKBKontur.Catalogue.FlowType.CodeDom;
-using SKBKontur.Catalogue.FlowType.ContractGenerator.Extensions;
+using TypeScript.CodeDom;
+using TypeScript.ContractGenerator.Extensions;
 
-namespace SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders
+namespace TypeScript.ContractGenerator.TypeBuilders
 {
     public class CustomTypeTypeBuildingContextImpl : TypeBuildingContext
     {

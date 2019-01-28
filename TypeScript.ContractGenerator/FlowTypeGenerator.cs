@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-using SKBKontur.Catalogue.FlowType.CodeDom;
-using SKBKontur.Catalogue.FlowType.ContractGenerator.Internals;
-using SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders;
+using TypeScript.CodeDom;
+using TypeScript.ContractGenerator.Internals;
+using TypeScript.ContractGenerator.TypeBuilders;
 
-namespace SKBKontur.Catalogue.FlowType.ContractGenerator
+namespace TypeScript.ContractGenerator
 {
     public class FlowTypeGenerator : ITypeGenerator
     {

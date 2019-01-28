@@ -1,8 +1,8 @@
 ﻿using System;
 
-using SKBKontur.Catalogue.FlowType.CodeDom;
+using TypeScript.CodeDom;
 
-namespace SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders
+namespace TypeScript.ContractGenerator.TypeBuilders
 {
     public class ArrayTypeBuildingContext : ITypeBuildingContext
     {

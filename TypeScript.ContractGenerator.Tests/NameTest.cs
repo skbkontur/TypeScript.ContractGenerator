@@ -2,9 +2,9 @@ using FluentAssertions;
 
 using NUnit.Framework;
 
-using SKBKontur.Catalogue.FlowType.ContractGenerator.Extensions;
+using TypeScript.ContractGenerator.Extensions;
 
-namespace SKBKontur.Catalogue.WebWorms.Tests.FlowTypeGeneratorTests
+namespace TypeScript.ContractGenerator.Tests
 {
     public class NameTest
     {

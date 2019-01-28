@@ -1,9 +1,8 @@
 using System;
 
-using SKBKontur.Catalogue.FlowType.ContractGenerator;
-using SKBKontur.Catalogue.FlowType.ContractGenerator.TypeBuilders;
+using TypeScript.ContractGenerator.TypeBuilders;
 
-namespace SKBKontur.Catalogue.WebWorms.Tests.FlowTypeGeneratorTests.CustomTypeGenerators
+namespace TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 {
     public class FlatTypeLocator : ICustomTypeGenerator
     {
