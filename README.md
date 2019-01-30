@@ -1,5 +1,8 @@
 # TypeScript.ContractGenerator
 
+[![NuGet Status](https://img.shields.io/nuget/v/SkbKontur.TypeScript.ContractGenerator.svg)](https://www.nuget.org/packages/SkbKontur.TypeScript.ContractGenerator/)
+[![Build status](https://ci.appveyor.com/api/projects/status/1x5x9gw0a7h12g38?svg=true)](https://ci.appveyor.com/project/skbkontur/typescript-contractgenerator)
+
 A tool that can generate TypeScript or Flow types from C# classes
 
 ## Release Notes
