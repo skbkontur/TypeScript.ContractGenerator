@@ -65,7 +65,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             actualFiles.Should().BeEquivalentTo(expectedFiles);
 
             foreach (var filename in expectedFiles)
-                File.ReadAllText($"{actualDirectory}/{filename}").Should().Be(File.ReadAllText($"{expectedDirectory}/{filename}"));
+            {
+                var expected = File.ReadAllText($"{expectedDirectory}/{filename}").Replace("\r\n", "\n");
+                var actual = File.ReadAllText($"{actualDirectory}/{filename}").Replace("\r\n", "\n");
+                actual.Should().Be(expected);
+            }
 
             var expectedDirectories = Directory.EnumerateDirectories(expectedDirectory).Select(Path.GetFileName).ToArray();
             var actualDirectories = Directory.EnumerateDirectories(actualDirectory).Select(Path.GetFileName).ToArray();
