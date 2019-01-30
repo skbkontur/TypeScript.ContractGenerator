@@ -47,4 +47,4 @@ export type FirstType = {
 };
 ```
 
-If you want generated files to have different name or to generate some typings differently, you should pass your own `CustomTypeGenerator` that implements `ICustomTypeGenerator` to `FlowTypeGenerator`.
+If you want generated files to have different name or to generate some typings differently, you should pass your own implementation of `ICustomTypeGenerator` to `FlowTypeGenerator`.
