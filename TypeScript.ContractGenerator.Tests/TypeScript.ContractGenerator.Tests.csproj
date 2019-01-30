@@ -3,6 +3,8 @@
     <PropertyGroup>
       <IsPackable>false</IsPackable>
       <TargetFrameworks>net472;netcoreapp2.1</TargetFrameworks>
+      <AssemblyName>SkbKontur.TypeScript.ContractGenerator.Tests</AssemblyName>
+      <RootNamespace>SkbKontur.TypeScript.ContractGenerator.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

@@ -1,10 +1,10 @@
 using System;
 using System.Reflection;
 
-using TypeScript.CodeDom;
-using TypeScript.ContractGenerator.TypeBuilders;
+using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
 
-namespace TypeScript.ContractGenerator
+namespace SkbKontur.TypeScript.ContractGenerator
 {
     public interface ITypeGenerator
     {

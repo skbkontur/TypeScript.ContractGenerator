@@ -2,9 +2,9 @@ using FluentAssertions;
 
 using NUnit.Framework;
 
-using TypeScript.ContractGenerator.Extensions;
+using SkbKontur.TypeScript.ContractGenerator.Extensions;
 
-namespace TypeScript.ContractGenerator.Tests
+namespace SkbKontur.TypeScript.ContractGenerator.Tests
 {
     public class NameTest
     {

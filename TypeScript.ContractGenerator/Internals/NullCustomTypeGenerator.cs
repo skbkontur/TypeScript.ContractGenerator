@@ -1,8 +1,8 @@
 using System;
 
-using TypeScript.ContractGenerator.TypeBuilders;
+using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
 
-namespace TypeScript.ContractGenerator.Internals
+namespace SkbKontur.TypeScript.ContractGenerator.Internals
 {
     internal class NullCustomTypeGenerator : ICustomTypeGenerator
     {

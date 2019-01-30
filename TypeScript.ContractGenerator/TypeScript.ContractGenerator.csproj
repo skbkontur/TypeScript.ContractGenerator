@@ -1,11 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
+      <TargetFramework>netstandard2.0</TargetFramework>
+      <AssemblyName>SkbKontur.TypeScript.ContractGenerator</AssemblyName>
+      <RootNamespace>SkbKontur.TypeScript.ContractGenerator</RootNamespace>
     </PropertyGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\TypeScript.CodeDom\TypeScript.CodeDom.csproj" />
-    </ItemGroup>
 
 </Project>

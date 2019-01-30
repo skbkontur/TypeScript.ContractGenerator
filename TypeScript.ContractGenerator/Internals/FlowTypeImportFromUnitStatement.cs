@@ -1,6 +1,6 @@
-using TypeScript.CodeDom;
+using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
-namespace TypeScript.ContractGenerator.Internals
+namespace SkbKontur.TypeScript.ContractGenerator.Internals
 {
     internal class FlowTypeImportFromUnitStatement : FlowTypeImportStatement
     {

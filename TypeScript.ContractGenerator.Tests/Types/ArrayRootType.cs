@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace TypeScript.ContractGenerator.Tests.Types
+namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
 {
     public class ArrayRootType
     {

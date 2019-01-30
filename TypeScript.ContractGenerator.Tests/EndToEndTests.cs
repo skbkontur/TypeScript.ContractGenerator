@@ -6,11 +6,11 @@ using FluentAssertions;
 
 using NUnit.Framework;
 
-using TypeScript.CodeDom;
-using TypeScript.ContractGenerator.Tests.CustomTypeGenerators;
-using TypeScript.ContractGenerator.Tests.Types;
+using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+using SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators;
+using SkbKontur.TypeScript.ContractGenerator.Tests.Types;
 
-namespace TypeScript.ContractGenerator.Tests
+namespace SkbKontur.TypeScript.ContractGenerator.Tests
 {
     public class EndToEndTests : FlowTypeTestBase
     {

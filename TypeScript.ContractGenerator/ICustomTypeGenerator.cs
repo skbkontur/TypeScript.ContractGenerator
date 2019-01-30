@@ -1,8 +1,8 @@
 using System;
 
-using TypeScript.ContractGenerator.TypeBuilders;
+using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
 
-namespace TypeScript.ContractGenerator
+namespace SkbKontur.TypeScript.ContractGenerator
 {
     public interface ICustomTypeGenerator
     {

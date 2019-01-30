@@ -1,6 +1,6 @@
 using System;
 
-namespace TypeScript.ContractGenerator.Tests.Types
+namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
 {
     public class SimpleRootType
     {

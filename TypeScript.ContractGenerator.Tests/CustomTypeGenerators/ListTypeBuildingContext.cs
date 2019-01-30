@@ -1,9 +1,9 @@
 using System;
 
-using TypeScript.CodeDom;
-using TypeScript.ContractGenerator.TypeBuilders;
+using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
 
-namespace TypeScript.ContractGenerator.Tests.CustomTypeGenerators
+namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 {
     public class ListTypeBuildingContext : ITypeBuildingContext
     {

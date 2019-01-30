@@ -1,4 +1,4 @@
-﻿namespace TypeScript.ContractGenerator.Extensions
+﻿namespace SkbKontur.TypeScript.ContractGenerator.Extensions
 {
     public static class StringExtensions
     {

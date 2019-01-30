@@ -1,8 +1,8 @@
 using System;
 
-using TypeScript.CodeDom;
+using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
-namespace TypeScript.ContractGenerator.TypeBuilders
+namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class GenericParameterTypeBuildingContextImpl : ITypeBuildingContext
     {

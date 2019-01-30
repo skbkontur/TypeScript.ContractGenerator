@@ -1,8 +1,8 @@
 using System;
 
-using TypeScript.ContractGenerator.TypeBuilders;
+using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
 
-namespace TypeScript.ContractGenerator.Tests.CustomTypeGenerators
+namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 {
     public class SimpleStructureTypeLocator : ICustomTypeGenerator
     {

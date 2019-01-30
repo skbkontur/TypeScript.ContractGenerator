@@ -6,10 +6,10 @@ using FluentAssertions;
 
 using NUnit.Framework;
 
-using TypeScript.CodeDom;
-using TypeScript.ContractGenerator.Internals;
+using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+using SkbKontur.TypeScript.ContractGenerator.Internals;
 
-namespace TypeScript.ContractGenerator.Tests
+namespace SkbKontur.TypeScript.ContractGenerator.Tests
 {
     [TestFixture(JavaScriptTypeChecker.Flow)]
     [TestFixture(JavaScriptTypeChecker.TypeScript)]
