@@ -13,7 +13,7 @@ See [CHANGELOG](CHANGELOG.md).
 
 First, define types that need type generation:
 
-```
+```csharp
 public class FirstType
 {
     public string StringProp { get; set; }
@@ -29,14 +29,14 @@ public class SecondType
 
 Then generate TypeScript files with:
 
-```
+```csharp
 var generator = new FlowTypeGenerator(customTypeGenerator : null, rootTypes : new[] {typeof(SecondType)});
 generator.GenerateTypeScriptFiles("./output");
 ```
 
 By default, this will generate file with name `.tsx` with following content:
 
-```
+```ts
 // TypeScriptContractGenerator's generated content
 // tslint:disable
 
