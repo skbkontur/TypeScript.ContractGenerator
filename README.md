@@ -51,3 +51,7 @@ export type FirstType = {
 ```
 
 If you want generated files to have different name or to generate some typings differently, you should pass your own implementation of `ICustomTypeGenerator` to `FlowTypeGenerator`.
+
+## Known bugs
+
+See [this issue](https://github.com/skbkontur/TypeScript.ContractGenerator/issues/1)
