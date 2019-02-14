@@ -28,7 +28,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
 
         protected string[] GenerateCode(ICustomTypeGenerator customTypeGenerator, Type rootType)
         {
-            var generator = new FlowTypeGenerator(FlowTypeGenerationOptions.Default, customTypeGenerator, new RootTypesProvider(rootType));
+            return GenerateCode(FlowTypeGenerationOptions.Default, customTypeGenerator, rootType);
+        }
+
+        protected string[] GenerateCode(FlowTypeGenerationOptions options, ICustomTypeGenerator customTypeGenerator, Type rootType)
+        {
+            var generator = new FlowTypeGenerator(options, customTypeGenerator, new RootTypesProvider(rootType));
             return generator.Generate().Select(x => x.GenerateCode(new DefaultCodeGenerationContext(javaScriptTypeChecker))).ToArray();
         }
 
@@ -78,6 +83,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
 
             foreach (var directory in expectedDirectories)
                 CheckDirectoriesEquivalenceInner($"{expectedDirectory}/{directory}", $"{actualDirectory}/{directory}");
+        }
+
+        protected string GetExpectedCode(string expectedCodeFilePath)
+        {
+            return File.ReadAllText(GetFilePath(expectedCodeFilePath)).Replace("\r\n", "\n");
         }
 
         protected string GetFilePath(string filename)

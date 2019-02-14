@@ -181,4 +181,43 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Files\Options.Expected\explicit-nullability-disabled.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Files\Options.Expected\explicit-nullability-disabled.ts">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Files\Options.Expected\explicit-nullability-enabled.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Files\Options.Expected\optional-properties-disabled.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Files\Options.Expected\optional-properties-disabled.ts">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Files\Options.Expected\explicit-nullability-enabled.ts">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Files\Options.Expected\optional-properties-enabled.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Files\Options.Expected\optional-properties-enabled.ts">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Files\Options.Expected\enum-generation-typescript-enum.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Files\Options.Expected\enum-generation-typescript-enum.ts">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Files\Options.Expected\enum-generation-fixed-strings.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Files\Options.Expected\enum-generation-fixed-strings.ts">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

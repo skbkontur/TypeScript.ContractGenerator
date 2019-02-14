@@ -1,5 +1,8 @@
+using JetBrains.Annotations;
+
 namespace SkbKontur.TypeScript.ContractGenerator
 {
+    [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     public class FlowTypeGenerationOptions
     {
         public EnumGenerationMode EnumGenerationMode { get; set; } = EnumGenerationMode.FixedStringsAndDictionary;
@@ -8,6 +11,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         public bool EnableExplicitNullability { get; set; } = true;
 
+        [NotNull]
         public static FlowTypeGenerationOptions Default { get; } = new FlowTypeGenerationOptions();
     }
 }

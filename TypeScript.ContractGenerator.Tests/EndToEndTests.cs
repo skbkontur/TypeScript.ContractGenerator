@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 
 using FluentAssertions;
@@ -31,7 +30,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         public void GenerateCodeTest(Type rootType, string expectedFileName)
         {
             var generatedCode = GenerateCode(rootType).Single().Replace("\r\n", "\n");
-            var expectedCode = File.ReadAllText(GetFilePath($"SimpleGenerator/{expectedFileName}")).Replace("\r\n", "\n");
+            var expectedCode = GetExpectedCode($"SimpleGenerator/{expectedFileName}");
             generatedCode.Should().Be(expectedCode);
         }
 
@@ -50,7 +49,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         public void CustomGeneratorTest(Type rootType, string expectedFileName)
         {
             var generatedCode = GenerateCode(new TestCustomTypeGenerator(), rootType).Single().Replace("\r\n", "\n");
-            var expectedCode = File.ReadAllText(GetFilePath($"CustomGenerator/{expectedFileName}")).Replace("\r\n", "\n");
+            var expectedCode = GetExpectedCode($"CustomGenerator/{expectedFileName}");
             generatedCode.Should().Be(expectedCode);
         }
     }
