@@ -6,7 +6,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class TypeBuildingContext : ITypeBuildingContext
     {
-        public TypeBuildingContext(FlowTypeUnit unit, Type type)
+        protected TypeBuildingContext(FlowTypeUnit unit, Type type)
         {
             Unit = unit;
             Type = type;
@@ -17,12 +17,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             Unit.Body.Add(new FlowTypeExportTypeStatement {Declaration = Declaration});
         }
 
-        public FlowTypeTypeDeclaration Declaration { get; set; }
-        public FlowTypeUnit Unit { get; set; }
-        public Type Type { get; set; }
-        public virtual bool IsDefinitionBuilded { get { return true; } }
+        protected FlowTypeTypeDeclaration Declaration { get; set; }
+        protected FlowTypeUnit Unit { get; }
+        protected Type Type { get; }
 
-        public virtual void BuildDefiniion(ITypeGenerator typeGenerator)
+        public virtual bool IsDefinitionBuilt => true;
+
+        public virtual void BuildDefinition(ITypeGenerator typeGenerator)
         {
         }
 

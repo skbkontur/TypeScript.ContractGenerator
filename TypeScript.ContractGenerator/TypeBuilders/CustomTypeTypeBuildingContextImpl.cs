@@ -16,7 +16,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public override bool IsDefinitionBuilded => Declaration.Definition != null;
+        public override bool IsDefinitionBuilt => Declaration.Definition != null;
 
         private FlowTypeTypeDeclaration CreateComplexFlowTypeDeclarationWithoutDefintion(Type type)
         {
@@ -39,7 +39,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             Unit.Body.Add(new FlowTypeExportTypeStatement {Declaration = Declaration});
         }
 
-        public override void BuildDefiniion(ITypeGenerator typeGenerator)
+        public override void BuildDefinition(ITypeGenerator typeGenerator)
         {
             Declaration.Definition = CreateComplexFlowTypeDefintion(typeGenerator);
         }

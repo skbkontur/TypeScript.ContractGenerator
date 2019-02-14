@@ -11,13 +11,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             this.type = type;
         }
 
-        public bool IsDefinitionBuilded => true;
+        public bool IsDefinitionBuilt => true;
 
         public void Initialize(ITypeGenerator typeGenerator)
         {
         }
 
-        public void BuildDefiniion(ITypeGenerator typeGenerator)
+        public void BuildDefinition(ITypeGenerator typeGenerator)
         {
         }
 

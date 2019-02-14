@@ -4,9 +4,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public interface ITypeBuildingContext
     {
-        bool IsDefinitionBuilded { get; }
+        bool IsDefinitionBuilt { get; }
         void Initialize(ITypeGenerator typeGenerator);
-        void BuildDefiniion(ITypeGenerator typeGenerator);
+        void BuildDefinition(ITypeGenerator typeGenerator);
         FlowTypeType ReferenceFrom(FlowTypeUnit targetUnit, ITypeGenerator typeGenerator);
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
@@ -38,13 +38,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             throw new ArgumentOutOfRangeException();
         }
 
-        public bool IsDefinitionBuilded { get { return true; } }
+        public bool IsDefinitionBuilt { get { return true; } }
 
         public void Initialize(ITypeGenerator typeGenerator)
         {
         }
 
-        public void BuildDefiniion(ITypeGenerator typeGenerator)
+        public void BuildDefinition(ITypeGenerator typeGenerator)
         {
         }
 

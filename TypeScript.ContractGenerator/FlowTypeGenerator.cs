@@ -23,12 +23,12 @@ namespace SkbKontur.TypeScript.ContractGenerator
         {
             foreach (var type in rootTypes)
                 RequestTypeBuild(type);
-            while (flowTypeDeclarations.Values.Any(x => !x.IsDefinitionBuilded))
+            while (flowTypeDeclarations.Values.Any(x => !x.IsDefinitionBuilt))
             {
                 foreach (var currentType in flowTypeDeclarations.ToArray())
                 {
-                    if (!currentType.Value.IsDefinitionBuilded)
-                        currentType.Value.BuildDefiniion(this);
+                    if (!currentType.Value.IsDefinitionBuilt)
+                        currentType.Value.BuildDefinition(this);
                 }
             }
             return flowTypeUnitFactory.Units;
@@ -38,12 +38,12 @@ namespace SkbKontur.TypeScript.ContractGenerator
         {
             foreach (var type in rootTypes)
                 RequestTypeBuild(type);
-            while (flowTypeDeclarations.Values.Any(x => !x.IsDefinitionBuilded))
+            while (flowTypeDeclarations.Values.Any(x => !x.IsDefinitionBuilt))
             {
                 foreach (var currentType in flowTypeDeclarations.ToArray())
                 {
-                    if (!currentType.Value.IsDefinitionBuilded)
-                        currentType.Value.BuildDefiniion(this);
+                    if (!currentType.Value.IsDefinitionBuilt)
+                        currentType.Value.BuildDefinition(this);
                 }
             }
             FilesGenerator.GenerateFiles(targetPath, flowTypeUnitFactory);
@@ -53,12 +53,12 @@ namespace SkbKontur.TypeScript.ContractGenerator
         {
             foreach (var type in rootTypes)
                 RequestTypeBuild(type);
-            while (flowTypeDeclarations.Values.Any(x => !x.IsDefinitionBuilded))
+            while (flowTypeDeclarations.Values.Any(x => !x.IsDefinitionBuilt))
             {
                 foreach (var currentType in flowTypeDeclarations.ToArray())
                 {
-                    if (!currentType.Value.IsDefinitionBuilded)
-                        currentType.Value.BuildDefiniion(this);
+                    if (!currentType.Value.IsDefinitionBuilt)
+                        currentType.Value.BuildDefinition(this);
                 }
             }
             FilesGenerator.DeleteFiles(targetPath, "*.js");
