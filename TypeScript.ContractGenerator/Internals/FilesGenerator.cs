@@ -6,13 +6,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 {
     internal static class FilesGenerator
     {
-        public const string JavaScriptFilesExtension = "js";
-        public const string TypeScriptFilesExtension = "ts";
-
         public static void GenerateFiles(string targetDir, DefaultFlowTypeGeneratorOutput output)
         {
             Directory.CreateDirectory(targetDir);
-            var files = Directory.GetFiles(targetDir, $"*.{JavaScriptFilesExtension}", SearchOption.AllDirectories);
+            var files = Directory.GetFiles(targetDir, $"*.{FilesExtensions.JavaScriptFilesExtension}", SearchOption.AllDirectories);
             foreach (var file in files)
             {
                 if (File.ReadAllText(file).Contains(generatedContentMarkerString))
@@ -22,7 +19,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             }
             foreach (var unit in output.Units)
             {
-                var targetFileName = GetUnitTargetFileName(targetDir, unit, JavaScriptFilesExtension);
+                var targetFileName = GetUnitTargetFileName(targetDir, unit, FilesExtensions.JavaScriptFilesExtension);
 
                 EnsureDirectoryExists(targetFileName);
 
@@ -37,7 +34,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             Directory.CreateDirectory(targetDir);
             foreach (var unit in output.Units)
             {
-                var targetFileName = GetUnitTargetFileName(targetDir, unit, TypeScriptFilesExtension);
+                var targetFileName = GetUnitTargetFileName(targetDir, unit, FilesExtensions.TypeScriptFilesExtension);
 
                 EnsureDirectoryExists(targetFileName);
 

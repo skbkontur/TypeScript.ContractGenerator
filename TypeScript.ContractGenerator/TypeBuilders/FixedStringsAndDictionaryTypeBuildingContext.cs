@@ -5,9 +5,9 @@ using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
-    public class EnumTypeBuildingContext : TypeBuildingContext
+    public class FixedStringsAndDictionaryTypeBuildingContext : TypeBuildingContext
     {
-        public EnumTypeBuildingContext(FlowTypeUnit unit, Type type)
+        public FixedStringsAndDictionaryTypeBuildingContext(FlowTypeUnit unit, Type type)
             : base(unit, type)
         {
         }

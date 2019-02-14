@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
+using JetBrains.Annotations;
+
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
 
@@ -12,9 +14,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class CustomTypeTypeBuildingContext : TypeBuildingContext
     {
-        public CustomTypeTypeBuildingContext(FlowTypeUnit unit, Type type)
+        public CustomTypeTypeBuildingContext([NotNull] FlowTypeUnit unit, [NotNull] Type type, [NotNull] FlowTypeGenerationOptions options)
             : base(unit, type)
         {
+            this.options = options;
         }
 
         public override bool IsDefinitionBuilt => Declaration.Definition != null;
@@ -57,10 +60,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                 result.Members.Add(new FlowTypeTypeMemberDeclaration
                     {
                         Name = BuildPropertyName(property.Name),
-                        Optional = isNullable,
+                        Optional = isNullable && options.EnableOptionalProperties,
                         Type = property.PropertyType.IsGenericParameter
                                    ? new FlowTypeTypeReference(property.PropertyType.Name)
-                                   : isNullable ? OrNull(propertyType) : propertyType,
+                                   : isNullable && options.EnableExplicitNullability ? OrNull(propertyType) : propertyType,
                     });
             }
             return result;
@@ -86,5 +89,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
             return type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
         }
+
+        private readonly FlowTypeGenerationOptions options;
     }
 }

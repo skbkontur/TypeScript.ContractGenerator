@@ -10,8 +10,8 @@ namespace SkbKontur.TypeScript.ContractGenerator
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
-                var undelayingType = type.GetGenericArguments()[0];
-                return (true, undelayingType);
+                var underlyingType = type.GetGenericArguments()[0];
+                return (true, underlyingType);
             }
             if (attributeContainer != null && type.IsClass && attributeContainer.GetCustomAttributes(true).All(x => x.GetType().Name != "NotNullAttribute"))
                 return (true, type);

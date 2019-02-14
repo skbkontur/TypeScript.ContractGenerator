@@ -18,17 +18,17 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         protected FlowTypeTestBase(JavaScriptTypeChecker javaScriptTypeChecker)
         {
             this.javaScriptTypeChecker = javaScriptTypeChecker;
-            fileExtension = javaScriptTypeChecker == JavaScriptTypeChecker.TypeScript ? "ts" : "js";
+            fileExtension = javaScriptTypeChecker == JavaScriptTypeChecker.TypeScript ? FilesExtensions.TypeScriptFilesExtension : FilesExtensions.JavaScriptFilesExtension;
         }
 
         protected string[] GenerateCode(Type rootType)
         {
-            return GenerateCode(null, rootType);
+            return GenerateCode(CustomTypeGenerator.Null, rootType);
         }
 
         protected string[] GenerateCode(ICustomTypeGenerator customTypeGenerator, Type rootType)
         {
-            var generator = new FlowTypeGenerator(customTypeGenerator, new[] {rootType});
+            var generator = new FlowTypeGenerator(FlowTypeGenerationOptions.Default, customTypeGenerator, new RootTypesProvider(rootType));
             return generator.Generate().Select(x => x.GenerateCode(new DefaultCodeGenerationContext(javaScriptTypeChecker))).ToArray();
         }
 
@@ -39,7 +39,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
                 Directory.Delete(path, recursive : true);
             Directory.CreateDirectory(path);
 
-            var generator = new FlowTypeGenerator(customTypeGenerator, rootTypes);
+            var generator = new FlowTypeGenerator(FlowTypeGenerationOptions.Default, customTypeGenerator, new RootTypesProvider(rootTypes));
             if (javaScriptTypeChecker == JavaScriptTypeChecker.Flow)
                 generator.GenerateFiles(path);
             else
