@@ -20,7 +20,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             foreach (var unit in output.Units)
             {
                 var targetFileName = Path.Combine(targetDir, unit.Path + ".js");
-                Directory.CreateDirectory(Path.GetDirectoryName(targetFileName));
+
+                EnsureDirectoryExists(targetFileName);
+
                 File.WriteAllText(targetFileName, "// @flow" + "\n");
                 File.AppendAllText(targetFileName, generatedContentMarkerString + "\n");
                 File.AppendAllText(targetFileName, unit.GenerateCode(new DefaultCodeGenerationContext(JavaScriptTypeChecker.Flow)));
@@ -32,12 +34,21 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             Directory.CreateDirectory(targetDir);
             foreach (var unit in output.Units)
             {
-                var targetFileName = Path.Combine(targetDir, unit.Path + ".tsx");
-                Directory.CreateDirectory(Path.GetDirectoryName(targetFileName));
+                var targetFileName = Path.Combine(targetDir, unit.Path + ".ts");
+
+                EnsureDirectoryExists(targetFileName);
+
                 File.AppendAllText(targetFileName, generatedContentMarkerString + "\n");
                 File.AppendAllText(targetFileName, "// tslint:disable" + "\n");
                 File.AppendAllText(targetFileName, unit.GenerateCode(new DefaultCodeGenerationContext(JavaScriptTypeChecker.TypeScript)));
             }
+        }
+
+        private static void EnsureDirectoryExists(string targetFileName)
+        {
+            var targetDirectoryName = Path.GetDirectoryName(targetFileName);
+            if (!string.IsNullOrEmpty(targetDirectoryName))
+                Directory.CreateDirectory(targetDirectoryName);
         }
 
         public static void DeleteFiles(string targetDir, string searchPattern)
