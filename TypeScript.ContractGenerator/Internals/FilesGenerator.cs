@@ -6,10 +6,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 {
     internal static class FilesGenerator
     {
+        public const string JavaScriptFilesExtension = "js";
+        public const string TypeScriptFilesExtension = "ts";
+
         public static void GenerateFiles(string targetDir, DefaultFlowTypeGeneratorOutput output)
         {
             Directory.CreateDirectory(targetDir);
-            var files = Directory.GetFiles(targetDir, "*.js", SearchOption.AllDirectories);
+            var files = Directory.GetFiles(targetDir, $"*.{JavaScriptFilesExtension}", SearchOption.AllDirectories);
             foreach (var file in files)
             {
                 if (File.ReadAllText(file).Contains(generatedContentMarkerString))
@@ -19,7 +22,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             }
             foreach (var unit in output.Units)
             {
-                var targetFileName = Path.Combine(targetDir, unit.Path + ".js");
+                var targetFileName = GetUnitTargetFileName(targetDir, unit, JavaScriptFilesExtension);
 
                 EnsureDirectoryExists(targetFileName);
 
@@ -34,7 +37,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             Directory.CreateDirectory(targetDir);
             foreach (var unit in output.Units)
             {
-                var targetFileName = Path.Combine(targetDir, unit.Path + ".ts");
+                var targetFileName = GetUnitTargetFileName(targetDir, unit, TypeScriptFilesExtension);
 
                 EnsureDirectoryExists(targetFileName);
 
@@ -42,6 +45,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
                 File.AppendAllText(targetFileName, "// tslint:disable" + "\n");
                 File.AppendAllText(targetFileName, unit.GenerateCode(new DefaultCodeGenerationContext(JavaScriptTypeChecker.TypeScript)));
             }
+        }
+
+        private static string GetUnitTargetFileName(string targetDir, FlowTypeUnit unit, string fileExtension)
+        {
+            var targetFileName = Path.Combine(targetDir, unit.Path + $".{fileExtension}");
+            return targetFileName;
         }
 
         private static void EnsureDirectoryExists(string targetFileName)

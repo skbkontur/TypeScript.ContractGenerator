@@ -61,8 +61,8 @@ namespace SkbKontur.TypeScript.ContractGenerator
                         currentType.Value.BuildDefinition(this);
                 }
             }
-            FilesGenerator.DeleteFiles(targetPath, "*.js");
-            FilesGenerator.DeleteFiles(targetPath, "*.tsx");
+            FilesGenerator.DeleteFiles(targetPath, $"*.{FilesGenerator.JavaScriptFilesExtension}");
+            FilesGenerator.DeleteFiles(targetPath, $"*.{FilesGenerator.TypeScriptFilesExtension}");
             FilesGenerator.GenerateTypeScriptFiles(targetPath, flowTypeUnitFactory);
         }
 
