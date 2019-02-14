@@ -10,8 +10,10 @@ namespace SkbKontur.TypeScript.ContractGenerator
     public class FlowTypeUnit
     {
         public string Path { get; set; }
-        public IEnumerable<FlowTypeImportStatement> Imports { get { return imports.Values; } }
-        public List<FlowTypeStatement> Body { get { return body; } }
+
+        public IEnumerable<FlowTypeImportStatement> Imports => imports.Values;
+
+        public List<FlowTypeStatement> Body { get; } = new List<FlowTypeStatement>();
 
         public FlowTypeTypeReference AddTypeImport(Type sourceType, FlowTypeTypeDeclaration typeDeclaration, FlowTypeUnit sourceUnit)
         {
@@ -56,7 +58,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             }
             result.Append(context.NewLine);
 
-            foreach (var statement in body)
+            foreach (var statement in Body)
             {
                 result.Append(statement.GenerateCode(context)).Append(context.NewLine);
             }
@@ -66,7 +68,5 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         private readonly Dictionary<Type, FlowTypeImportStatement> imports = new Dictionary<Type, FlowTypeImportStatement>();
         private readonly Dictionary<ImportedSymbol, FlowTypeImportStatement> symbolImports = new Dictionary<ImportedSymbol, FlowTypeImportStatement>();
-
-        private readonly List<FlowTypeStatement> body = new List<FlowTypeStatement>();
     }
 }

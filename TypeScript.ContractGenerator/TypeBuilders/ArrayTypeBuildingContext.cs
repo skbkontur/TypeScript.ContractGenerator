@@ -11,7 +11,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             this.elementType = elementType;
         }
 
-        public bool IsDefinitionBuilt { get { return true; } }
+        public bool IsDefinitionBuilt => true;
 
         public void Initialize(ITypeGenerator typeGenerator)
         {

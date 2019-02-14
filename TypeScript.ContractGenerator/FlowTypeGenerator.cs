@@ -92,25 +92,25 @@ namespace SkbKontur.TypeScript.ContractGenerator
                 if (type.IsEnum)
                 {
                     var targetUnit = flowTypeUnitFactory.GetOrCreateTypeUnit(typeLocation);
-                    typeBuildingContext = new EnumTypeBuildingContextImpl(targetUnit, type);
+                    typeBuildingContext = new EnumTypeBuildingContext(targetUnit, type);
                 }
                 if (type.IsGenericType && !type.IsGenericTypeDefinition)
                 {
-                    typeBuildingContext = new GenericTypeTypeBuildingContextImpl(type);
+                    typeBuildingContext = new GenericTypeTypeBuildingContext(type);
                 }
                 if (type.IsGenericParameter)
                 {
-                    typeBuildingContext = new GenericParameterTypeBuildingContextImpl(type);
+                    typeBuildingContext = new GenericParameterTypeBuildingContext(type);
                 }
                 if (type.IsGenericTypeDefinition)
                 {
                     var targetUnit = flowTypeUnitFactory.GetOrCreateTypeUnit(typeLocation);
-                    typeBuildingContext = new CustomTypeTypeBuildingContextImpl(targetUnit, type);
+                    typeBuildingContext = new CustomTypeTypeBuildingContext(targetUnit, type);
                 }
                 if (typeBuildingContext == null)
                 {
                     var targetUnit = flowTypeUnitFactory.GetOrCreateTypeUnit(typeLocation);
-                    typeBuildingContext = new CustomTypeTypeBuildingContextImpl(targetUnit, type);
+                    typeBuildingContext = new CustomTypeTypeBuildingContext(targetUnit, type);
                 }
             }
             typeBuildingContext.Initialize(this);

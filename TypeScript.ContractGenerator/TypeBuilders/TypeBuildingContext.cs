@@ -18,7 +18,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         }
 
         protected FlowTypeTypeDeclaration Declaration { get; set; }
+
         protected FlowTypeUnit Unit { get; }
+
         protected Type Type { get; }
 
         public virtual bool IsDefinitionBuilt => true;

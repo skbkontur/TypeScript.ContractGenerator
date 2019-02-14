@@ -1,24 +1,25 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
-
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
-    public class CustomTypeTypeBuildingContextImpl : TypeBuildingContext
+    // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
+    public class CustomTypeTypeBuildingContext : TypeBuildingContext
     {
-        public CustomTypeTypeBuildingContextImpl(FlowTypeUnit unit, Type type)
+        public CustomTypeTypeBuildingContext(FlowTypeUnit unit, Type type)
             : base(unit, type)
         {
         }
 
         public override bool IsDefinitionBuilt => Declaration.Definition != null;
 
-        private FlowTypeTypeDeclaration CreateComplexFlowTypeDeclarationWithoutDefintion(Type type)
+        private FlowTypeTypeDeclaration CreateComplexFlowTypeDeclarationWithoutDefinition(Type type)
         {
             var result = new FlowTypeTypeDeclaration
                 {
@@ -35,16 +36,16 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             {
                 typeGenerator.ResolveType(Type.BaseType);
             }
-            Declaration = CreateComplexFlowTypeDeclarationWithoutDefintion(Type);
+            Declaration = CreateComplexFlowTypeDeclarationWithoutDefinition(Type);
             Unit.Body.Add(new FlowTypeExportTypeStatement {Declaration = Declaration});
         }
 
         public override void BuildDefinition(ITypeGenerator typeGenerator)
         {
-            Declaration.Definition = CreateComplexFlowTypeDefintion(typeGenerator);
+            Declaration.Definition = CreateComplexFlowTypeDefinition(typeGenerator);
         }
 
-        protected virtual FlowTypeTypeDefintion CreateComplexFlowTypeDefintion(ITypeGenerator typeGenerator)
+        protected virtual FlowTypeTypeDefintion CreateComplexFlowTypeDefinition(ITypeGenerator typeGenerator)
         {
             var result = new FlowTypeTypeDefintion();
             var properties = CreateTypeProperties(Type);
@@ -65,7 +66,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             return result;
         }
 
-        private FlowTypeUnionType OrNull(FlowTypeType buildAndImportType)
+        private static FlowTypeUnionType OrNull(FlowTypeType buildAndImportType)
         {
             return new FlowTypeUnionType(
                 new[]
@@ -76,12 +77,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                 );
         }
 
-        private string BuildPropertyName(string propertyName)
+        private static string BuildPropertyName(string propertyName)
         {
             return propertyName.ToLowerCamelCase();
         }
 
-        protected virtual PropertyInfo[] CreateTypeProperties(Type type)
+        protected virtual IEnumerable<PropertyInfo> CreateTypeProperties(Type type)
         {
             return type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
         }

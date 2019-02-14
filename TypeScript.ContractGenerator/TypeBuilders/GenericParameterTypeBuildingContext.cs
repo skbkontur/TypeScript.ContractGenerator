@@ -4,9 +4,9 @@ using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
-    public class GenericParameterTypeBuildingContextImpl : ITypeBuildingContext
+    public class GenericParameterTypeBuildingContext : ITypeBuildingContext
     {
-        public GenericParameterTypeBuildingContextImpl(Type type)
+        public GenericParameterTypeBuildingContext(Type type)
         {
             this.type = type;
         }

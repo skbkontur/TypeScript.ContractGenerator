@@ -6,9 +6,9 @@ using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
-    public class GenericTypeTypeBuildingContextImpl : ITypeBuildingContext
+    public class GenericTypeTypeBuildingContext : ITypeBuildingContext
     {
-        public GenericTypeTypeBuildingContextImpl(Type type)
+        public GenericTypeTypeBuildingContext(Type type)
         {
             this.type = type;
         }

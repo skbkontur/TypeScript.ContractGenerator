@@ -14,7 +14,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 
         public FlowTypeExpression Subject { get; set; }
         public string MethodName { get; set; }
-        public List<FlowTypeExpression> Arguments { get { return arguments; } }
+        public List<FlowTypeExpression> Arguments => arguments;
 
         public override string GenerateCode(ICodeGenerationContext context)
         {

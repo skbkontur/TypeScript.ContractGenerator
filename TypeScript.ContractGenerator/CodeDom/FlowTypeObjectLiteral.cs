@@ -11,7 +11,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
             this.properties = properties.ToList();
         }
 
-        public List<FlowTypeObjectLiteralInitializer> Properties { get { return properties; } }
+        public List<FlowTypeObjectLiteralInitializer> Properties => properties;
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
