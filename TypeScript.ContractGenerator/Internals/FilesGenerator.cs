@@ -34,6 +34,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         private static void DeleteFiles(string targetDir, string searchPattern)
         {
+            if (!Directory.Exists(targetDir))
+                return;
+
             var files = Directory.GetFiles(targetDir, searchPattern, SearchOption.AllDirectories);
             foreach (var file in files)
             {
