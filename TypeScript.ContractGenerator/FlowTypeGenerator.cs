@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -13,12 +14,14 @@ namespace SkbKontur.TypeScript.ContractGenerator
 {
     public class FlowTypeGenerator : ITypeGenerator
     {
+        [SuppressMessage("ReSharper", "ConstantNullCoalescingCondition")]
+        [SuppressMessage("ReSharper", "ConstantConditionalAccessQualifier")]
         public FlowTypeGenerator([NotNull] FlowTypeGenerationOptions options, [NotNull] ICustomTypeGenerator customTypeGenerator, [NotNull] IRootTypesProvider rootTypesProvider)
         {
             this.options = options ?? throw new ArgumentNullException(nameof(options));
-            rootTypes = rootTypesProvider.GetRootTypes();
+            this.customTypeGenerator = customTypeGenerator ?? throw new ArgumentNullException(nameof(customTypeGenerator));
+            rootTypes = rootTypesProvider?.GetRootTypes() ?? throw new ArgumentNullException(nameof(rootTypesProvider));
             flowTypeUnitFactory = new DefaultFlowTypeGeneratorOutput();
-            this.customTypeGenerator = customTypeGenerator;
             flowTypeDeclarations = new Dictionary<Type, ITypeBuildingContext>();
         }
 
@@ -37,8 +40,10 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return flowTypeUnitFactory.Units;
         }
 
-        public void GenerateFiles(string targetPath)
+        public void GenerateFiles(string targetPath, JavaScriptTypeChecker javaScriptTypeChecker)
         {
+            ValidateOptions(javaScriptTypeChecker, options);
+
             foreach (var type in rootTypes)
                 RequestTypeBuild(type);
             while (flowTypeDeclarations.Values.Any(x => !x.IsDefinitionBuilt))
@@ -49,24 +54,14 @@ namespace SkbKontur.TypeScript.ContractGenerator
                         currentType.Value.BuildDefinition(this);
                 }
             }
-            FilesGenerator.GenerateFiles(targetPath, flowTypeUnitFactory);
+            FilesGenerator.GenerateFiles(targetPath, flowTypeUnitFactory, FilesGenerationContext.Create(javaScriptTypeChecker));
         }
 
-        public void GenerateTypeScriptFiles(string targetPath)
+        [SuppressMessage("ReSharper", "ParameterOnlyUsedForPreconditionCheck.Local")]
+        private static void ValidateOptions(JavaScriptTypeChecker javaScriptTypeChecker, FlowTypeGenerationOptions flowTypeGenerationOptions)
         {
-            foreach (var type in rootTypes)
-                RequestTypeBuild(type);
-            while (flowTypeDeclarations.Values.Any(x => !x.IsDefinitionBuilt))
-            {
-                foreach (var currentType in flowTypeDeclarations.ToArray())
-                {
-                    if (!currentType.Value.IsDefinitionBuilt)
-                        currentType.Value.BuildDefinition(this);
-                }
-            }
-            FilesGenerator.DeleteFiles(targetPath, $"*.{FilesExtensions.JavaScriptFilesExtension}");
-            FilesGenerator.DeleteFiles(targetPath, $"*.{FilesExtensions.TypeScriptFilesExtension}");
-            FilesGenerator.GenerateTypeScriptFiles(targetPath, flowTypeUnitFactory);
+            if (javaScriptTypeChecker == JavaScriptTypeChecker.Flow && flowTypeGenerationOptions.EnumGenerationMode == EnumGenerationMode.TypeScriptEnum)
+                throw new ArgumentException("Flow is not compatible with TypeScript enums");
         }
 
         private void RequestTypeBuild(Type type)

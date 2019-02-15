@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -85,7 +84,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             return propertyName.ToLowerCamelCase();
         }
 
-        protected virtual IEnumerable<PropertyInfo> CreateTypeProperties(Type type)
+        protected virtual PropertyInfo[] CreateTypeProperties(Type type)
         {
             return type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
         }

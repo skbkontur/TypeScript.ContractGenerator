@@ -17,8 +17,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
     {
         protected FlowTypeTestBase(JavaScriptTypeChecker javaScriptTypeChecker)
         {
-            this.javaScriptTypeChecker = javaScriptTypeChecker;
-            fileExtension = javaScriptTypeChecker == JavaScriptTypeChecker.TypeScript ? FilesExtensions.TypeScriptFilesExtension : FilesExtensions.JavaScriptFilesExtension;
+            filesGenerationContext = FilesGenerationContext.Create(javaScriptTypeChecker);
         }
 
         protected string[] GenerateCode(Type rootType)
@@ -34,27 +33,24 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         protected string[] GenerateCode(FlowTypeGenerationOptions options, ICustomTypeGenerator customTypeGenerator, Type rootType)
         {
             var generator = new FlowTypeGenerator(options, customTypeGenerator, new RootTypesProvider(rootType));
-            return generator.Generate().Select(x => x.GenerateCode(new DefaultCodeGenerationContext(javaScriptTypeChecker))).ToArray();
+            return generator.Generate().Select(x => x.GenerateCode(new DefaultCodeGenerationContext(JavaScriptTypeChecker))).ToArray();
         }
 
         protected void GenerateFiles(ICustomTypeGenerator customTypeGenerator, string folderName, params Type[] rootTypes)
         {
-            var path = $"{TestContext.CurrentContext.TestDirectory}/{folderName}/{javaScriptTypeChecker}";
+            var path = $"{TestContext.CurrentContext.TestDirectory}/{folderName}/{JavaScriptTypeChecker}";
             if (Directory.Exists(path))
                 Directory.Delete(path, recursive : true);
             Directory.CreateDirectory(path);
 
             var generator = new FlowTypeGenerator(FlowTypeGenerationOptions.Default, customTypeGenerator, new RootTypesProvider(rootTypes));
-            if (javaScriptTypeChecker == JavaScriptTypeChecker.Flow)
-                generator.GenerateFiles(path);
-            else
-                generator.GenerateTypeScriptFiles(path);
+            generator.GenerateFiles(path, JavaScriptTypeChecker);
         }
 
         protected void CheckDirectoriesEquivalence(string expectedDirectory, string actualDirectory)
         {
-            expectedDirectory = $"{TestContext.CurrentContext.TestDirectory}/{expectedDirectory}/{javaScriptTypeChecker}";
-            actualDirectory = $"{TestContext.CurrentContext.TestDirectory}/{actualDirectory}/{javaScriptTypeChecker}";
+            expectedDirectory = $"{TestContext.CurrentContext.TestDirectory}/{expectedDirectory}/{JavaScriptTypeChecker}";
+            actualDirectory = $"{TestContext.CurrentContext.TestDirectory}/{actualDirectory}/{JavaScriptTypeChecker}";
 
             CheckDirectoriesEquivalenceInner(expectedDirectory, actualDirectory);
         }
@@ -90,12 +86,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             return File.ReadAllText(GetFilePath(expectedCodeFilePath)).Replace("\r\n", "\n");
         }
 
-        protected string GetFilePath(string filename)
+        private string GetFilePath(string filename)
         {
-            return $"{TestContext.CurrentContext.TestDirectory}/Files/{filename}.{fileExtension}";
+            return $"{TestContext.CurrentContext.TestDirectory}/Files/{filename}.{filesGenerationContext.FileExtension}";
         }
 
-        private readonly JavaScriptTypeChecker javaScriptTypeChecker;
-        private readonly string fileExtension;
+        private readonly FilesGenerationContext filesGenerationContext;
+        private JavaScriptTypeChecker JavaScriptTypeChecker => filesGenerationContext.JavaScriptTypeChecker;
     }
 }
