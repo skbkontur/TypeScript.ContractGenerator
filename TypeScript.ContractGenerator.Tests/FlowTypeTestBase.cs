@@ -17,39 +17,40 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
     {
         protected FlowTypeTestBase(JavaScriptTypeChecker javaScriptTypeChecker)
         {
-            this.javaScriptTypeChecker = javaScriptTypeChecker;
-            fileExtension = javaScriptTypeChecker == JavaScriptTypeChecker.TypeScript ? "ts" : "js";
+            filesGenerationContext = FilesGenerationContext.Create(javaScriptTypeChecker);
         }
 
         protected string[] GenerateCode(Type rootType)
         {
-            return GenerateCode(null, rootType);
+            return GenerateCode(CustomTypeGenerator.Null, rootType);
         }
 
         protected string[] GenerateCode(ICustomTypeGenerator customTypeGenerator, Type rootType)
         {
-            var generator = new FlowTypeGenerator(customTypeGenerator, new[] {rootType});
-            return generator.Generate().Select(x => x.GenerateCode(new DefaultCodeGenerationContext(javaScriptTypeChecker))).ToArray();
+            return GenerateCode(FlowTypeGenerationOptions.Default, customTypeGenerator, rootType);
+        }
+
+        protected string[] GenerateCode(FlowTypeGenerationOptions options, ICustomTypeGenerator customTypeGenerator, Type rootType)
+        {
+            var generator = new FlowTypeGenerator(options, customTypeGenerator, new RootTypesProvider(rootType));
+            return generator.Generate().Select(x => x.GenerateCode(new DefaultCodeGenerationContext(JavaScriptTypeChecker))).ToArray();
         }
 
         protected void GenerateFiles(ICustomTypeGenerator customTypeGenerator, string folderName, params Type[] rootTypes)
         {
-            var path = $"{TestContext.CurrentContext.TestDirectory}/{folderName}/{javaScriptTypeChecker}";
+            var path = $"{TestContext.CurrentContext.TestDirectory}/{folderName}/{JavaScriptTypeChecker}";
             if (Directory.Exists(path))
                 Directory.Delete(path, recursive : true);
             Directory.CreateDirectory(path);
 
-            var generator = new FlowTypeGenerator(customTypeGenerator, rootTypes);
-            if (javaScriptTypeChecker == JavaScriptTypeChecker.Flow)
-                generator.GenerateFiles(path);
-            else
-                generator.GenerateTypeScriptFiles(path);
+            var generator = new FlowTypeGenerator(FlowTypeGenerationOptions.Default, customTypeGenerator, new RootTypesProvider(rootTypes));
+            generator.GenerateFiles(path, JavaScriptTypeChecker);
         }
 
         protected void CheckDirectoriesEquivalence(string expectedDirectory, string actualDirectory)
         {
-            expectedDirectory = $"{TestContext.CurrentContext.TestDirectory}/{expectedDirectory}/{javaScriptTypeChecker}";
-            actualDirectory = $"{TestContext.CurrentContext.TestDirectory}/{actualDirectory}/{javaScriptTypeChecker}";
+            expectedDirectory = $"{TestContext.CurrentContext.TestDirectory}/{expectedDirectory}/{JavaScriptTypeChecker}";
+            actualDirectory = $"{TestContext.CurrentContext.TestDirectory}/{actualDirectory}/{JavaScriptTypeChecker}";
 
             CheckDirectoriesEquivalenceInner(expectedDirectory, actualDirectory);
         }
@@ -80,12 +81,17 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
                 CheckDirectoriesEquivalenceInner($"{expectedDirectory}/{directory}", $"{actualDirectory}/{directory}");
         }
 
-        protected string GetFilePath(string filename)
+        protected string GetExpectedCode(string expectedCodeFilePath)
         {
-            return $"{TestContext.CurrentContext.TestDirectory}/Files/{filename}.{fileExtension}";
+            return File.ReadAllText(GetFilePath(expectedCodeFilePath)).Replace("\r\n", "\n");
         }
 
-        private readonly JavaScriptTypeChecker javaScriptTypeChecker;
-        private readonly string fileExtension;
+        private string GetFilePath(string filename)
+        {
+            return $"{TestContext.CurrentContext.TestDirectory}/Files/{filename}.{filesGenerationContext.FileExtension}";
+        }
+
+        private readonly FilesGenerationContext filesGenerationContext;
+        private JavaScriptTypeChecker JavaScriptTypeChecker => filesGenerationContext.JavaScriptTypeChecker;
     }
 }

@@ -30,11 +30,11 @@ public class SecondType
 Then generate TypeScript files with:
 
 ```csharp
-var generator = new FlowTypeGenerator(customTypeGenerator : null, rootTypes : new[] {typeof(SecondType)});
-generator.GenerateTypeScriptFiles("./output");
+var generator = new FlowTypeGenerator(FlowTypeGenerationOptions.Default, CustomTypeGenerator.Null, new RootTypesProvider(typeof(SecondType)));
+generator.GenerateFiles("./output", JavaScriptTypeChecker.TypeScript);
 ```
 
-By default, this will generate file with name `.tsx` with following content:
+By default, this will generate file with name `.ts` with following content:
 
 ```ts
 // TypeScriptContractGenerator's generated content
@@ -51,6 +51,65 @@ export type FirstType = {
 ```
 
 If you want generated files to have different name or to generate some typings differently, you should pass your own implementation of `ICustomTypeGenerator` to `FlowTypeGenerator`.
+
+## Generation options
+
+### EnumGenerationMode
+
+This options is set to `FixedStringsAndDictionary` by default.
+
+```csharp
+public enum EnumGenerationMode
+{
+    FixedStringsAndDictionary = 0,
+    TypeScriptEnum = 1,
+}
+```
+
+Setting option value equal to `FixedStringsAndDictionary` produces following output:
+
+```ts
+export type SomeEnum = 'A' | 'B';
+export const SomeEnums = {
+    ['A']: ('A') as SomeEnum,
+    ['B']: ('B') as SomeEnum,
+};
+```
+
+Option value `TypeScriptEnum` produces following:
+
+```ts
+export enum SomeEnum {
+    A = 'A',
+    B = 'B',
+}
+```
+
+### EnableOptionalProperties
+
+This option is **enabled** by default. When **enabled** produces optional properties for members which may contain nulls.
+
+```ts
+export type SomeType = {
+    somePropertyWithNullableValue?: typeDefinition;
+    somePropertyWithNonNullableValue: typeDefinition;
+};
+
+```
+When **disabled**, all properties produced as required.
+
+### EnableExplicitNullability
+
+This option is **enabled** by default. When **enabled** produces nullable types for members which may contain nulls.
+
+```ts
+export type SomeType = {
+    nullablePropertyDefinition: null | string;
+    nonNullablePropertyDefinition: string;
+};
+```
+
+When **disabled** produces all types as-is.
 
 ## Known bugs
 

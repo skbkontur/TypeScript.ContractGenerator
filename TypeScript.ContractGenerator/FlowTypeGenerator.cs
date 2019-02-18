@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+
+using JetBrains.Annotations;
 
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
@@ -11,11 +14,14 @@ namespace SkbKontur.TypeScript.ContractGenerator
 {
     public class FlowTypeGenerator : ITypeGenerator
     {
-        public FlowTypeGenerator(ICustomTypeGenerator customTypeGenerator, Type[] rootTypes)
+        [SuppressMessage("ReSharper", "ConstantNullCoalescingCondition")]
+        [SuppressMessage("ReSharper", "ConstantConditionalAccessQualifier")]
+        public FlowTypeGenerator([NotNull] FlowTypeGenerationOptions options, [NotNull] ICustomTypeGenerator customTypeGenerator, [NotNull] IRootTypesProvider rootTypesProvider)
         {
-            this.rootTypes = rootTypes;
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
+            this.customTypeGenerator = customTypeGenerator ?? throw new ArgumentNullException(nameof(customTypeGenerator));
+            rootTypes = rootTypesProvider?.GetRootTypes() ?? throw new ArgumentNullException(nameof(rootTypesProvider));
             flowTypeUnitFactory = new DefaultFlowTypeGeneratorOutput();
-            this.customTypeGenerator = customTypeGenerator ?? new NullCustomTypeGenerator();
             flowTypeDeclarations = new Dictionary<Type, ITypeBuildingContext>();
         }
 
@@ -23,47 +29,39 @@ namespace SkbKontur.TypeScript.ContractGenerator
         {
             foreach (var type in rootTypes)
                 RequestTypeBuild(type);
-            while (flowTypeDeclarations.Values.Any(x => !x.IsDefinitionBuilded))
+            while (flowTypeDeclarations.Values.Any(x => !x.IsDefinitionBuilt))
             {
                 foreach (var currentType in flowTypeDeclarations.ToArray())
                 {
-                    if (!currentType.Value.IsDefinitionBuilded)
-                        currentType.Value.BuildDefiniion(this);
+                    if (!currentType.Value.IsDefinitionBuilt)
+                        currentType.Value.BuildDefinition(this);
                 }
             }
             return flowTypeUnitFactory.Units;
         }
 
-        public void GenerateFiles(string targetPath)
+        public void GenerateFiles(string targetPath, JavaScriptTypeChecker javaScriptTypeChecker)
         {
+            ValidateOptions(javaScriptTypeChecker, options);
+
             foreach (var type in rootTypes)
                 RequestTypeBuild(type);
-            while (flowTypeDeclarations.Values.Any(x => !x.IsDefinitionBuilded))
+            while (flowTypeDeclarations.Values.Any(x => !x.IsDefinitionBuilt))
             {
                 foreach (var currentType in flowTypeDeclarations.ToArray())
                 {
-                    if (!currentType.Value.IsDefinitionBuilded)
-                        currentType.Value.BuildDefiniion(this);
+                    if (!currentType.Value.IsDefinitionBuilt)
+                        currentType.Value.BuildDefinition(this);
                 }
             }
-            FilesGenerator.GenerateFiles(targetPath, flowTypeUnitFactory);
+            FilesGenerator.GenerateFiles(targetPath, flowTypeUnitFactory, FilesGenerationContext.Create(javaScriptTypeChecker));
         }
 
-        public void GenerateTypeScriptFiles(string targetPath)
+        [SuppressMessage("ReSharper", "ParameterOnlyUsedForPreconditionCheck.Local")]
+        private static void ValidateOptions(JavaScriptTypeChecker javaScriptTypeChecker, FlowTypeGenerationOptions flowTypeGenerationOptions)
         {
-            foreach (var type in rootTypes)
-                RequestTypeBuild(type);
-            while (flowTypeDeclarations.Values.Any(x => !x.IsDefinitionBuilded))
-            {
-                foreach (var currentType in flowTypeDeclarations.ToArray())
-                {
-                    if (!currentType.Value.IsDefinitionBuilded)
-                        currentType.Value.BuildDefiniion(this);
-                }
-            }
-            FilesGenerator.DeleteFiles(targetPath, "*.js");
-            FilesGenerator.DeleteFiles(targetPath, "*.tsx");
-            FilesGenerator.GenerateTypeScriptFiles(targetPath, flowTypeUnitFactory);
+            if (javaScriptTypeChecker == JavaScriptTypeChecker.Flow && flowTypeGenerationOptions.EnumGenerationMode == EnumGenerationMode.TypeScriptEnum)
+                throw new ArgumentException("Flow is not compatible with TypeScript enums");
         }
 
         private void RequestTypeBuild(Type type)
@@ -92,25 +90,27 @@ namespace SkbKontur.TypeScript.ContractGenerator
                 if (type.IsEnum)
                 {
                     var targetUnit = flowTypeUnitFactory.GetOrCreateTypeUnit(typeLocation);
-                    typeBuildingContext = new EnumTypeBuildingContextImpl(targetUnit, type);
+                    typeBuildingContext = options.EnumGenerationMode == EnumGenerationMode.FixedStringsAndDictionary
+                                              ? (ITypeBuildingContext)new FixedStringsAndDictionaryTypeBuildingContext(targetUnit, type)
+                                              : new TypeScriptEnumTypeBuildingContext(targetUnit, type);
                 }
                 if (type.IsGenericType && !type.IsGenericTypeDefinition)
                 {
-                    typeBuildingContext = new GenericTypeTypeBuildingContextImpl(type);
+                    typeBuildingContext = new GenericTypeTypeBuildingContext(type);
                 }
                 if (type.IsGenericParameter)
                 {
-                    typeBuildingContext = new GenericParameterTypeBuildingContextImpl(type);
+                    typeBuildingContext = new GenericParameterTypeBuildingContext(type);
                 }
                 if (type.IsGenericTypeDefinition)
                 {
                     var targetUnit = flowTypeUnitFactory.GetOrCreateTypeUnit(typeLocation);
-                    typeBuildingContext = new CustomTypeTypeBuildingContextImpl(targetUnit, type);
+                    typeBuildingContext = new CustomTypeTypeBuildingContext(targetUnit, type, options);
                 }
                 if (typeBuildingContext == null)
                 {
                     var targetUnit = flowTypeUnitFactory.GetOrCreateTypeUnit(typeLocation);
-                    typeBuildingContext = new CustomTypeTypeBuildingContextImpl(targetUnit, type);
+                    typeBuildingContext = new CustomTypeTypeBuildingContext(targetUnit, type, options);
                 }
             }
             typeBuildingContext.Initialize(this);
@@ -122,7 +122,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
         {
             var (isNullable, resultType) = FlowTypeGeneratorHelpers.ProcessNullable(attributeProvider, type);
             var result = GetFlowTypeType(targetUnit, resultType);
-            if (isNullable)
+            if (isNullable && options.EnableExplicitNullability)
                 result = new FlowTypeNullableType(result);
             return result;
         }
@@ -137,6 +137,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return context.ReferenceFrom(targetUnit, this);
         }
 
+        private readonly FlowTypeGenerationOptions options;
         private readonly Type[] rootTypes;
         private readonly DefaultFlowTypeGeneratorOutput flowTypeUnitFactory;
         private readonly ICustomTypeGenerator customTypeGenerator;

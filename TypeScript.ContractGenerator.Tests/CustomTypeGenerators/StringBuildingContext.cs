@@ -5,13 +5,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 {
     public class StringBuildingContext : ITypeBuildingContext
     {
-        public bool IsDefinitionBuilded => true;
+        public bool IsDefinitionBuilt => true;
 
         public void Initialize(ITypeGenerator typeGenerator)
         {
         }
 
-        public void BuildDefiniion(ITypeGenerator typeGenerator)
+        public void BuildDefinition(ITypeGenerator typeGenerator)
         {
         }
 

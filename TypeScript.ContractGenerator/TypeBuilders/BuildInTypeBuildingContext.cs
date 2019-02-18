@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
@@ -21,30 +21,30 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
             if (type == typeof(string))
                 return new FlowTypeBuildInType("string");
-            else if (type == typeof(bool))
+            if (type == typeof(bool))
                 return new FlowTypeBuildInType("boolean");
-            else if (type == typeof(int))
+            if (type == typeof(int))
                 return new FlowTypeBuildInType("number");
-            else if (type == typeof(decimal))
+            if (type == typeof(decimal))
                 return new FlowTypeBuildInType("number");
-            else if (type == typeof(Int64))
+            if (type == typeof(long))
                 return new FlowTypeBuildInType("string");
-            else if (type == typeof(DateTime))
+            if (type == typeof(DateTime))
                 return new FlowTypeBuildInType("(Date | string)");
-            else if (type == typeof(byte[]))
+            if (type == typeof(byte[]))
                 return new FlowTypeBuildInType("string");
-            else if (type == typeof(void))
+            if (type == typeof(void))
                 return new FlowTypeBuildInType("void");
             throw new ArgumentOutOfRangeException();
         }
 
-        public bool IsDefinitionBuilded { get { return true; } }
+        public bool IsDefinitionBuilt => true;
 
         public void Initialize(ITypeGenerator typeGenerator)
         {
         }
 
-        public void BuildDefiniion(ITypeGenerator typeGenerator)
+        public void BuildDefinition(ITypeGenerator typeGenerator)
         {
         }
 
@@ -56,7 +56,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                 typeof(bool),
                 typeof(int),
                 typeof(decimal),
-                typeof(Int64),
+                typeof(long),
                 typeof(DateTime),
                 typeof(void),
                 typeof(byte[]),

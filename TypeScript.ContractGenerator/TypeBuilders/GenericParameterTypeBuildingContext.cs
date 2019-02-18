@@ -4,20 +4,20 @@ using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
-    public class GenericParameterTypeBuildingContextImpl : ITypeBuildingContext
+    public class GenericParameterTypeBuildingContext : ITypeBuildingContext
     {
-        public GenericParameterTypeBuildingContextImpl(Type type)
+        public GenericParameterTypeBuildingContext(Type type)
         {
             this.type = type;
         }
 
-        public bool IsDefinitionBuilded => true;
+        public bool IsDefinitionBuilt => true;
 
         public void Initialize(ITypeGenerator typeGenerator)
         {
         }
 
-        public void BuildDefiniion(ITypeGenerator typeGenerator)
+        public void BuildDefinition(ITypeGenerator typeGenerator)
         {
         }
 

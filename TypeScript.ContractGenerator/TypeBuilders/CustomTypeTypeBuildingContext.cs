@@ -3,22 +3,25 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+using JetBrains.Annotations;
 
+using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
-    public class CustomTypeTypeBuildingContextImpl : TypeBuildingContext
+    // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
+    public class CustomTypeTypeBuildingContext : TypeBuildingContext
     {
-        public CustomTypeTypeBuildingContextImpl(FlowTypeUnit unit, Type type)
+        public CustomTypeTypeBuildingContext([NotNull] FlowTypeUnit unit, [NotNull] Type type, [NotNull] FlowTypeGenerationOptions options)
             : base(unit, type)
         {
+            this.options = options;
         }
 
-        public override bool IsDefinitionBuilded => Declaration.Definition != null;
+        public override bool IsDefinitionBuilt => Declaration.Definition != null;
 
-        private FlowTypeTypeDeclaration CreateComplexFlowTypeDeclarationWithoutDefintion(Type type)
+        private FlowTypeTypeDeclaration CreateComplexFlowTypeDeclarationWithoutDefinition(Type type)
         {
             var result = new FlowTypeTypeDeclaration
                 {
@@ -35,16 +38,16 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             {
                 typeGenerator.ResolveType(Type.BaseType);
             }
-            Declaration = CreateComplexFlowTypeDeclarationWithoutDefintion(Type);
+            Declaration = CreateComplexFlowTypeDeclarationWithoutDefinition(Type);
             Unit.Body.Add(new FlowTypeExportTypeStatement {Declaration = Declaration});
         }
 
-        public override void BuildDefiniion(ITypeGenerator typeGenerator)
+        public override void BuildDefinition(ITypeGenerator typeGenerator)
         {
-            Declaration.Definition = CreateComplexFlowTypeDefintion(typeGenerator);
+            Declaration.Definition = CreateComplexFlowTypeDefinition(typeGenerator);
         }
 
-        protected virtual FlowTypeTypeDefintion CreateComplexFlowTypeDefintion(ITypeGenerator typeGenerator)
+        protected virtual FlowTypeTypeDefintion CreateComplexFlowTypeDefinition(ITypeGenerator typeGenerator)
         {
             var result = new FlowTypeTypeDefintion();
             var properties = CreateTypeProperties(Type);
@@ -56,16 +59,16 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                 result.Members.Add(new FlowTypeTypeMemberDeclaration
                     {
                         Name = BuildPropertyName(property.Name),
-                        Optional = isNullable,
+                        Optional = isNullable && options.EnableOptionalProperties,
                         Type = property.PropertyType.IsGenericParameter
                                    ? new FlowTypeTypeReference(property.PropertyType.Name)
-                                   : isNullable ? OrNull(propertyType) : propertyType,
+                                   : isNullable && options.EnableExplicitNullability ? OrNull(propertyType) : propertyType,
                     });
             }
             return result;
         }
 
-        private FlowTypeUnionType OrNull(FlowTypeType buildAndImportType)
+        private static FlowTypeUnionType OrNull(FlowTypeType buildAndImportType)
         {
             return new FlowTypeUnionType(
                 new[]
@@ -76,7 +79,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                 );
         }
 
-        private string BuildPropertyName(string propertyName)
+        private static string BuildPropertyName(string propertyName)
         {
             return propertyName.ToLowerCamelCase();
         }
@@ -85,5 +88,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
             return type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
         }
+
+        private readonly FlowTypeGenerationOptions options;
     }
 }

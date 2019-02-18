@@ -6,7 +6,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
     public class FlowTypeInterfaceFunctionMember
     {
         public string Name { get; set; }
-        public List<FlowTypeArgumentDeclaration> Arguments { get { return arguments; } }
+        public List<FlowTypeArgumentDeclaration> Arguments => arguments;
         public FlowTypeType Result { get; set; }
 
         public string GenerateCode(ICodeGenerationContext context)

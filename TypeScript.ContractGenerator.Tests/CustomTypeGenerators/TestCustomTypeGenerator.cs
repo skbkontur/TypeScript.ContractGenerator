@@ -5,7 +5,7 @@ using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 {
-    public class CustomTypeGenerator : ICustomTypeGenerator
+    public class TestCustomTypeGenerator : ICustomTypeGenerator
     {
         public string GetTypeLocation(Type type)
         {

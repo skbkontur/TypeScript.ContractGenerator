@@ -1,16 +1,15 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Internals
 {
     internal class DefaultFlowTypeGeneratorOutput : IFlowTypeUnitFactory
     {
-        public FlowTypeUnit[] Units { get { return units.Values.ToArray(); } }
+        public FlowTypeUnit[] Units => units.Values.ToArray();
 
         public FlowTypeUnit GetOrCreateTypeUnit(string path)
         {
-            FlowTypeUnit result;
-            if (units.TryGetValue(path, out result))
+            if (units.TryGetValue(path, out var result))
                 return result;
             result = new FlowTypeUnit
                 {

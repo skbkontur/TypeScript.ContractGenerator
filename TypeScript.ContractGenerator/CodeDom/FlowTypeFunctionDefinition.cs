@@ -6,8 +6,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class FlowTypeFunctionDefinition : FlowTypeDefinition
     {
-        public List<FlowTypeArgumentDeclaration> Arguments { get { return arguments; } }
-        public List<FlowTypeStatement> Body { get { return body; } }
+        public List<FlowTypeArgumentDeclaration> Arguments => arguments;
+        public List<FlowTypeStatement> Body => body;
         public FlowTypeType Result { get; set; }
         public bool IsAsync { get; set; }
 
