@@ -2,7 +2,7 @@
 export type ArrayRootType = {
     ints?: null | number[];
     nullableInts?: null | Nullable<number>[];
-    byteArray?: null | Byte[];
+    byteArray?: null | string;
     nullableByteArray?: null | Nullable<Byte>[];
     enums?: null | AnotherEnum[];
     nullableEnums?: null | Nullable<AnotherEnum>[];

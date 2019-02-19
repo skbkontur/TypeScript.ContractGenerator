@@ -55,17 +55,30 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             {
                 var (isNullable, type) = FlowTypeGeneratorHelpers.ProcessNullable(property, property.PropertyType);
 
-                var propertyType = typeGenerator.BuildAndImportType(Unit, null, type);
                 result.Members.Add(new FlowTypeTypeMemberDeclaration
                     {
                         Name = BuildPropertyName(property.Name),
                         Optional = isNullable && options.EnableOptionalProperties,
-                        Type = property.PropertyType.IsGenericParameter
-                                   ? new FlowTypeTypeReference(property.PropertyType.Name)
-                                   : isNullable && options.EnableExplicitNullability ? OrNull(propertyType) : propertyType,
+                        Type = GetMaybeNullableComplexType(typeGenerator, type, property, isNullable),
                     });
             }
             return result;
+        }
+
+        private FlowTypeType GetMaybeNullableComplexType(ITypeGenerator typeGenerator, Type type, PropertyInfo property, bool isNullable)
+        {
+            var propertyType = typeGenerator.BuildAndImportType(Unit, null, type);
+
+            if (property.PropertyType.IsGenericParameter)
+                return new FlowTypeTypeReference(property.PropertyType.Name);
+
+            if (isNullable && options.EnableExplicitNullability && !options.UseGlobalNullable)
+                return OrNull(propertyType);
+
+            if (isNullable && options.EnableExplicitNullability && options.UseGlobalNullable)
+                return new FlowTypeNullableType(propertyType);
+
+            return propertyType;
         }
 
         private static FlowTypeUnionType OrNull(FlowTypeType buildAndImportType)

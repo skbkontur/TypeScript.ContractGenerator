@@ -218,6 +218,18 @@
       <None Update="Files\Options.Expected\enum-generation-fixed-strings.ts">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="Files\Options.Expected\global-nullable-disabled.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Files\Options.Expected\global-nullable-disabled.ts">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Files\Options.Expected\global-nullable-enabled.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Files\Options.Expected\global-nullable-enabled.ts">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>
