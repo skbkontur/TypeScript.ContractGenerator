@@ -1,21 +1,17 @@
 
 export type ArrayRootType = {
     ints?: null | number[];
-    nullableInts?: null | Nullable<number>[];
+    nullableInts?: null | Array<null | number>;
     byteArray?: null | string;
-    nullableByteArray?: null | Nullable<Byte>[];
+    nullableByteArray?: null | Array<null | Byte>;
     enums?: null | AnotherEnum[];
-    nullableEnums?: null | Nullable<AnotherEnum>[];
+    nullableEnums?: null | Array<null | AnotherEnum>;
     strings?: null | string[];
     customTypes?: null | AnotherCustomType[];
     stringsList?: null | string[];
     customTypesDict?: null | {
         [key in string]?: AnotherCustomType;
     };
-};
-export type Nullable<T> = {
-    hasValue: boolean;
-    value: T;
 };
 export type Byte = {
 };

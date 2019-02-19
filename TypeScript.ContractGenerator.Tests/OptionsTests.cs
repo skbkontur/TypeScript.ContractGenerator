@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 
 using FluentAssertions;
@@ -39,7 +38,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [TestCase(false, "explicit-nullability-disabled")]
         public void ExplicitNullabilityTest(bool explicitNullabilityEnabled, string expectedFileName)
         {
-            var generatedCode = GenerateCode(new FlowTypeGenerationOptions {EnableExplicitNullability = explicitNullabilityEnabled}, CustomTypeGenerator.Null, typeof(NotNullRootType)).Single().Replace("\r\n", "\n");
+            var generatedCode = GenerateCode(new FlowTypeGenerationOptions {EnableExplicitNullability = explicitNullabilityEnabled}, CustomTypeGenerator.Null, typeof(ExplicitNullabilityRootType)).Single().Replace("\r\n", "\n");
             var expectedCode = GetExpectedCode($"Options.Expected/{expectedFileName}");
             generatedCode.Should().Be(expectedCode);
         }

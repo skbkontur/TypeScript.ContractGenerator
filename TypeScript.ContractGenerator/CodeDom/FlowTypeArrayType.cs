@@ -7,11 +7,15 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
             ItemType = itemType;
         }
 
-        public FlowTypeType ItemType { get; private set; }
+        private FlowTypeType ItemType { get; }
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return ItemType.GenerateCode(context) + "[]";
+            var innerTypeCode = ItemType.GenerateCode(context);
+            if (!(ItemType is FlowTypeUnionType))
+                return innerTypeCode + "[]";
+
+            return $"Array<{innerTypeCode}>";
         }
     }
 }
