@@ -6,9 +6,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class NullableTypeBuildingContext : ITypeBuildingContext
     {
-        public NullableTypeBuildingContext(Type nullableType)
+        public NullableTypeBuildingContext(Type nullableUnderlyingType, bool useGlobalNullable)
         {
-            itemType = nullableType.GetGenericArguments()[0];
+            itemType = nullableUnderlyingType;
+            this.useGlobalNullable = useGlobalNullable;
         }
 
         public bool IsDefinitionBuilt => true;
@@ -24,9 +25,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         public FlowTypeType ReferenceFrom(FlowTypeUnit targetUnit, ITypeGenerator typeGenerator)
         {
             var itemFlowType = typeGenerator.ResolveType(itemType).ReferenceFrom(targetUnit, typeGenerator);
-            return new FlowTypeNullableType(itemFlowType);
+            return useGlobalNullable
+                       ? (FlowTypeType)new FlowTypeNullableType(itemFlowType)
+                       : new FlowTypeOrNullType(itemFlowType);
         }
 
         private readonly Type itemType;
+        private readonly bool useGlobalNullable;
     }
 }

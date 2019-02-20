@@ -73,23 +73,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                 return new FlowTypeTypeReference(property.PropertyType.Name);
 
             if (isNullable && options.EnableExplicitNullability && !options.UseGlobalNullable)
-                return OrNull(propertyType);
+                return new FlowTypeOrNullType(propertyType);
 
             if (isNullable && options.EnableExplicitNullability && options.UseGlobalNullable)
                 return new FlowTypeNullableType(propertyType);
 
             return propertyType;
-        }
-
-        private static FlowTypeUnionType OrNull(FlowTypeType buildAndImportType)
-        {
-            return new FlowTypeUnionType(
-                new[]
-                    {
-                        new FlowTypeBuildInType("null"),
-                        buildAndImportType
-                    }
-                );
         }
 
         private static string BuildPropertyName(string propertyName)

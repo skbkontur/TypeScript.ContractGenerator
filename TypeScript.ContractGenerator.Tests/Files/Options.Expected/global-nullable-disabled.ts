@@ -2,13 +2,9 @@
 export type GlobalNullableRootType = {
     int: number;
     nullableInt?: null | number;
-    nullableInts?: null | Nullable<number>[];
+    nullableInts?: null | Array<null | number>;
     intGeneric?: null | GenericClass<number>;
-    nullableIntGeneric?: null | GenericClass<Nullable<number>>;
-};
-export type Nullable<T> = {
-    hasValue: boolean;
-    value: T;
+    nullableIntGeneric?: null | GenericClass<null | number>;
 };
 export type GenericClass<T> = {
     genericType?: T;
