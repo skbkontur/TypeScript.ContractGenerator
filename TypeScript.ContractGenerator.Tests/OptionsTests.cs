@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 
 using FluentAssertions;
@@ -39,6 +40,15 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         public void ExplicitNullabilityTest(bool explicitNullabilityEnabled, string expectedFileName)
         {
             var generatedCode = GenerateCode(new FlowTypeGenerationOptions {EnableExplicitNullability = explicitNullabilityEnabled}, CustomTypeGenerator.Null, typeof(NotNullRootType)).Single().Replace("\r\n", "\n");
+            var expectedCode = GetExpectedCode($"Options.Expected/{expectedFileName}");
+            generatedCode.Should().Be(expectedCode);
+        }
+
+        [TestCase(true, "global-nullable-enabled")]
+        [TestCase(false, "global-nullable-disabled")]
+        public void GlobalNullableTest(bool useGlobalNullable, string expectedFileName)
+        {
+            var generatedCode = GenerateCode(new FlowTypeGenerationOptions {UseGlobalNullable = useGlobalNullable}, CustomTypeGenerator.Null, typeof(GlobalNullableRootType)).Single().Replace("\r\n", "\n");
             var expectedCode = GetExpectedCode($"Options.Expected/{expectedFileName}");
             generatedCode.Should().Be(expectedCode);
         }

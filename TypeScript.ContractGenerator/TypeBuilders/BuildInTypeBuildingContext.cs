@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
@@ -14,27 +14,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         public static bool Accept(Type type)
         {
-            return buildInTyped.Contains(type);
+            return builtinTypes.ContainsKey(type);
         }
 
         public FlowTypeType ReferenceFrom(FlowTypeUnit targetUnit, ITypeGenerator typeGenerator)
         {
-            if (type == typeof(string))
-                return new FlowTypeBuildInType("string");
-            if (type == typeof(bool))
-                return new FlowTypeBuildInType("boolean");
-            if (type == typeof(int))
-                return new FlowTypeBuildInType("number");
-            if (type == typeof(decimal))
-                return new FlowTypeBuildInType("number");
-            if (type == typeof(long))
-                return new FlowTypeBuildInType("string");
-            if (type == typeof(DateTime))
-                return new FlowTypeBuildInType("(Date | string)");
-            if (type == typeof(byte[]))
-                return new FlowTypeBuildInType("string");
-            if (type == typeof(void))
-                return new FlowTypeBuildInType("void");
+            if (builtinTypes.ContainsKey(type))
+                return new FlowTypeBuildInType(builtinTypes[type]);
             throw new ArgumentOutOfRangeException();
         }
 
@@ -50,16 +36,16 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         private readonly Type type;
 
-        private static readonly Type[] buildInTyped =
+        private static readonly Dictionary<Type, string> builtinTypes = new Dictionary<Type, string>
             {
-                typeof(string),
-                typeof(bool),
-                typeof(int),
-                typeof(decimal),
-                typeof(long),
-                typeof(DateTime),
-                typeof(void),
-                typeof(byte[]),
+                {typeof(string), "string"},
+                {typeof(bool), "boolean"},
+                {typeof(int), "number"},
+                {typeof(decimal), "number"},
+                {typeof(long), "string"},
+                {typeof(DateTime), "(Date | string)"},
+                {typeof(byte[]), "string"},
+                {typeof(void), "void"}
             };
     }
 }

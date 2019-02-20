@@ -76,46 +76,41 @@ namespace SkbKontur.TypeScript.ContractGenerator
                 return flowTypeDeclarations[type];
             }
             var typeLocation = customTypeGenerator.GetTypeLocation(type);
-            var typeBuildingContext = customTypeGenerator.ResolveType(typeLocation, type, flowTypeUnitFactory);
-            if (typeBuildingContext == null)
-            {
-                if (BuildInTypeBuildingContext.Accept(type))
-                {
-                    typeBuildingContext = new BuildInTypeBuildingContext(type);
-                }
-                if (type.IsArray)
-                {
-                    typeBuildingContext = new ArrayTypeBuildingContext(type.GetElementType());
-                }
-                if (type.IsEnum)
-                {
-                    var targetUnit = flowTypeUnitFactory.GetOrCreateTypeUnit(typeLocation);
-                    typeBuildingContext = options.EnumGenerationMode == EnumGenerationMode.FixedStringsAndDictionary
-                                              ? (ITypeBuildingContext)new FixedStringsAndDictionaryTypeBuildingContext(targetUnit, type)
-                                              : new TypeScriptEnumTypeBuildingContext(targetUnit, type);
-                }
-                if (type.IsGenericType && !type.IsGenericTypeDefinition)
-                {
-                    typeBuildingContext = new GenericTypeTypeBuildingContext(type);
-                }
-                if (type.IsGenericParameter)
-                {
-                    typeBuildingContext = new GenericParameterTypeBuildingContext(type);
-                }
-                if (type.IsGenericTypeDefinition)
-                {
-                    var targetUnit = flowTypeUnitFactory.GetOrCreateTypeUnit(typeLocation);
-                    typeBuildingContext = new CustomTypeTypeBuildingContext(targetUnit, type, options);
-                }
-                if (typeBuildingContext == null)
-                {
-                    var targetUnit = flowTypeUnitFactory.GetOrCreateTypeUnit(typeLocation);
-                    typeBuildingContext = new CustomTypeTypeBuildingContext(targetUnit, type, options);
-                }
-            }
+            var typeBuildingContext = customTypeGenerator.ResolveType(typeLocation, type, flowTypeUnitFactory) ?? GetTypeBuildingContext(typeLocation, type);
             typeBuildingContext.Initialize(this);
             flowTypeDeclarations.Add(type, typeBuildingContext);
             return typeBuildingContext;
+        }
+
+        private ITypeBuildingContext GetTypeBuildingContext(string typeLocation, Type type)
+        {
+            if (BuildInTypeBuildingContext.Accept(type))
+                return new BuildInTypeBuildingContext(type);
+
+            if (type.IsArray)
+                return new ArrayTypeBuildingContext(type.GetElementType());
+
+            if (type.IsEnum)
+            {
+                var targetUnit = flowTypeUnitFactory.GetOrCreateTypeUnit(typeLocation);
+                return options.EnumGenerationMode == EnumGenerationMode.FixedStringsAndDictionary
+                           ? (ITypeBuildingContext)new FixedStringsAndDictionaryTypeBuildingContext(targetUnit, type)
+                           : new TypeScriptEnumTypeBuildingContext(targetUnit, type);
+            }
+
+            if (options.UseGlobalNullable && type.IsGenericType && !type.IsGenericTypeDefinition && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+                return new NullableTypeBuildingContext(type);
+
+            if (type.IsGenericType && !type.IsGenericTypeDefinition)
+                return new GenericTypeTypeBuildingContext(type);
+
+            if (type.IsGenericParameter)
+                return new GenericParameterTypeBuildingContext(type);
+
+            if (type.IsGenericTypeDefinition)
+                return new CustomTypeTypeBuildingContext(flowTypeUnitFactory.GetOrCreateTypeUnit(typeLocation), type, options);
+
+            return new CustomTypeTypeBuildingContext(flowTypeUnitFactory.GetOrCreateTypeUnit(typeLocation), type, options);
         }
 
         public FlowTypeType BuildAndImportType(FlowTypeUnit targetUnit, ICustomAttributeProvider attributeProvider, Type type)

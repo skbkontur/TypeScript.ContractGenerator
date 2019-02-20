@@ -11,6 +11,8 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         public bool EnableExplicitNullability { get; set; } = true;
 
+        public bool UseGlobalNullable { get; set; }
+        
         [NotNull]
         public static FlowTypeGenerationOptions Default { get; } = new FlowTypeGenerationOptions();
     }
