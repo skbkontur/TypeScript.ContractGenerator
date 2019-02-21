@@ -43,8 +43,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             CheckDirectoriesEquivalence($"Files/{type.Name}.Expected", $"{type.Name}.Actual");
         }
 
-        [TestCase(typeof(SimpleRootType), "simple-types.expected")]
-        [TestCase(typeof(SimpleNullableRootType), "nullable-types.expected")]
         [TestCase(typeof(ArrayRootType), "array-types.expected")]
         public void CustomGeneratorTest(Type rootType, string expectedFileName)
         {

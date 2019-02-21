@@ -36,21 +36,9 @@
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
       <None Remove="Files\CustomGenerator\nullable-types.expected.js" />
-      <Content Include="Files\CustomGenerator\nullable-types.expected.js">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
       <None Remove="Files\CustomGenerator\nullable-types.expected.ts" />
-      <Content Include="Files\CustomGenerator\nullable-types.expected.ts">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
       <None Remove="Files\CustomGenerator\simple-types.expected.js" />
-      <Content Include="Files\CustomGenerator\simple-types.expected.js">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
       <None Remove="Files\CustomGenerator\simple-types.expected.ts" />
-      <Content Include="Files\CustomGenerator\simple-types.expected.ts">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
       <None Remove="Files\FlatTypeLocator.Expected\Flow\CommonType.js" />
       <Content Include="Files\FlatTypeLocator.Expected\Flow\CommonType.js">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>

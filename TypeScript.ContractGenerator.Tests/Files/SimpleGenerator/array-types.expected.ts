@@ -3,15 +3,13 @@ export type ArrayRootType = {
     ints?: null | number[];
     nullableInts?: null | Array<null | number>;
     byteArray?: null | string;
-    nullableByteArray?: null | Array<null | Byte>;
+    nullableByteArray?: null | Array<null | number>;
     enums?: null | AnotherEnum[];
     nullableEnums?: null | Array<null | AnotherEnum>;
     strings?: null | string[];
     customTypes?: null | AnotherCustomType[];
     stringsList?: null | List<string>;
     customTypesDict?: null | Dictionary<string, AnotherCustomType>;
-};
-export type Byte = {
 };
 export type AnotherEnum = 'B' | 'C';
 export const AnotherEnums = {
