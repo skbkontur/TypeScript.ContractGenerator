@@ -111,6 +111,10 @@ export type SomeType = {
 
 When **disabled** produces all types as-is.
 
+### UseGlobalNullable
+
+This option is **disabled** by default. When **enabled**, global `Nullable<T>` is used instead of union `null | T`
+
 ## Known bugs
 
 See [this issue](https://github.com/skbkontur/TypeScript.ContractGenerator/issues/1)

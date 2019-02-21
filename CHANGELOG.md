@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.2 - 2019.02.21
+- Add GlobalNullable generation option: if `true`, type `Nullable<T>` from global namespace will be used
+- Fixed invalid Nullable<T> generation
+- Use `Array<null | T>` instead of `Nullable<T>[]` if GlobalNullable option is set to `false` 
+
 ## v1.1 - 2019.02.18
 - TypeScript files generated with '.ts' extension
 - Generation options: EnumGenerationMode: FixedStringsAndDictionary | TypeScriptEnum, EnableOptionalProperties, EnableExplicitNullability
