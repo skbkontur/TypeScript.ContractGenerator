@@ -8,8 +8,11 @@ export type ArrayRootType = {
     nullableEnums?: null | Array<null | AnotherEnum>;
     strings?: null | string[];
     customTypes?: null | AnotherCustomType[];
-    stringsList?: null | List<string>;
-    customTypesDict?: null | Dictionary<string, AnotherCustomType>;
+    stringsList?: null | string[];
+    customTypesDict?: null | {
+        [key in string]?: AnotherCustomType;
+    };
+    set?: null | HashSet<string>;
 };
 export type AnotherEnum = 'B' | 'C';
 export const AnotherEnums = {
@@ -19,23 +22,9 @@ export const AnotherEnums = {
 export type AnotherCustomType = {
     d: number;
 };
-export type List<T> = {
-    capacity: number;
+export type HashSet<T> = {
     count: number;
-    item?: T;
-};
-export type Dictionary<TKey, TValue> = {
-    comparer: IEqualityComparer<TKey>;
-    count: number;
-    keys?: null | KeyCollection<TKey, TValue>;
-    values?: null | ValueCollection<TKey, TValue>;
-    item?: TValue;
+    comparer: IEqualityComparer<T>;
 };
 export type IEqualityComparer<T> = {
-};
-export type KeyCollection<TKey, TValue> = {
-    count: number;
-};
-export type ValueCollection<TKey, TValue> = {
-    count: number;
 };

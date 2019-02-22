@@ -87,8 +87,11 @@ namespace SkbKontur.TypeScript.ContractGenerator
             if (BuildInTypeBuildingContext.Accept(type))
                 return new BuildInTypeBuildingContext(type);
 
-            if (type.IsArray)
-                return new ArrayTypeBuildingContext(type.GetElementType());
+            if (ArrayTypeBuildingContext.Accept(type))
+                return new ArrayTypeBuildingContext(type);
+
+            if (DictionaryTypeBuildingContext.Accept(type))
+                return new DictionaryTypeBuildingContext(type);
 
             if (type.IsEnum)
             {

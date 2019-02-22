@@ -1,9 +1,9 @@
 using System;
+using System.Collections.Generic;
 
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
-using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
 
-namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
+namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class DictionaryTypeBuildingContext : ITypeBuildingContext
     {
@@ -11,6 +11,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
         {
             keyType = dictionaryType.GetGenericArguments()[0];
             valueType = dictionaryType.GetGenericArguments()[1];
+        }
+
+        public static bool Accept(Type type)
+        {
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>);
         }
 
         public bool IsDefinitionBuilt => true;

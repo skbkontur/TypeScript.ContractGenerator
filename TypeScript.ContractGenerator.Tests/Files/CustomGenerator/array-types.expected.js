@@ -12,6 +12,7 @@ export type ArrayRootType = {
     customTypesDict?: null | {
         [key: string]: AnotherCustomType;
     };
+    set?: null | string[];
 };
 export type AnotherEnum = 'B' | 'C';
 export const AnotherEnums = {
