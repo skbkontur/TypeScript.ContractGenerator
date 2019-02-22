@@ -38,13 +38,24 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         private static readonly Dictionary<Type, string> builtinTypes = new Dictionary<Type, string>
             {
-                {typeof(string), "string"},
                 {typeof(bool), "boolean"},
                 {typeof(int), "number"},
+                {typeof(uint), "number"},
+                {typeof(short), "number"},
+                {typeof(ushort), "number"},
+                {typeof(byte), "number"},
+                {typeof(sbyte), "number"},
+                {typeof(float), "number"},
+                {typeof(double), "number"},
                 {typeof(decimal), "number"},
-                {typeof(long), "string"},
                 {typeof(DateTime), "(Date | string)"},
+                {typeof(TimeSpan), "(number | string)"},
+                {typeof(string), "string"},
+                {typeof(long), "string"},
+                {typeof(ulong), "string"},
                 {typeof(byte[]), "string"},
+                {typeof(Guid), "string"},
+                {typeof(char), "string"},
                 {typeof(void), "void"}
             };
     }

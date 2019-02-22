@@ -14,11 +14,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 
         public ITypeBuildingContext ResolveType(string initialUnitPath, Type type, IFlowTypeUnitFactory unitFactory)
         {
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
-                return new ListTypeBuildingContext(type);
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
-                return new DictionaryTypeBuildingContext(type);
-            if (type == typeof(Guid))
+            if (CollectionTypeBuildingContext.Accept(type))
+                return new CollectionTypeBuildingContext(type);
+
+            if (type == typeof(TimeSpan))
                 return new StringBuildingContext();
 
             return null;
