@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.3 - 2019.02.22
+- Correctly generate built-in types
+- Add support for `List<T>` and `Dictionary<TKey, TValue>`
+
 ## v1.2 - 2019.02.21
 - Add GlobalNullable generation option: if `true`, type `Nullable<T>` from global namespace will be used
 - Fixed invalid Nullable<T> generation
