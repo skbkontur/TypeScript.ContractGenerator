@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 using JetBrains.Annotations;
@@ -55,12 +56,25 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             {
                 var (isNullable, type) = TypeScriptGeneratorHelpers.ProcessNullable(property, property.PropertyType);
 
-                result.Members.Add(new TypeScriptTypeMemberDeclaration
-                    {
-                        Name = BuildPropertyName(property.Name),
-                        Optional = isNullable && options.EnableOptionalProperties,
-                        Type = GetMaybeNullableComplexType(typeGenerator, type, property, isNullable),
-                    });
+                if(property.PropertyType.IsEnum && !property.GetMethod.GetCustomAttributes<CompilerGeneratedAttribute>().Any())
+                {
+                    var value = property.GetMethod.Invoke(Activator.CreateInstance(Type), null);
+                    result.Members.Add(new TypeScriptTypeMemberDeclaration
+                        {
+                            Name = BuildPropertyName(property.Name),
+                            Optional = isNullable && options.EnableOptionalProperties,
+                            Type = new TypeScriptStringLiteralType(value.ToString()),
+                        });
+                }
+                else
+                {
+                    result.Members.Add(new TypeScriptTypeMemberDeclaration
+                        {
+                            Name = BuildPropertyName(property.Name),
+                            Optional = isNullable && options.EnableOptionalProperties,
+                            Type = GetMaybeNullableComplexType(typeGenerator, type, property, isNullable),
+                        });
+                }
             }
             return result;
         }
