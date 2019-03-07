@@ -28,7 +28,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
                 return new FilesGenerationContext
                     {
                         FileExtension = "ts",
-                        HeaderGenerationFunc = marker => $"{marker}\n// tslint:disable\n",
+                        HeaderGenerationFunc = marker => $"// tslint:disable\n{marker}\n",
                         JavaScriptTypeChecker = javaScriptTypeChecker,
                     };
             default:
