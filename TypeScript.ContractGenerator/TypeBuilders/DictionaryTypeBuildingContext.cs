@@ -28,23 +28,23 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public FlowTypeType ReferenceFrom(FlowTypeUnit targetUnit, ITypeGenerator typeGenerator)
+        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
-            var keyFlowType = typeGenerator.ResolveType(keyType).ReferenceFrom(targetUnit, typeGenerator);
-            var valueFlowType = typeGenerator.ResolveType(valueType).ReferenceFrom(targetUnit, typeGenerator);
+            var keyTypeScriptType = typeGenerator.ResolveType(keyType).ReferenceFrom(targetUnit, typeGenerator);
+            var valueTypeScriptType = typeGenerator.ResolveType(valueType).ReferenceFrom(targetUnit, typeGenerator);
 
-            return new FlowTypeTypeDefintion
+            return new TypeScriptTypeDefintion
                 {
                     Members =
                         {
-                            new FlowTypeTypePropertyGetterDeclaration
+                            new TypeScriptTypePropertyGetterDeclaration
                                 {
-                                    Argument = new FlowTypeArgumentDeclaration
+                                    Argument = new TypeScriptArgumentDeclaration
                                         {
                                             Name = "key",
-                                            Type = keyFlowType,
+                                            Type = keyTypeScriptType,
                                         },
-                                    ResultType = valueFlowType,
+                                    ResultType = valueTypeScriptType,
                                     Optional = true,
                                 }
                         }

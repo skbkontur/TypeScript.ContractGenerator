@@ -13,8 +13,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [Test]
         public void FlowAndTypeScriptEnumIncompatibilityTest()
         {
-            var options = new FlowTypeGenerationOptions {EnumGenerationMode = EnumGenerationMode.TypeScriptEnum};
-            var generator = new FlowTypeGenerator(options, CustomTypeGenerator.Null, RootTypesProvider.Default);
+            var options = new TypeScriptGenerationOptions {EnumGenerationMode = EnumGenerationMode.TypeScriptEnum};
+            var generator = new TypeScriptGenerator(options, CustomTypeGenerator.Null, RootTypesProvider.Default);
             Action filesGeneration = () => generator.GenerateFiles("", JavaScriptTypeChecker.Flow);
             filesGeneration.Should().Throw<ArgumentException>().And.Message.Should().Be("Flow is not compatible with TypeScript enums");
         }

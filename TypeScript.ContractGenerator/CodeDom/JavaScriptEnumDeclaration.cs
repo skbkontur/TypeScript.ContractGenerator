@@ -2,7 +2,7 @@ using System.Text;
 
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
-    public class JavaScriptEnumDeclaration : FlowTypeTypeDeclaration
+    public class JavaScriptEnumDeclaration : TypeScriptTypeDeclaration
     {
         public override string GenerateCode(ICodeGenerationContext context)
         {

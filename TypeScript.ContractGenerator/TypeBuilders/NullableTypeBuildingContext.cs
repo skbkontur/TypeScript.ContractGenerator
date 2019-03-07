@@ -22,12 +22,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public FlowTypeType ReferenceFrom(FlowTypeUnit targetUnit, ITypeGenerator typeGenerator)
+        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
-            var itemFlowType = typeGenerator.ResolveType(itemType).ReferenceFrom(targetUnit, typeGenerator);
+            var itemTypeScriptType = typeGenerator.ResolveType(itemType).ReferenceFrom(targetUnit, typeGenerator);
             return useGlobalNullable
-                       ? (FlowTypeType)new FlowTypeNullableType(itemFlowType)
-                       : new FlowTypeOrNullType(itemFlowType);
+                       ? (TypeScriptType)new TypeScriptNullableType(itemTypeScriptType)
+                       : new TypeScriptOrNullType(itemTypeScriptType);
         }
 
         private readonly Type itemType;

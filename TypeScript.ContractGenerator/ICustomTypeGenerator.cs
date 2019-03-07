@@ -7,6 +7,6 @@ namespace SkbKontur.TypeScript.ContractGenerator
     public interface ICustomTypeGenerator
     {
         string GetTypeLocation(Type type);
-        ITypeBuildingContext ResolveType(string initialUnitPath, Type type, IFlowTypeUnitFactory unitFactory);
+        ITypeBuildingContext ResolveType(string initialUnitPath, Type type, ITypeScriptUnitFactory unitFactory);
     }
 }

@@ -16,7 +16,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         public string Tab => "    ";
         public string NewLine => "\n";
 
-        public string GetReferenceFromUnitToAnother(FlowTypeUnit currentUnit, FlowTypeUnit targetUnit)
+        public string GetReferenceFromUnitToAnother(TypeScriptUnit currentUnit, TypeScriptUnit targetUnit)
         {
             var path1 = new Uri(@"C:\a\a\a\a\a\a\a\a\" + currentUnit.Path);
             var path2 = new Uri(@"C:\a\a\a\a\a\a\a\a\" + targetUnit.Path);

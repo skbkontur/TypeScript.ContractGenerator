@@ -7,7 +7,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class TypeScriptEnumTypeBuildingContext : TypeBuildingContext
     {
-        public TypeScriptEnumTypeBuildingContext(FlowTypeUnit unit, Type type)
+        public TypeScriptEnumTypeBuildingContext(TypeScriptUnit unit, Type type)
             : base(unit, type)
         {
         }
@@ -19,10 +19,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                 {
                     Name = Type.Name,
                     Definition = new JavaScriptEnumDefinition(
-                        values.Select(x => new JavaScriptEnumMember {Name = x, ValueLiteral = new FlowTypeStringLiteral(x)})),
+                        values.Select(x => new JavaScriptEnumMember {Name = x, ValueLiteral = new TypeScriptStringLiteral(x)})),
                 };
             Unit.Body.Add(
-                new FlowTypeExportTypeStatement
+                new TypeScriptExportTypeStatement
                     {
                         Declaration = enumResult
                     });

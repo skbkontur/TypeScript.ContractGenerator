@@ -3,7 +3,7 @@ using System.Text;
 
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
-    public class JavaScriptEnumDefinition : FlowTypeType
+    public class JavaScriptEnumDefinition : TypeScriptType
     {
         public JavaScriptEnumDefinition(IEnumerable<JavaScriptEnumMember> members)
         {

@@ -30,15 +30,15 @@ public class SecondType
 Then generate TypeScript files with:
 
 ```csharp
-var generator = new FlowTypeGenerator(FlowTypeGenerationOptions.Default, CustomTypeGenerator.Null, new RootTypesProvider(typeof(SecondType)));
+var generator = new TypeScriptGenerator(TypeScriptGenerationOptions.Default, CustomTypeGenerator.Null, new RootTypesProvider(typeof(SecondType)));
 generator.GenerateFiles("./output", JavaScriptTypeChecker.TypeScript);
 ```
 
 By default, this will generate file with name `.ts` with following content:
 
 ```ts
-// TypeScriptContractGenerator's generated content
 // tslint:disable
+// TypeScriptContractGenerator's generated content
 
 export type SecondType = {
     stringArray?: null | string[];
@@ -50,7 +50,7 @@ export type FirstType = {
 };
 ```
 
-If you want generated files to have different name or to generate some typings differently, you should pass your own implementation of `ICustomTypeGenerator` to `FlowTypeGenerator`.
+If you want generated files to have different name or to generate some typings differently, you should pass your own implementation of `ICustomTypeGenerator` to `TypeScriptGenerator`.
 
 ## Generation options
 

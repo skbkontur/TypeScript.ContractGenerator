@@ -11,7 +11,7 @@ using SkbKontur.TypeScript.ContractGenerator.Tests.Types;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests
 {
-    public class EndToEndTests : FlowTypeTestBase
+    public class EndToEndTests : TypeScriptTestBase
     {
         public EndToEndTests(JavaScriptTypeChecker javaScriptTypeChecker)
             : base(javaScriptTypeChecker)

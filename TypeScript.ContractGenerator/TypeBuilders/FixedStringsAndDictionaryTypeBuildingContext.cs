@@ -7,7 +7,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class FixedStringsAndDictionaryTypeBuildingContext : TypeBuildingContext
     {
-        public FixedStringsAndDictionaryTypeBuildingContext(FlowTypeUnit unit, Type type)
+        public FixedStringsAndDictionaryTypeBuildingContext(TypeScriptUnit unit, Type type)
             : base(unit, type)
         {
         }
@@ -15,29 +15,29 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         public override void Initialize(ITypeGenerator typeGenerator)
         {
             var values = Type.GetEnumNames();
-            var enumResult = new FlowTypeTypeDeclaration
+            var enumResult = new TypeScriptTypeDeclaration
                 {
                     Name = Type.Name,
-                    Definition = new FlowTypeUnionType(values.Select(x => new FlowTypeStringLiteralType(x)).Cast<FlowTypeType>().ToArray()),
+                    Definition = new TypeScriptUnionType(values.Select(x => new TypeScriptStringLiteralType(x)).Cast<TypeScriptType>().ToArray()),
                 };
             Unit.Body.Add(
-                new FlowTypeExportTypeStatement
+                new TypeScriptExportTypeStatement
                     {
                         Declaration = enumResult
                     });
             Unit.Body.Add(
-                new FlowTypeExportStatement
+                new TypeScriptExportStatement
                     {
-                        Declaration = new FlowTypeConstantDefinition
+                        Declaration = new TypeScriptConstantDefinition
                             {
                                 Name = Type.Name + "s",
-                                Value = new FlowTypeObjectLiteral(values.Select(x => new FlowTypeObjectLiteralProperty
+                                Value = new TypeScriptObjectLiteral(values.Select(x => new TypeScriptObjectLiteralProperty
                                     {
-                                        Name = new FlowTypeStringLiteral {Value = x},
-                                        Value = new FlowTypeCastExpression(new FlowTypeStringLiteral
+                                        Name = new TypeScriptStringLiteral {Value = x},
+                                        Value = new TypeScriptCastExpression(new TypeScriptStringLiteral
                                             {
                                                 Value = x,
-                                            }, new FlowTypeTypeReference(Type.Name)),
+                                            }, new TypeScriptTypeReference(Type.Name)),
                                     }))
                             }
                     }
