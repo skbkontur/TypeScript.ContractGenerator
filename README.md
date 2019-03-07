@@ -37,8 +37,8 @@ generator.GenerateFiles("./output", JavaScriptTypeChecker.TypeScript);
 By default, this will generate file with name `.ts` with following content:
 
 ```ts
-// TypeScriptContractGenerator's generated content
 // tslint:disable
+// TypeScriptContractGenerator's generated content
 
 export type SecondType = {
     stringArray?: null | string[];
