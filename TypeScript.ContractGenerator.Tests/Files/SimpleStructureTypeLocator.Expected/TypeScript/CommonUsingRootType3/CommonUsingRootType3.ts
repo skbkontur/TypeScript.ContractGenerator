@@ -1,5 +1,5 @@
-// TypeScriptContractGenerator's generated content
 // tslint:disable
+// TypeScriptContractGenerator's generated content
 import { CommonType } from './../CommonType/CommonType';
 import { CommonUsingRootType } from './../CommonUsingRootType/CommonUsingRootType';
 

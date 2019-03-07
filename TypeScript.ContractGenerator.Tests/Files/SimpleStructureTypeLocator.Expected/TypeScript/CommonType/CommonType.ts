@@ -1,5 +1,5 @@
-// TypeScriptContractGenerator's generated content
 // tslint:disable
+// TypeScriptContractGenerator's generated content
 
 export type CommonType = {
     count: number;
