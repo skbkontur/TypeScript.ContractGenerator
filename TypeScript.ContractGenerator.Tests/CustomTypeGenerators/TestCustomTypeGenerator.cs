@@ -12,7 +12,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
             return "";
         }
 
-        public ITypeBuildingContext ResolveType(string initialUnitPath, Type type, IFlowTypeUnitFactory unitFactory)
+        public ITypeBuildingContext ResolveType(string initialUnitPath, Type type, ITypeScriptUnitFactory unitFactory)
         {
             if (CollectionTypeBuildingContext.Accept(type))
                 return new CollectionTypeBuildingContext(type);

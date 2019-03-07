@@ -21,9 +21,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public FlowTypeType ReferenceFrom(FlowTypeUnit targetUnit, ITypeGenerator typeGenerator)
+        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
-            return new FlowTypeTypeReference(type.Name);
+            return new TypeScriptTypeReference(type.Name);
         }
 
         private readonly Type type;

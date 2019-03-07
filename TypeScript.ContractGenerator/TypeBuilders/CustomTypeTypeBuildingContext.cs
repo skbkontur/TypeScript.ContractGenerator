@@ -13,7 +13,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class CustomTypeTypeBuildingContext : TypeBuildingContext
     {
-        public CustomTypeTypeBuildingContext([NotNull] FlowTypeUnit unit, [NotNull] Type type, [NotNull] FlowTypeGenerationOptions options)
+        public CustomTypeTypeBuildingContext([NotNull] TypeScriptUnit unit, [NotNull] Type type, [NotNull] TypeScriptGenerationOptions options)
             : base(unit, type)
         {
             this.options = options;
@@ -21,9 +21,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         public override bool IsDefinitionBuilt => Declaration.Definition != null;
 
-        private FlowTypeTypeDeclaration CreateComplexFlowTypeDeclarationWithoutDefinition(Type type)
+        private TypeScriptTypeDeclaration CreateComplexTypeScriptDeclarationWithoutDefinition(Type type)
         {
-            var result = new FlowTypeTypeDeclaration
+            var result = new TypeScriptTypeDeclaration
                 {
                     Name = type.IsGenericType ? new Regex("`.*$").Replace(type.GetGenericTypeDefinition().Name, "") : type.Name,
                     Definition = null,
@@ -38,24 +38,24 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             {
                 typeGenerator.ResolveType(Type.BaseType);
             }
-            Declaration = CreateComplexFlowTypeDeclarationWithoutDefinition(Type);
-            Unit.Body.Add(new FlowTypeExportTypeStatement {Declaration = Declaration});
+            Declaration = CreateComplexTypeScriptDeclarationWithoutDefinition(Type);
+            Unit.Body.Add(new TypeScriptExportTypeStatement {Declaration = Declaration});
         }
 
         public override void BuildDefinition(ITypeGenerator typeGenerator)
         {
-            Declaration.Definition = CreateComplexFlowTypeDefinition(typeGenerator);
+            Declaration.Definition = CreateComplexTypeScriptDefinition(typeGenerator);
         }
 
-        protected virtual FlowTypeTypeDefintion CreateComplexFlowTypeDefinition(ITypeGenerator typeGenerator)
+        protected virtual TypeScriptTypeDefintion CreateComplexTypeScriptDefinition(ITypeGenerator typeGenerator)
         {
-            var result = new FlowTypeTypeDefintion();
+            var result = new TypeScriptTypeDefintion();
             var properties = CreateTypeProperties(Type);
             foreach (var property in properties)
             {
-                var (isNullable, type) = FlowTypeGeneratorHelpers.ProcessNullable(property, property.PropertyType);
+                var (isNullable, type) = TypeScriptGeneratorHelpers.ProcessNullable(property, property.PropertyType);
 
-                result.Members.Add(new FlowTypeTypeMemberDeclaration
+                result.Members.Add(new TypeScriptTypeMemberDeclaration
                     {
                         Name = BuildPropertyName(property.Name),
                         Optional = isNullable && options.EnableOptionalProperties,
@@ -65,18 +65,18 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             return result;
         }
 
-        private FlowTypeType GetMaybeNullableComplexType(ITypeGenerator typeGenerator, Type type, PropertyInfo property, bool isNullable)
+        private TypeScriptType GetMaybeNullableComplexType(ITypeGenerator typeGenerator, Type type, PropertyInfo property, bool isNullable)
         {
             var propertyType = typeGenerator.BuildAndImportType(Unit, null, type);
 
             if (property.PropertyType.IsGenericParameter)
-                return new FlowTypeTypeReference(property.PropertyType.Name);
+                return new TypeScriptTypeReference(property.PropertyType.Name);
 
             if (isNullable && options.EnableExplicitNullability && !options.UseGlobalNullable)
-                return new FlowTypeOrNullType(propertyType);
+                return new TypeScriptOrNullType(propertyType);
 
             if (isNullable && options.EnableExplicitNullability && options.UseGlobalNullable)
-                return new FlowTypeNullableType(propertyType);
+                return new TypeScriptNullableType(propertyType);
 
             return propertyType;
         }
@@ -91,6 +91,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             return type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
         }
 
-        private readonly FlowTypeGenerationOptions options;
+        private readonly TypeScriptGenerationOptions options;
     }
 }

@@ -7,6 +7,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         bool IsDefinitionBuilt { get; }
         void Initialize(ITypeGenerator typeGenerator);
         void BuildDefinition(ITypeGenerator typeGenerator);
-        FlowTypeType ReferenceFrom(FlowTypeUnit targetUnit, ITypeGenerator typeGenerator);
+        TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator);
     }
 }

@@ -9,6 +9,6 @@ namespace SkbKontur.TypeScript.ContractGenerator
     public interface ITypeGenerator
     {
         ITypeBuildingContext ResolveType(Type type);
-        FlowTypeType BuildAndImportType(FlowTypeUnit targetUnit, ICustomAttributeProvider attributeProvider, Type type);
+        TypeScriptType BuildAndImportType(TypeScriptUnit targetUnit, ICustomAttributeProvider attributeProvider, Type type);
     }
 }

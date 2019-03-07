@@ -17,10 +17,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             return builtinTypes.ContainsKey(type);
         }
 
-        public FlowTypeType ReferenceFrom(FlowTypeUnit targetUnit, ITypeGenerator typeGenerator)
+        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
             if (builtinTypes.ContainsKey(type))
-                return new FlowTypeBuildInType(builtinTypes[type]);
+                return new TypeScriptBuildInType(builtinTypes[type]);
             throw new ArgumentOutOfRangeException();
         }
 

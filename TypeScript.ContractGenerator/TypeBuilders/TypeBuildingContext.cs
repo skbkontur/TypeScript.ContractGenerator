@@ -6,7 +6,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class TypeBuildingContext : ITypeBuildingContext
     {
-        protected TypeBuildingContext(FlowTypeUnit unit, Type type)
+        protected TypeBuildingContext(TypeScriptUnit unit, Type type)
         {
             Unit = unit;
             Type = type;
@@ -14,12 +14,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         public virtual void Initialize(ITypeGenerator typeGenerator)
         {
-            Unit.Body.Add(new FlowTypeExportTypeStatement {Declaration = Declaration});
+            Unit.Body.Add(new TypeScriptExportTypeStatement {Declaration = Declaration});
         }
 
-        protected FlowTypeTypeDeclaration Declaration { get; set; }
+        protected TypeScriptTypeDeclaration Declaration { get; set; }
 
-        protected FlowTypeUnit Unit { get; }
+        protected TypeScriptUnit Unit { get; }
 
         protected Type Type { get; }
 
@@ -29,7 +29,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public virtual FlowTypeType ReferenceFrom(FlowTypeUnit targetUnit, ITypeGenerator typeGenerator)
+        public virtual TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
             return targetUnit.AddTypeImport(Type, Declaration, Unit);
         }

@@ -4,7 +4,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 {
     internal static class FilesGenerator
     {
-        public static void GenerateFiles(string targetDir, DefaultFlowTypeGeneratorOutput output, FilesGenerationContext filesGenerationContext)
+        public static void GenerateFiles(string targetDir, DefaultTypeScriptGeneratorOutput output, FilesGenerationContext filesGenerationContext)
         {
             DeleteFiles(targetDir, $"*.{filesGenerationContext.FileExtension}");
             Directory.CreateDirectory(targetDir);
@@ -19,7 +19,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             }
         }
 
-        private static string GetUnitTargetFileName(string targetDir, FlowTypeUnit unit, string fileExtension)
+        private static string GetUnitTargetFileName(string targetDir, TypeScriptUnit unit, string fileExtension)
         {
             var targetFileName = Path.Combine(targetDir, $"{unit.Path}.{fileExtension}");
             return targetFileName;

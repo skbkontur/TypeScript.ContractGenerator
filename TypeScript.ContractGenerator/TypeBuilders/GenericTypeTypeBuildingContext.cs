@@ -23,23 +23,23 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public FlowTypeType ReferenceFrom(FlowTypeUnit targetUnit, ITypeGenerator typeGenerator)
+        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
             var typeReference = typeGenerator.ResolveType(type.GetGenericTypeDefinition()).ReferenceFrom(targetUnit, typeGenerator);
-            var arguments = new List<FlowTypeType>();
+            var arguments = new List<TypeScriptType>();
             foreach (var argument in type.GetGenericArguments())
             {
                 arguments.Add(typeGenerator.ResolveType(argument).ReferenceFrom(targetUnit, typeGenerator));
             }
-            return new FlowTypeGenericTypeReference(typeReference as FlowTypeTypeReference, arguments.ToArray());
+            return new TypeScriptGenericTypeReference(typeReference as TypeScriptTypeReference, arguments.ToArray());
         }
 
         private readonly Type type;
     }
 
-    public class FlowTypeGenericTypeReference : FlowTypeType
+    public class TypeScriptGenericTypeReference : TypeScriptType
     {
-        public FlowTypeGenericTypeReference(FlowTypeTypeReference genericTypeReference, FlowTypeType[] genericArguments)
+        public TypeScriptGenericTypeReference(TypeScriptTypeReference genericTypeReference, TypeScriptType[] genericArguments)
         {
             this.genericTypeReference = genericTypeReference;
             this.genericArguments = genericArguments;
@@ -50,7 +50,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             return $"{genericTypeReference.GenerateCode(context)}<{string.Join(", ", genericArguments.Select(x => x.GenerateCode(context)))}>";
         }
 
-        private readonly FlowTypeTypeReference genericTypeReference;
-        private readonly FlowTypeType[] genericArguments;
+        private readonly TypeScriptTypeReference genericTypeReference;
+        private readonly TypeScriptType[] genericArguments;
     }
 }
