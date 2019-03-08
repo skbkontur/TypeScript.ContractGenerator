@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 using JetBrains.Annotations;
@@ -35,7 +34,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         public override void Initialize(ITypeGenerator typeGenerator)
         {
-            if (Type.BaseType != typeof(object) && Type.BaseType != typeof(ValueType) && Type.BaseType != typeof(MarshalByRefObject) && Type.BaseType != null)
+            if(Type.BaseType != typeof(object) && Type.BaseType != typeof(ValueType) && Type.BaseType != typeof(MarshalByRefObject) && Type.BaseType != null)
             {
                 typeGenerator.ResolveType(Type.BaseType);
             }
@@ -52,7 +51,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
             var result = new TypeScriptTypeDefintion();
             var properties = CreateTypeProperties(Type);
-            foreach (var property in properties)
+            foreach(var property in properties)
             {
                 var (isNullable, type) = TypeScriptGeneratorHelpers.ProcessNullable(property, property.PropertyType);
 
@@ -80,7 +79,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         private TypeScriptType GetConstEnumType(ITypeGenerator typeGenerator, PropertyInfo property, string value)
         {
-            switch(options.EnumGenerationMode) {
+            switch(options.EnumGenerationMode)
+            {
             case EnumGenerationMode.FixedStringsAndDictionary:
                 return new TypeScriptStringLiteralType(value);
             case EnumGenerationMode.TypeScriptEnum:
@@ -88,7 +88,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             default:
                 throw new ArgumentOutOfRangeException();
             }
-            
         }
 
         private bool TryGetGetOnlyEnumPropertyValue(PropertyInfo property, out string value)
@@ -106,13 +105,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
             var propertyType = typeGenerator.BuildAndImportType(Unit, null, type);
 
-            if (property.PropertyType.IsGenericParameter)
+            if(property.PropertyType.IsGenericParameter)
                 return new TypeScriptTypeReference(property.PropertyType.Name);
 
-            if (isNullable && options.EnableExplicitNullability && !options.UseGlobalNullable)
+            if(isNullable && options.EnableExplicitNullability && !options.UseGlobalNullable)
                 return new TypeScriptOrNullType(propertyType);
 
-            if (isNullable && options.EnableExplicitNullability && options.UseGlobalNullable)
+            if(isNullable && options.EnableExplicitNullability && options.UseGlobalNullable)
                 return new TypeScriptNullableType(propertyType);
 
             return propertyType;
