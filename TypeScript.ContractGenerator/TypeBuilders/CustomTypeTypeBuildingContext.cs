@@ -56,14 +56,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             {
                 var (isNullable, type) = TypeScriptGeneratorHelpers.ProcessNullable(property, property.PropertyType);
 
-                if(property.PropertyType.IsEnum && !property.GetMethod.GetCustomAttributes<CompilerGeneratedAttribute>().Any())
+                if(TryGetGetOnlyEnumPropertyValue(property, out var value))
                 {
-                    var value = property.GetMethod.Invoke(Activator.CreateInstance(Type), null);
                     result.Members.Add(new TypeScriptTypeMemberDeclaration
                         {
                             Name = BuildPropertyName(property.Name),
                             Optional = isNullable && options.EnableOptionalProperties,
-                            Type = new TypeScriptStringLiteralType(value.ToString()),
+                            Type = new TypeScriptStringLiteralType(value),
                         });
                 }
                 else
@@ -77,6 +76,17 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                 }
             }
             return result;
+        }
+
+        private bool TryGetGetOnlyEnumPropertyValue(PropertyInfo property, out string value)
+        {
+            if(!property.PropertyType.IsEnum || property.CanWrite || Type.GetConstructors().All(x => x.GetParameters().Length > 0))
+            {
+                value = null;
+                return false;
+            }
+            value = property.GetMethod.Invoke(Activator.CreateInstance(Type), null).ToString();
+            return true;
         }
 
         private TypeScriptType GetMaybeNullableComplexType(ITypeGenerator typeGenerator, Type type, PropertyInfo property, bool isNullable)
