@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
       <IsPackable>false</IsPackable>
@@ -55,6 +55,10 @@
       <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\complex-types.expected.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\enum-types.expected.js" />
       <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\enum-types.expected.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\enum-types-with-const-getter-fixed-strings.expected.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\enum-types-with-const-getter-fixed-strings.expected.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\enum-types-with-const-getter-typescript-enum.expected.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\enum-types-with-const-getter-typescript-enum.expected.js" />
       <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\generic-root.expected.js" />
       <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\generic-root.expected.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\generic-types.expected.js" />

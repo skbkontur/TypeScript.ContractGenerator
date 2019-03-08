@@ -7,6 +7,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
         public ExplicitEnum ExplicitEnum { get; set; }
     }
 
+    public class EnumWithConstGetterContainingRootType
+    {
+        public DefaultEnum DefaultEnum => DefaultEnum.A;
+        public ExplicitEnum ExplicitEnum => ExplicitEnum.C;
+    }
+
     public enum DefaultEnum
     {
         A,

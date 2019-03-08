@@ -34,7 +34,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         public override void Initialize(ITypeGenerator typeGenerator)
         {
-            if (Type.BaseType != typeof(object) && Type.BaseType != typeof(ValueType) && Type.BaseType != typeof(MarshalByRefObject) && Type.BaseType != null)
+            if(Type.BaseType != typeof(object) && Type.BaseType != typeof(ValueType) && Type.BaseType != typeof(MarshalByRefObject) && Type.BaseType != null)
             {
                 typeGenerator.ResolveType(Type.BaseType);
             }
@@ -51,31 +51,67 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
             var result = new TypeScriptTypeDefintion();
             var properties = CreateTypeProperties(Type);
-            foreach (var property in properties)
+            foreach(var property in properties)
             {
                 var (isNullable, type) = TypeScriptGeneratorHelpers.ProcessNullable(property, property.PropertyType);
 
-                result.Members.Add(new TypeScriptTypeMemberDeclaration
-                    {
-                        Name = BuildPropertyName(property.Name),
-                        Optional = isNullable && options.EnableOptionalProperties,
-                        Type = GetMaybeNullableComplexType(typeGenerator, type, property, isNullable),
-                    });
+                if(TryGetGetOnlyEnumPropertyValue(property, out var value))
+                {
+                    result.Members.Add(new TypeScriptTypeMemberDeclaration
+                        {
+                            Name = BuildPropertyName(property.Name),
+                            Optional = isNullable && options.EnableOptionalProperties,
+                            Type = GetConstEnumType(typeGenerator, property, value),
+                        });
+                }
+                else
+                {
+                    result.Members.Add(new TypeScriptTypeMemberDeclaration
+                        {
+                            Name = BuildPropertyName(property.Name),
+                            Optional = isNullable && options.EnableOptionalProperties,
+                            Type = GetMaybeNullableComplexType(typeGenerator, type, property, isNullable),
+                        });
+                }
             }
             return result;
+        }
+
+        private TypeScriptType GetConstEnumType(ITypeGenerator typeGenerator, PropertyInfo property, string value)
+        {
+            switch(options.EnumGenerationMode)
+            {
+            case EnumGenerationMode.FixedStringsAndDictionary:
+                return new TypeScriptStringLiteralType(value);
+            case EnumGenerationMode.TypeScriptEnum:
+                return new TypeScriptEnumValueType(typeGenerator.BuildAndImportType(Unit, property, property.PropertyType), value);
+            default:
+                throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private bool TryGetGetOnlyEnumPropertyValue(PropertyInfo property, out string value)
+        {
+            if(!property.PropertyType.IsEnum || property.CanWrite || Type.GetConstructors().All(x => x.GetParameters().Length > 0))
+            {
+                value = null;
+                return false;
+            }
+            value = property.GetMethod.Invoke(Activator.CreateInstance(Type), null).ToString();
+            return true;
         }
 
         private TypeScriptType GetMaybeNullableComplexType(ITypeGenerator typeGenerator, Type type, PropertyInfo property, bool isNullable)
         {
             var propertyType = typeGenerator.BuildAndImportType(Unit, null, type);
 
-            if (property.PropertyType.IsGenericParameter)
+            if(property.PropertyType.IsGenericParameter)
                 return new TypeScriptTypeReference(property.PropertyType.Name);
 
-            if (isNullable && options.EnableExplicitNullability && !options.UseGlobalNullable)
+            if(isNullable && options.EnableExplicitNullability && !options.UseGlobalNullable)
                 return new TypeScriptOrNullType(propertyType);
 
-            if (isNullable && options.EnableExplicitNullability && options.UseGlobalNullable)
+            if(isNullable && options.EnableExplicitNullability && options.UseGlobalNullable)
                 return new TypeScriptNullableType(propertyType);
 
             return propertyType;

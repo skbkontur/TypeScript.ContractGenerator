@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.4 - 2019.03.08
+- `//tslint:disable` is placed before codegen marker
+- Global rename: `FlowType => TypeScript`
+- Add support for enum properties with user-defined getter (see `GenerateEnumWithConstGetterTest` for details)
+
 ## v1.3 - 2019.02.22
 - Correctly generate built-in types
 - Add support for `List<T>` and `Dictionary<TKey, TValue>`
