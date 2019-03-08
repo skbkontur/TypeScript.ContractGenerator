@@ -3,8 +3,6 @@ export type EnumContainingRootType = {
     defaultEnum: DefaultEnum;
     nullableEnum?: null | DefaultEnum;
     explicitEnum: ExplicitEnum;
-    defaultEnumWithConstGetter: 'A';
-    explicitEnumWithConstGetter: 'C';
 };
 export type DefaultEnum = 'A' | 'B';
 export const DefaultEnums = {

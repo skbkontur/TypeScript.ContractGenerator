@@ -34,6 +34,15 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             generatedCode.Should().Be(expectedCode);
         }
 
+        [TestCase(EnumGenerationMode.FixedStringsAndDictionary, "enum-types-with-const-getter-fixed-strings.expected")]
+        [TestCase(EnumGenerationMode.TypeScriptEnum, "enum-types-with-const-getter-typescript-enum.expected")]
+        public void GenerateEnumWithConstGetterTest(EnumGenerationMode enumGenerationMode, string expectedFileName)
+        {
+            var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnumGenerationMode = enumGenerationMode}, CustomTypeGenerator.Null, typeof(EnumWithConstGetterContainingRootType)).Single().Replace("\r\n", "\n");
+            var expectedCode = GetExpectedCode($"SimpleGenerator/{expectedFileName}");
+            generatedCode.Should().Be(expectedCode);
+        }
+
         [TestCase(typeof(FlatTypeLocator))]
         [TestCase(typeof(SimpleStructureTypeLocator))]
         public void GenerateFilesTest(Type type)

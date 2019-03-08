@@ -62,7 +62,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                         {
                             Name = BuildPropertyName(property.Name),
                             Optional = isNullable && options.EnableOptionalProperties,
-                            Type = new TypeScriptStringLiteralType(value),
+                            Type = GetConstEnumType(typeGenerator, property, value),
                         });
                 }
                 else
@@ -76,6 +76,19 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                 }
             }
             return result;
+        }
+
+        private TypeScriptType GetConstEnumType(ITypeGenerator typeGenerator, PropertyInfo property, string value)
+        {
+            switch(options.EnumGenerationMode) {
+            case EnumGenerationMode.FixedStringsAndDictionary:
+                return new TypeScriptStringLiteralType(value);
+            case EnumGenerationMode.TypeScriptEnum:
+                return new TypeScriptEnumValueType(typeGenerator.BuildAndImportType(Unit, property, property.PropertyType), value);
+            default:
+                throw new ArgumentOutOfRangeException();
+            }
+            
         }
 
         private bool TryGetGetOnlyEnumPropertyValue(PropertyInfo property, out string value)
