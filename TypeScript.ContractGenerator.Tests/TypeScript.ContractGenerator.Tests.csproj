@@ -21,6 +21,8 @@
     <ItemGroup>
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\array-types.expected.js" />
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\array-types.expected.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\custom-property-resolver.expected.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\custom-property-resolver.expected.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\nullable-types.expected.js" />
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\nullable-types.expected.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\simple-types.expected.js" />

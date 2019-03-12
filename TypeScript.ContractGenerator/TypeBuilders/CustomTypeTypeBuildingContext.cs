@@ -14,9 +14,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class CustomTypeTypeBuildingContext : TypeBuildingContext
     {
-        public CustomTypeTypeBuildingContext([NotNull] TypeScriptUnit unit, [NotNull] Type type, [NotNull] TypeScriptGenerationOptions options)
+        public CustomTypeTypeBuildingContext([NotNull] TypeScriptUnit unit, [NotNull] Type type, [NotNull] ICustomTypeGenerator customTypeGenerator, [NotNull] TypeScriptGenerationOptions options)
             : base(unit, type)
         {
+            this.customTypeGenerator = customTypeGenerator;
             this.options = options;
         }
 
@@ -54,6 +55,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             var properties = CreateTypeProperties(Type);
             foreach (var property in properties)
             {
+                var customMemberDeclaration = customTypeGenerator.ResolveProperty(typeGenerator, Type, property);
+                if (customMemberDeclaration != null)
+                {
+                    result.Members.Add(customMemberDeclaration);
+                    continue;
+                }
+
                 if (property.GetCustomAttributes<ContractGeneratorIgnoreAttribute>().Any())
                     continue;
 
@@ -133,6 +141,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             return type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
         }
 
+        private readonly ICustomTypeGenerator customTypeGenerator;
         private readonly TypeScriptGenerationOptions options;
     }
 }

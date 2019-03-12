@@ -56,12 +56,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             CheckDirectoriesEquivalence($"Files/{type.Name}.Expected", $"{type.Name}.Actual");
         }
 
-        [TestCase(typeof(SimpleRootType), "simple-types.expected")]
-        [TestCase(typeof(SimpleNullableRootType), "nullable-types.expected")]
-        [TestCase(typeof(ArrayRootType), "array-types.expected")]
-        public void CustomGeneratorTest(Type rootType, string expectedFileName)
+        [TestCase(typeof(SimpleRootType), typeof(TestCustomTypeGenerator), "simple-types.expected")]
+        [TestCase(typeof(SimpleNullableRootType), typeof(TestCustomTypeGenerator), "nullable-types.expected")]
+        [TestCase(typeof(ArrayRootType), typeof(TestCustomTypeGenerator), "array-types.expected")]
+        [TestCase(typeof(EnumWithConstGetterContainingRootType), typeof(TestCustomPropertyResolver), "custom-property-resolver.expected")]
+        public void CustomGeneratorTest(Type rootType, Type type, string expectedFileName)
         {
-            var generatedCode = GenerateCode(new TestCustomTypeGenerator(), rootType).Single().Replace("\r\n", "\n");
+            var generatedCode = GenerateCode((ICustomTypeGenerator)Activator.CreateInstance(type), rootType).Single().Replace("\r\n", "\n");
             var expectedCode = GetExpectedCode($"CustomGenerator/{expectedFileName}");
             generatedCode.Should().Be(expectedCode);
         }
