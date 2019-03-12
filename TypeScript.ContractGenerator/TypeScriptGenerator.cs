@@ -27,8 +27,11 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         public TypeScriptUnit[] Generate()
         {
+            ValidateOptions(Options);
+
             foreach (var type in rootTypes)
                 RequestTypeBuild(type);
+
             while (typeDeclarations.Values.Any(x => !x.IsDefinitionBuilt))
             {
                 foreach (var currentType in typeDeclarations.ToArray())
@@ -42,7 +45,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         public void GenerateFiles(string targetPath, JavaScriptTypeChecker javaScriptTypeChecker)
         {
-            ValidateOptions(javaScriptTypeChecker, Options);
+            ValidateOptions(Options, javaScriptTypeChecker);
 
             foreach (var type in rootTypes)
                 RequestTypeBuild(type);
@@ -58,10 +61,14 @@ namespace SkbKontur.TypeScript.ContractGenerator
         }
 
         [SuppressMessage("ReSharper", "ParameterOnlyUsedForPreconditionCheck.Local")]
-        private static void ValidateOptions(JavaScriptTypeChecker javaScriptTypeChecker, TypeScriptGenerationOptions flowTypeGenerationOptions)
+        private static void ValidateOptions([NotNull] TypeScriptGenerationOptions options, JavaScriptTypeChecker? javaScriptTypeChecker = null)
         {
-            if (javaScriptTypeChecker == JavaScriptTypeChecker.Flow && flowTypeGenerationOptions.EnumGenerationMode == EnumGenerationMode.TypeScriptEnum)
+            if (javaScriptTypeChecker == JavaScriptTypeChecker.Flow && options.EnumGenerationMode == EnumGenerationMode.TypeScriptEnum)
                 throw new ArgumentException("Flow is not compatible with TypeScript enums");
+
+            const string enumName = "Enum";
+            if (options.Pluralize == null || string.IsNullOrEmpty(options.Pluralize(enumName)) || enumName == options.Pluralize(enumName))
+                throw new ArgumentException("Invalid Pluralize function: Pluralize cannot return null, empty string or unchanged argument");
         }
 
         private void RequestTypeBuild(Type type)

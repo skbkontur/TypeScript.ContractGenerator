@@ -16,8 +16,8 @@ namespace SkbKontur.TypeScript.ContractGenerator
         public bool UseGlobalNullable { get; set; }
 
         [NotNull]
-        public Func<string, string> Pluralize { get; set; } = x => x + "s"; 
-        
+        public Func<string, string> Pluralize { get; set; } = x => x + "s";
+
         [NotNull]
         public static TypeScriptGenerationOptions Default { get; } = new TypeScriptGenerationOptions();
     }
