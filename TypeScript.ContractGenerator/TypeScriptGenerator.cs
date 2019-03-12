@@ -18,7 +18,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
         [SuppressMessage("ReSharper", "ConstantConditionalAccessQualifier")]
         public TypeScriptGenerator([NotNull] TypeScriptGenerationOptions options, [NotNull] ICustomTypeGenerator customTypeGenerator, [NotNull] IRootTypesProvider rootTypesProvider)
         {
-            this.options = options ?? throw new ArgumentNullException(nameof(options));
+            Options = options ?? throw new ArgumentNullException(nameof(options));
             this.customTypeGenerator = customTypeGenerator ?? throw new ArgumentNullException(nameof(customTypeGenerator));
             rootTypes = rootTypesProvider?.GetRootTypes() ?? throw new ArgumentNullException(nameof(rootTypesProvider));
             typeUnitFactory = new DefaultTypeScriptGeneratorOutput();
@@ -42,7 +42,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         public void GenerateFiles(string targetPath, JavaScriptTypeChecker javaScriptTypeChecker)
         {
-            ValidateOptions(javaScriptTypeChecker, options);
+            ValidateOptions(javaScriptTypeChecker, Options);
 
             foreach (var type in rootTypes)
                 RequestTypeBuild(type);
@@ -69,7 +69,8 @@ namespace SkbKontur.TypeScript.ContractGenerator
             ResolveType(type);
         }
 
-        public ITypeBuildingContext ResolveType(Type type)
+        [NotNull]
+        public ITypeBuildingContext ResolveType([NotNull] Type type)
         {
             if (typeDeclarations.ContainsKey(type))
             {
@@ -96,7 +97,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             if (type.IsEnum)
             {
                 var targetUnit = typeUnitFactory.GetOrCreateTypeUnit(typeLocation);
-                return options.EnumGenerationMode == EnumGenerationMode.FixedStringsAndDictionary
+                return Options.EnumGenerationMode == EnumGenerationMode.FixedStringsAndDictionary
                            ? (ITypeBuildingContext)new FixedStringsAndDictionaryTypeBuildingContext(targetUnit, type)
                            : new TypeScriptEnumTypeBuildingContext(targetUnit, type);
             }
@@ -104,8 +105,8 @@ namespace SkbKontur.TypeScript.ContractGenerator
             if (type.IsGenericType && !type.IsGenericTypeDefinition && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
                 var underlyingType = type.GenericTypeArguments.Single();
-                if (options.EnableExplicitNullability)
-                    return new NullableTypeBuildingContext(underlyingType, options.UseGlobalNullable);
+                if (Options.EnableExplicitNullability)
+                    return new NullableTypeBuildingContext(underlyingType, Options.UseGlobalNullable);
                 return GetTypeBuildingContext(typeLocation, underlyingType);
             }
 
@@ -116,16 +117,16 @@ namespace SkbKontur.TypeScript.ContractGenerator
                 return new GenericParameterTypeBuildingContext(type);
 
             if (type.IsGenericTypeDefinition)
-                return new CustomTypeTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), type, options);
+                return new CustomTypeTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), type, Options);
 
-            return new CustomTypeTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), type, options);
+            return new CustomTypeTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), type, Options);
         }
 
         public TypeScriptType BuildAndImportType(TypeScriptUnit targetUnit, ICustomAttributeProvider attributeProvider, Type type)
         {
             var (isNullable, resultType) = TypeScriptGeneratorHelpers.ProcessNullable(attributeProvider, type);
             var result = GetTypeScriptType(targetUnit, resultType);
-            if (isNullable && options.EnableExplicitNullability)
+            if (isNullable && Options.EnableExplicitNullability)
                 result = new TypeScriptNullableType(result);
             return result;
         }
@@ -140,7 +141,9 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return context.ReferenceFrom(targetUnit, this);
         }
 
-        private readonly TypeScriptGenerationOptions options;
+        [NotNull]
+        public TypeScriptGenerationOptions Options { get; }
+
         private readonly Type[] rootTypes;
         private readonly DefaultTypeScriptGeneratorOutput typeUnitFactory;
         private readonly ICustomTypeGenerator customTypeGenerator;

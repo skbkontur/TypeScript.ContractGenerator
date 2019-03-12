@@ -30,7 +30,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                     {
                         Declaration = new TypeScriptConstantDefinition
                             {
-                                Name = Type.Name + "s",
+                                Name = typeGenerator.Options.Pluralize(Type.Name),
                                 Value = new TypeScriptObjectLiteral(values.Select(x => new TypeScriptObjectLiteralProperty
                                     {
                                         Name = new TypeScriptStringLiteral {Value = x},
