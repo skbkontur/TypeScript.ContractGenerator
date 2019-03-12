@@ -49,6 +49,10 @@
       <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\optional-properties-disabled.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\optional-properties-enabled.js" />
       <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\optional-properties-enabled.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\pluralize-custom.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\pluralize-custom.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\pluralize-default.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\pluralize-default.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\array-types.expected.js" />
       <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\array-types.expected.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\complex-types.expected.js" />

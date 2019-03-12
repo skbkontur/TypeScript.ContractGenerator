@@ -1,3 +1,5 @@
+using System;
+
 using JetBrains.Annotations;
 
 namespace SkbKontur.TypeScript.ContractGenerator
@@ -12,7 +14,10 @@ namespace SkbKontur.TypeScript.ContractGenerator
         public bool EnableExplicitNullability { get; set; } = true;
 
         public bool UseGlobalNullable { get; set; }
-        
+
+        [NotNull]
+        public Func<string, string> Pluralize { get; set; } = x => x + "s";
+
         [NotNull]
         public static TypeScriptGenerationOptions Default { get; } = new TypeScriptGenerationOptions();
     }

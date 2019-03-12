@@ -51,5 +51,18 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             var expectedCode = GetExpectedCode($"Options.Expected/{expectedFileName}");
             generatedCode.Should().Be(expectedCode);
         }
+
+        [TestCase("pluralize-default", null)]
+        [TestCase("pluralize-custom", "Items")]
+        public void PluralizeTest(string expectedFileName, string pluralizeSuffix)
+        {
+            var options = TypeScriptGenerationOptions.Default;
+            if (!string.IsNullOrEmpty(pluralizeSuffix))
+                options.Pluralize = s => s + pluralizeSuffix;
+            
+            var generatedCode = GenerateCode(options, CustomTypeGenerator.Null, typeof(EnumContainingRootType)).Single().Replace("\r\n", "\n");
+            var expectedCode = GetExpectedCode($"Options.Expected/{expectedFileName}");
+            generatedCode.Should().Be(expectedCode);
+        }
     }
 }
