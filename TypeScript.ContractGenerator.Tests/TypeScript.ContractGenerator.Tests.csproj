@@ -53,6 +53,10 @@
       <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\pluralize-custom.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\pluralize-default.js" />
       <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\pluralize-default.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\annotated-enum-types-with-const-getter-fixed-strings.expected.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\annotated-enum-types-with-const-getter-fixed-strings.expected.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\annotated-enum-types-with-const-getter-typescript-enum.expected.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\annotated-enum-types-with-const-getter-typescript-enum.expected.js" />
       <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\array-types.expected.js" />
       <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\array-types.expected.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\complex-types.expected.js" />
@@ -67,6 +71,10 @@
       <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\generic-root.expected.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\generic-types.expected.js" />
       <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\generic-types.expected.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\ignore-type.expected.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\ignore-type.expected.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\non-default-constructor.expected.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\non-default-constructor.expected.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\notnull-types.expected.js" />
       <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\notnull-types.expected.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\nullable-types.expected.js" />

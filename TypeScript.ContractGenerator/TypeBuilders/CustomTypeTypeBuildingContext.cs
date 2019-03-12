@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 
 using JetBrains.Annotations;
 
+using SkbKontur.TypeScript.ContractGenerator.Attributes;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
 
@@ -34,7 +35,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         public override void Initialize(ITypeGenerator typeGenerator)
         {
-            if(Type.BaseType != typeof(object) && Type.BaseType != typeof(ValueType) && Type.BaseType != typeof(MarshalByRefObject) && Type.BaseType != null)
+            if (Type.BaseType != typeof(object) && Type.BaseType != typeof(ValueType) && Type.BaseType != typeof(MarshalByRefObject) && Type.BaseType != null)
             {
                 typeGenerator.ResolveType(Type.BaseType);
             }
@@ -51,11 +52,14 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
             var result = new TypeScriptTypeDefintion();
             var properties = CreateTypeProperties(Type);
-            foreach(var property in properties)
+            foreach (var property in properties)
             {
+                if (property.GetCustomAttributes<ContractGeneratorIgnoreAttribute>().Any())
+                    continue;
+
                 var (isNullable, type) = TypeScriptGeneratorHelpers.ProcessNullable(property, property.PropertyType);
 
-                if(TryGetGetOnlyEnumPropertyValue(property, out var value))
+                if (TryGetGetOnlyEnumPropertyValue(property, out var value))
                 {
                     result.Members.Add(new TypeScriptTypeMemberDeclaration
                         {
@@ -79,7 +83,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         private TypeScriptType GetConstEnumType(ITypeGenerator typeGenerator, PropertyInfo property, string value)
         {
-            switch(options.EnumGenerationMode)
+            switch (options.EnumGenerationMode)
             {
             case EnumGenerationMode.FixedStringsAndDictionary:
                 return new TypeScriptStringLiteralType(value);
@@ -92,7 +96,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         private bool TryGetGetOnlyEnumPropertyValue(PropertyInfo property, out string value)
         {
-            if(!property.PropertyType.IsEnum || property.CanWrite || Type.GetConstructors().All(x => x.GetParameters().Length > 0))
+            var hasDefaultConstructor = Type.GetConstructors().Any(x => x.GetParameters().Length == 0);
+            var hasInferAttribute = property.GetCustomAttributes<ContractGeneratorInferValueAttribute>(true).Any();
+            if (!property.PropertyType.IsEnum || property.CanWrite || !hasDefaultConstructor || !hasInferAttribute)
             {
                 value = null;
                 return false;
@@ -105,13 +111,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
             var propertyType = typeGenerator.BuildAndImportType(Unit, null, type);
 
-            if(property.PropertyType.IsGenericParameter)
+            if (property.PropertyType.IsGenericParameter)
                 return new TypeScriptTypeReference(property.PropertyType.Name);
 
-            if(isNullable && options.EnableExplicitNullability && !options.UseGlobalNullable)
+            if (isNullable && options.EnableExplicitNullability && !options.UseGlobalNullable)
                 return new TypeScriptOrNullType(propertyType);
 
-            if(isNullable && options.EnableExplicitNullability && options.UseGlobalNullable)
+            if (isNullable && options.EnableExplicitNullability && options.UseGlobalNullable)
                 return new TypeScriptNullableType(propertyType);
 
             return propertyType;
