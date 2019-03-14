@@ -1,6 +1,8 @@
 using System;
 using System.Reflection;
 
+using JetBrains.Annotations;
+
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
 
@@ -8,17 +10,20 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 {
     internal class NullCustomTypeGenerator : ICustomTypeGenerator
     {
-        public string GetTypeLocation(Type type)
+        [NotNull]
+        public string GetTypeLocation([NotNull] Type type)
         {
             return "";
         }
 
-        public ITypeBuildingContext ResolveType(string initialUnitPath, Type type, ITypeScriptUnitFactory unitFactory)
+        [CanBeNull]
+        public ITypeBuildingContext ResolveType([NotNull] string initialUnitPath, [NotNull] Type type, [NotNull] ITypeScriptUnitFactory unitFactory)
         {
             return null;
         }
 
-        public TypeScriptTypeMemberDeclaration ResolveProperty(ITypeGenerator typeGenerator, Type type, PropertyInfo property)
+        [CanBeNull]
+        public TypeScriptTypeMemberDeclaration ResolveProperty([NotNull] ITypeGenerator typeGenerator, [NotNull] Type type, [NotNull] PropertyInfo property)
         {
             return null;
         }
