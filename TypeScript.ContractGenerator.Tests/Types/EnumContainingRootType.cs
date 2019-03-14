@@ -1,3 +1,5 @@
+using SkbKontur.TypeScript.ContractGenerator.Attributes;
+
 namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
 {
     public class EnumContainingRootType
@@ -10,6 +12,15 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
     public class EnumWithConstGetterContainingRootType
     {
         public DefaultEnum DefaultEnum => DefaultEnum.A;
+        public ExplicitEnum ExplicitEnum => ExplicitEnum.C;
+    }
+
+    public class AnnotatedEnumWithConstGetterContainingRootType
+    {
+        [ContractGeneratorInferValue]
+        public DefaultEnum DefaultEnum => DefaultEnum.A;
+
+        [ContractGeneratorInferValue]
         public ExplicitEnum ExplicitEnum => ExplicitEnum.C;
     }
 

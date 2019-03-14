@@ -9,7 +9,7 @@ using SkbKontur.TypeScript.ContractGenerator.Tests.Types;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests
 {
-    public class OptionsTests : TypeScriptTestBase
+    public class OptionsTests : AllTypeCheckersTestBase
     {
         public OptionsTests(JavaScriptTypeChecker javaScriptTypeChecker)
             : base(javaScriptTypeChecker)
@@ -17,11 +17,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         }
 
         [TestCase(EnumGenerationMode.FixedStringsAndDictionary, "enum-generation-fixed-strings")]
-        [TestCase(EnumGenerationMode.TypeScriptEnum, "enum-generation-typescript-enum")]
         public void EnumGenerationModeTest(EnumGenerationMode enumGenerationMode, string expectedFileName)
         {
             var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnumGenerationMode = enumGenerationMode}, CustomTypeGenerator.Null, typeof(DefaultEnum)).Single().Replace("\r\n", "\n");
-            var expectedCode = GetExpectedCode($"Options.Expected/{expectedFileName}");
+            var expectedCode = GetExpectedCode($"Options/{expectedFileName}");
             generatedCode.Should().Be(expectedCode);
         }
 
@@ -30,7 +29,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         public void OptionalPropertiesTest(bool optionalPropertiesEnabled, string expectedFileName)
         {
             var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnableOptionalProperties = optionalPropertiesEnabled}, CustomTypeGenerator.Null, typeof(SingleNullablePropertyType)).Single().Replace("\r\n", "\n");
-            var expectedCode = GetExpectedCode($"Options.Expected/{expectedFileName}");
+            var expectedCode = GetExpectedCode($"Options/{expectedFileName}");
             generatedCode.Should().Be(expectedCode);
         }
 
@@ -39,7 +38,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         public void ExplicitNullabilityTest(bool explicitNullabilityEnabled, string expectedFileName)
         {
             var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnableExplicitNullability = explicitNullabilityEnabled}, CustomTypeGenerator.Null, typeof(ExplicitNullabilityRootType)).Single().Replace("\r\n", "\n");
-            var expectedCode = GetExpectedCode($"Options.Expected/{expectedFileName}");
+            var expectedCode = GetExpectedCode($"Options/{expectedFileName}");
             generatedCode.Should().Be(expectedCode);
         }
 
@@ -48,7 +47,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         public void GlobalNullableTest(bool useGlobalNullable, string expectedFileName)
         {
             var generatedCode = GenerateCode(new TypeScriptGenerationOptions {UseGlobalNullable = useGlobalNullable}, CustomTypeGenerator.Null, typeof(GlobalNullableRootType)).Single().Replace("\r\n", "\n");
-            var expectedCode = GetExpectedCode($"Options.Expected/{expectedFileName}");
+            var expectedCode = GetExpectedCode($"Options/{expectedFileName}");
             generatedCode.Should().Be(expectedCode);
         }
 
@@ -59,9 +58,25 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             var options = TypeScriptGenerationOptions.Default;
             if (!string.IsNullOrEmpty(pluralizeSuffix))
                 options.Pluralize = s => s + pluralizeSuffix;
-            
+
             var generatedCode = GenerateCode(options, CustomTypeGenerator.Null, typeof(EnumContainingRootType)).Single().Replace("\r\n", "\n");
-            var expectedCode = GetExpectedCode($"Options.Expected/{expectedFileName}");
+            var expectedCode = GetExpectedCode($"Options/{expectedFileName}");
+            generatedCode.Should().Be(expectedCode);
+        }
+    }
+
+    public class OptionsTypeScriptTests : TypeScriptTestBase
+    {
+        public OptionsTypeScriptTests(JavaScriptTypeChecker javaScriptTypeChecker)
+            : base(javaScriptTypeChecker)
+        {
+        }
+
+        [TestCase(EnumGenerationMode.TypeScriptEnum, "enum-generation-typescript-enum")]
+        public void EnumGenerationModeTest(EnumGenerationMode enumGenerationMode, string expectedFileName)
+        {
+            var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnumGenerationMode = enumGenerationMode}, CustomTypeGenerator.Null, typeof(DefaultEnum)).Single().Replace("\r\n", "\n");
+            var expectedCode = GetExpectedCode($"Options/{expectedFileName}");
             generatedCode.Should().Be(expectedCode);
         }
     }

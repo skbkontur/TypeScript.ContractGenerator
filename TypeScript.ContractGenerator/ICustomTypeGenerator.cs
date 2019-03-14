@@ -1,12 +1,22 @@
 using System;
+using System.Reflection;
 
+using JetBrains.Annotations;
+
+using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
 
 namespace SkbKontur.TypeScript.ContractGenerator
 {
     public interface ICustomTypeGenerator
     {
-        string GetTypeLocation(Type type);
-        ITypeBuildingContext ResolveType(string initialUnitPath, Type type, ITypeScriptUnitFactory unitFactory);
+        [NotNull]
+        string GetTypeLocation([NotNull] Type type);
+
+        [CanBeNull]
+        ITypeBuildingContext ResolveType([NotNull] string initialUnitPath, [NotNull] Type type, [NotNull] ITypeScriptUnitFactory unitFactory);
+
+        [CanBeNull]
+        TypeScriptTypeMemberDeclaration ResolveProperty([NotNull] ITypeGenerator typeGenerator, [NotNull] Type type, [NotNull] PropertyInfo property);
     }
 }

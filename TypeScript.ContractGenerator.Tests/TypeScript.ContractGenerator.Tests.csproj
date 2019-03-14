@@ -13,18 +13,26 @@
 
     <ItemGroup>
       <PackageReference Include="FluentAssertions" Version="5.6.0" />
-      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
       <PackageReference Include="NUnit" Version="3.11.0" />
-      <PackageReference Include="NUnit3TestAdapter" Version="3.12.0" />
+      <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\array-types.expected.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\array-types.expected.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\nullable-types.expected.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\nullable-types.expected.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\simple-types.expected.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\simple-types.expected.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\array-types.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\array-types.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\custom-property-resolver.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\custom-property-resolver.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\nullable-types.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\nullable-types.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\simple-types.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\simple-types.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\Enums\annotated-const-getter-fixed-strings.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\Enums\annotated-const-getter-fixed-strings.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\Enums\annotated-const-getter-typescript-enum.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\Enums\not-annotated-const-getter-fixed-strings.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\Enums\not-annotated-const-getter-fixed-strings.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\Enums\not-annotated-const-getter-typescript-enum.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\FlatTypeLocator.Expected\Flow\CommonType.js" />
       <None CopyToOutputDirectory="Always" Update="Files\FlatTypeLocator.Expected\Flow\CommonUsingRootType.js" />
       <None CopyToOutputDirectory="Always" Update="Files\FlatTypeLocator.Expected\Flow\CommonUsingRootType2.js" />
@@ -33,48 +41,47 @@
       <None CopyToOutputDirectory="Always" Update="Files\FlatTypeLocator.Expected\TypeScript\CommonUsingRootType.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\FlatTypeLocator.Expected\TypeScript\CommonUsingRootType2.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\FlatTypeLocator.Expected\TypeScript\CommonUsingRootType3.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\enum-generation-typescript-enum.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\enum-generation-typescript-enum.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\enum-generation-fixed-strings.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\enum-generation-fixed-strings.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\explicit-nullability-disabled.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\explicit-nullability-disabled.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\explicit-nullability-enabled.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\explicit-nullability-enabled.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\global-nullable-disabled.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\global-nullable-disabled.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\global-nullable-enabled.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\global-nullable-enabled.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\optional-properties-disabled.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\optional-properties-disabled.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\optional-properties-enabled.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\optional-properties-enabled.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\pluralize-custom.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\pluralize-custom.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\pluralize-default.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\Options.Expected\pluralize-default.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\array-types.expected.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\array-types.expected.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\complex-types.expected.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\complex-types.expected.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\enum-types.expected.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\enum-types.expected.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\enum-types-with-const-getter-fixed-strings.expected.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\enum-types-with-const-getter-fixed-strings.expected.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\enum-types-with-const-getter-typescript-enum.expected.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\enum-types-with-const-getter-typescript-enum.expected.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\generic-root.expected.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\generic-root.expected.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\generic-types.expected.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\generic-types.expected.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\notnull-types.expected.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\notnull-types.expected.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\nullable-types.expected.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\nullable-types.expected.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\simple-types.expected.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\simple-types.expected.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\type-names.expected.js" />
-      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\type-names.expected.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\enum-generation-typescript-enum.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\enum-generation-fixed-strings.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\enum-generation-fixed-strings.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\explicit-nullability-disabled.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\explicit-nullability-disabled.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\explicit-nullability-enabled.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\explicit-nullability-enabled.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\global-nullable-disabled.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\global-nullable-disabled.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\global-nullable-enabled.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\global-nullable-enabled.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\optional-properties-disabled.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\optional-properties-disabled.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\optional-properties-enabled.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\optional-properties-enabled.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\pluralize-custom.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\pluralize-custom.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\pluralize-default.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\pluralize-default.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\array-types.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\array-types.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\complex-types.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\complex-types.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\enum-types.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\enum-types.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\generic-root.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\generic-root.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\generic-types.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\generic-types.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\ignore-type.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\ignore-type.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\non-default-constructor.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\non-default-constructor.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\notnull-types.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\notnull-types.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\nullable-types.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\nullable-types.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\simple-types.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\simple-types.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\type-names.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\SimpleGenerator\type-names.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\SimpleStructureTypeLocator.Expected\Flow\CommonType\CommonType.js" />
       <None CopyToOutputDirectory="Always" Update="Files\SimpleStructureTypeLocator.Expected\Flow\CommonUsingRootType\CommonUsingRootType.js" />
       <None CopyToOutputDirectory="Always" Update="Files\SimpleStructureTypeLocator.Expected\Flow\CommonUsingRootType2\CommonUsingRootType2.js" />

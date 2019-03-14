@@ -1,5 +1,5 @@
 
-export type EnumWithConstGetterContainingRootType = {
+export type AnnotatedEnumWithConstGetterContainingRootType = {
     defaultEnum: DefaultEnum.A;
     explicitEnum: ExplicitEnum.C;
 };

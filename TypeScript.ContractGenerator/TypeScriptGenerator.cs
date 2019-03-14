@@ -124,9 +124,9 @@ namespace SkbKontur.TypeScript.ContractGenerator
                 return new GenericParameterTypeBuildingContext(type);
 
             if (type.IsGenericTypeDefinition)
-                return new CustomTypeTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), type, Options);
+                return new CustomTypeTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), type, customTypeGenerator, Options);
 
-            return new CustomTypeTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), type, Options);
+            return new CustomTypeTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), type, customTypeGenerator, Options);
         }
 
         public TypeScriptType BuildAndImportType(TypeScriptUnit targetUnit, ICustomAttributeProvider attributeProvider, Type type)

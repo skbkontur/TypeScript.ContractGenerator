@@ -1,7 +1,7 @@
 
 export type EnumWithConstGetterContainingRootType = {
-    defaultEnum: DefaultEnum.A;
-    explicitEnum: ExplicitEnum.C;
+    defaultEnum: DefaultEnum;
+    explicitEnum: ExplicitEnum;
 };
 export enum DefaultEnum {
     A = 'A',
