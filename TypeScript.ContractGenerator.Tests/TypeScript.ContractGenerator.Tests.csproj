@@ -30,11 +30,9 @@
       <None CopyToOutputDirectory="Always" Update="Files\Enums\annotated-const-getter-fixed-strings.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\Enums\annotated-const-getter-fixed-strings.js" />
       <None CopyToOutputDirectory="Always" Update="Files\Enums\annotated-const-getter-typescript-enum.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\Enums\annotated-const-getter-typescript-enum.js" />
       <None CopyToOutputDirectory="Always" Update="Files\Enums\not-annotated-const-getter-fixed-strings.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\Enums\not-annotated-const-getter-fixed-strings.js" />
       <None CopyToOutputDirectory="Always" Update="Files\Enums\not-annotated-const-getter-typescript-enum.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\Enums\not-annotated-const-getter-typescript-enum.js" />
       <None CopyToOutputDirectory="Always" Update="Files\FlatTypeLocator.Expected\Flow\CommonType.js" />
       <None CopyToOutputDirectory="Always" Update="Files\FlatTypeLocator.Expected\Flow\CommonUsingRootType.js" />
       <None CopyToOutputDirectory="Always" Update="Files\FlatTypeLocator.Expected\Flow\CommonUsingRootType2.js" />
@@ -43,7 +41,6 @@
       <None CopyToOutputDirectory="Always" Update="Files\FlatTypeLocator.Expected\TypeScript\CommonUsingRootType.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\FlatTypeLocator.Expected\TypeScript\CommonUsingRootType2.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\FlatTypeLocator.Expected\TypeScript\CommonUsingRootType3.ts" />
-      <None CopyToOutputDirectory="Always" Update="Files\Options\enum-generation-typescript-enum.js" />
       <None CopyToOutputDirectory="Always" Update="Files\Options\enum-generation-typescript-enum.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\Options\enum-generation-fixed-strings.js" />
       <None CopyToOutputDirectory="Always" Update="Files\Options\enum-generation-fixed-strings.ts" />

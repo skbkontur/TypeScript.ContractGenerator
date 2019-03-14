@@ -11,7 +11,7 @@ using SkbKontur.TypeScript.ContractGenerator.Tests.Types;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests
 {
-    public class EndToEndTests : TypeScriptTestBase
+    public class EndToEndTests : AllTypeCheckersTestBase
     {
         public EndToEndTests(JavaScriptTypeChecker javaScriptTypeChecker)
             : base(javaScriptTypeChecker)
@@ -38,8 +38,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
 
         [TestCase(typeof(EnumWithConstGetterContainingRootType), EnumGenerationMode.FixedStringsAndDictionary, "not-annotated-const-getter-fixed-strings")]
         [TestCase(typeof(AnnotatedEnumWithConstGetterContainingRootType), EnumGenerationMode.FixedStringsAndDictionary, "annotated-const-getter-fixed-strings")]
-        [TestCase(typeof(EnumWithConstGetterContainingRootType), EnumGenerationMode.TypeScriptEnum, "not-annotated-const-getter-typescript-enum")]
-        [TestCase(typeof(AnnotatedEnumWithConstGetterContainingRootType), EnumGenerationMode.TypeScriptEnum, "annotated-const-getter-typescript-enum")]
         public void GenerateEnumWithConstGetterTest(Type type, EnumGenerationMode enumGenerationMode, string expectedFileName)
         {
             var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnumGenerationMode = enumGenerationMode}, CustomTypeGenerator.Null, type).Single().Replace("\r\n", "\n");
@@ -64,6 +62,23 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         {
             var generatedCode = GenerateCode((ICustomTypeGenerator)Activator.CreateInstance(type), rootType).Single().Replace("\r\n", "\n");
             var expectedCode = GetExpectedCode($"CustomGenerator/{expectedFileName}");
+            generatedCode.Should().Be(expectedCode);
+        }
+    }
+
+    public class EndToEndTypeScriptTests : TypeScriptTestBase
+    {
+        public EndToEndTypeScriptTests(JavaScriptTypeChecker javaScriptTypeChecker)
+            : base(javaScriptTypeChecker)
+        {
+        }
+
+        [TestCase(typeof(EnumWithConstGetterContainingRootType), EnumGenerationMode.TypeScriptEnum, "not-annotated-const-getter-typescript-enum")]
+        [TestCase(typeof(AnnotatedEnumWithConstGetterContainingRootType), EnumGenerationMode.TypeScriptEnum, "annotated-const-getter-typescript-enum")]
+        public void GenerateEnumWithConstGetterTest(Type type, EnumGenerationMode enumGenerationMode, string expectedFileName)
+        {
+            var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnumGenerationMode = enumGenerationMode}, CustomTypeGenerator.Null, type).Single().Replace("\r\n", "\n");
+            var expectedCode = GetExpectedCode($"Enums/{expectedFileName}");
             generatedCode.Should().Be(expectedCode);
         }
     }
