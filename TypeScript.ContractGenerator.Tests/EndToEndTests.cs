@@ -18,17 +18,17 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         {
         }
 
-        [TestCase(typeof(NamingRootType), "type-names.expected")]
-        [TestCase(typeof(SimpleRootType), "simple-types.expected")]
-        [TestCase(typeof(SimpleNullableRootType), "nullable-types.expected")]
-        [TestCase(typeof(EnumContainingRootType), "enum-types.expected")]
-        [TestCase(typeof(ComplexRootType), "complex-types.expected")]
-        [TestCase(typeof(GenericRootType<>), "generic-root.expected")]
-        [TestCase(typeof(GenericContainingRootType), "generic-types.expected")]
-        [TestCase(typeof(ArrayRootType), "array-types.expected")]
-        [TestCase(typeof(NotNullRootType), "notnull-types.expected")]
-        [TestCase(typeof(NonDefaultConstructorRootType), "non-default-constructor.expected")]
-        [TestCase(typeof(IgnoreRootType), "ignore-type.expected")]
+        [TestCase(typeof(NamingRootType), "type-names")]
+        [TestCase(typeof(SimpleRootType), "simple-types")]
+        [TestCase(typeof(SimpleNullableRootType), "nullable-types")]
+        [TestCase(typeof(EnumContainingRootType), "enum-types")]
+        [TestCase(typeof(ComplexRootType), "complex-types")]
+        [TestCase(typeof(GenericRootType<>), "generic-root")]
+        [TestCase(typeof(GenericContainingRootType), "generic-types")]
+        [TestCase(typeof(ArrayRootType), "array-types")]
+        [TestCase(typeof(NotNullRootType), "notnull-types")]
+        [TestCase(typeof(NonDefaultConstructorRootType), "non-default-constructor")]
+        [TestCase(typeof(IgnoreRootType), "ignore-type")]
         public void GenerateCodeTest(Type rootType, string expectedFileName)
         {
             var generatedCode = GenerateCode(rootType).Single().Replace("\r\n", "\n");
@@ -36,14 +36,14 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             generatedCode.Should().Be(expectedCode);
         }
 
-        [TestCase(typeof(EnumWithConstGetterContainingRootType), EnumGenerationMode.FixedStringsAndDictionary, "enum-types-with-const-getter-fixed-strings.expected")]
-        [TestCase(typeof(AnnotatedEnumWithConstGetterContainingRootType), EnumGenerationMode.FixedStringsAndDictionary, "annotated-enum-types-with-const-getter-fixed-strings.expected")]
-        [TestCase(typeof(EnumWithConstGetterContainingRootType), EnumGenerationMode.TypeScriptEnum, "enum-types-with-const-getter-typescript-enum.expected")]
-        [TestCase(typeof(AnnotatedEnumWithConstGetterContainingRootType), EnumGenerationMode.TypeScriptEnum, "annotated-enum-types-with-const-getter-typescript-enum.expected")]
+        [TestCase(typeof(EnumWithConstGetterContainingRootType), EnumGenerationMode.FixedStringsAndDictionary, "not-annotated-const-getter-fixed-strings")]
+        [TestCase(typeof(AnnotatedEnumWithConstGetterContainingRootType), EnumGenerationMode.FixedStringsAndDictionary, "annotated-const-getter-fixed-strings")]
+        [TestCase(typeof(EnumWithConstGetterContainingRootType), EnumGenerationMode.TypeScriptEnum, "not-annotated-const-getter-typescript-enum")]
+        [TestCase(typeof(AnnotatedEnumWithConstGetterContainingRootType), EnumGenerationMode.TypeScriptEnum, "annotated-const-getter-typescript-enum")]
         public void GenerateEnumWithConstGetterTest(Type type, EnumGenerationMode enumGenerationMode, string expectedFileName)
         {
             var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnumGenerationMode = enumGenerationMode}, CustomTypeGenerator.Null, type).Single().Replace("\r\n", "\n");
-            var expectedCode = GetExpectedCode($"SimpleGenerator/{expectedFileName}");
+            var expectedCode = GetExpectedCode($"Enums/{expectedFileName}");
             generatedCode.Should().Be(expectedCode);
         }
 
@@ -56,10 +56,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             CheckDirectoriesEquivalence($"Files/{type.Name}.Expected", $"{type.Name}.Actual");
         }
 
-        [TestCase(typeof(SimpleRootType), typeof(TestCustomTypeGenerator), "simple-types.expected")]
-        [TestCase(typeof(SimpleNullableRootType), typeof(TestCustomTypeGenerator), "nullable-types.expected")]
-        [TestCase(typeof(ArrayRootType), typeof(TestCustomTypeGenerator), "array-types.expected")]
-        [TestCase(typeof(EnumWithConstGetterContainingRootType), typeof(TestCustomPropertyResolver), "custom-property-resolver.expected")]
+        [TestCase(typeof(SimpleRootType), typeof(TestCustomTypeGenerator), "simple-types")]
+        [TestCase(typeof(SimpleNullableRootType), typeof(TestCustomTypeGenerator), "nullable-types")]
+        [TestCase(typeof(ArrayRootType), typeof(TestCustomTypeGenerator), "array-types")]
+        [TestCase(typeof(EnumWithConstGetterContainingRootType), typeof(TestCustomPropertyResolver), "custom-property-resolver")]
         public void CustomGeneratorTest(Type rootType, Type type, string expectedFileName)
         {
             var generatedCode = GenerateCode((ICustomTypeGenerator)Activator.CreateInstance(type), rootType).Single().Replace("\r\n", "\n");
