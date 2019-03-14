@@ -115,6 +115,13 @@ When **disabled** produces all types as-is.
 
 This option is **disabled** by default. When **enabled**, global `Nullable<T>` is used instead of union `null | T`
 
+## Attributes
+
+There are several attributes that can be applied to properties
+
+* `ContractGeneratorIgnore` attribute makes generator skip current property.
+* `ContractGeneratorInferValue` signals to generator that value in property is constant. This attribute can be used only in classes that have default parameterless constructor.
+
 ## Known bugs
 
 See [this issue](https://github.com/skbkontur/TypeScript.ContractGenerator/issues/1)

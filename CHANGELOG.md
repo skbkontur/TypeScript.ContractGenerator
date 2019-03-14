@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.5 - 2019.03.14
+- Add `ContractGeneratorIgnore` and `ContractGeneratorInferValue` attributes that can be applied to properties
+- Add `ResolveProperty` method to `ICustomTypeGenerator` for property customization
+
 ## v1.4 - 2019.03.08
 - `//tslint:disable` is placed before codegen marker
 - Global rename: `FlowType => TypeScript`
