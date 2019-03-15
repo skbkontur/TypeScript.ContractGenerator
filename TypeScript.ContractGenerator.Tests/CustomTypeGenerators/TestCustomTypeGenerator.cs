@@ -16,11 +16,14 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 
         public ITypeBuildingContext ResolveType(string initialUnitPath, Type type, ITypeScriptUnitFactory unitFactory)
         {
-            if (CollectionTypeBuildingContext.Accept(type))
+            if(CollectionTypeBuildingContext.Accept(type))
                 return new CollectionTypeBuildingContext(type);
 
-            if (type == typeof(TimeSpan))
+            if(type == typeof(TimeSpan))
                 return new StringBuildingContext();
+
+            if(type.IsAbstract)
+                return new AbstractTypeBuildingContext(unitFactory.GetOrCreateTypeUnit(initialUnitPath), type);
 
             return null;
         }

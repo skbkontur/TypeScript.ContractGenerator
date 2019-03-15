@@ -4,18 +4,18 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
     {
         public TypeScriptNullableType(TypeScriptType innerType)
         {
-            this.innerType = innerType;
+            InnerType = innerType;
         }
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
             if (context.TypeChecker == JavaScriptTypeChecker.TypeScript)
             {
-                return $"Nullable<{innerType.GenerateCode(context)}>";
+                return $"Nullable<{InnerType.GenerateCode(context)}>";
             }
-            return "?" + innerType.GenerateCode(context);
+            return "?" + InnerType.GenerateCode(context);
         }
 
-        private readonly TypeScriptType innerType;
+        public TypeScriptType InnerType { get; }
     }
 }

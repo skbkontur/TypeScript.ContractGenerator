@@ -58,6 +58,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [TestCase(typeof(SimpleNullableRootType), typeof(TestCustomTypeGenerator), "nullable-types")]
         [TestCase(typeof(ArrayRootType), typeof(TestCustomTypeGenerator), "array-types")]
         [TestCase(typeof(EnumWithConstGetterContainingRootType), typeof(TestCustomPropertyResolver), "custom-property-resolver")]
+        [TestCase(typeof(AbstractClassRootType), typeof(TestCustomTypeGenerator), "abstract-class")]
         public void CustomGeneratorTest(Type rootType, Type type, string expectedFileName)
         {
             var generatedCode = GenerateCode((ICustomTypeGenerator)Activator.CreateInstance(type), rootType).Single().Replace("\r\n", "\n");
