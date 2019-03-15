@@ -18,7 +18,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
             return null;
         }
 
-        public TypeScriptTypeMemberDeclaration ResolveProperty(ITypeGenerator typeGenerator, Type type, PropertyInfo property)
+        public TypeScriptTypeMemberDeclaration ResolveProperty(TypeScriptUnit unit, ITypeGenerator typeGenerator, Type type, PropertyInfo property)
         {
             return null;
         }

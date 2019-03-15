@@ -55,7 +55,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             var properties = CreateTypeProperties(Type);
             foreach (var property in properties)
             {
-                var customMemberDeclaration = customTypeGenerator.ResolveProperty(typeGenerator, Type, property);
+                var customMemberDeclaration = customTypeGenerator.ResolveProperty(Unit, typeGenerator, Type, property);
                 if (customMemberDeclaration != null)
                 {
                     result.Members.Add(customMemberDeclaration);
