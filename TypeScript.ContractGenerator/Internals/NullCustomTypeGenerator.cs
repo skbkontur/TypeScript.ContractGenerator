@@ -23,7 +23,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         }
 
         [CanBeNull]
-        public TypeScriptTypeMemberDeclaration ResolveProperty([NotNull] ITypeGenerator typeGenerator, [NotNull] Type type, [NotNull] PropertyInfo property)
+        public TypeScriptTypeMemberDeclaration ResolveProperty([NotNull] TypeScriptUnit unit, [NotNull] ITypeGenerator typeGenerator, [NotNull] Type type, [NotNull] PropertyInfo property)
         {
             return null;
         }

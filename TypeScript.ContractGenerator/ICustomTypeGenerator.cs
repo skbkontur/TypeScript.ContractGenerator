@@ -17,6 +17,6 @@ namespace SkbKontur.TypeScript.ContractGenerator
         ITypeBuildingContext ResolveType([NotNull] string initialUnitPath, [NotNull] Type type, [NotNull] ITypeScriptUnitFactory unitFactory);
 
         [CanBeNull]
-        TypeScriptTypeMemberDeclaration ResolveProperty([NotNull] ITypeGenerator typeGenerator, [NotNull] Type type, [NotNull] PropertyInfo property);
+        TypeScriptTypeMemberDeclaration ResolveProperty([NotNull] TypeScriptUnit unit, [NotNull] ITypeGenerator typeGenerator, [NotNull] Type type, [NotNull] PropertyInfo property);
     }
 }
