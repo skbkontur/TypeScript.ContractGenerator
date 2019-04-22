@@ -85,8 +85,8 @@ namespace SkbKontur.TypeScript.ContractGenerator
             }
             var typeLocation = customTypeGenerator.GetTypeLocation(type);
             var typeBuildingContext = customTypeGenerator.ResolveType(typeLocation, type, typeUnitFactory) ?? GetTypeBuildingContext(typeLocation, type);
-            typeBuildingContext.Initialize(this);
             typeDeclarations.Add(type, typeBuildingContext);
+            typeBuildingContext.Initialize(this);
             return typeBuildingContext;
         }
 

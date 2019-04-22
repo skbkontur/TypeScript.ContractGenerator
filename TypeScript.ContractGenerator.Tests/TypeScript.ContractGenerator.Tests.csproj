@@ -21,6 +21,8 @@
     <ItemGroup>
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\array-types.js" />
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\array-types.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\abstract-class.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\abstract-class.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\custom-property-resolver.js" />
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\custom-property-resolver.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\nullable-types.js" />
