@@ -3,13 +3,13 @@ using System.Linq;
 
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
-    public class TypeScriptInterfaceFunctionMember
+    public class TypeScriptInterfaceFunctionMember : TypeScriptInterfaceMember
     {
         public string Name { get; set; }
         public List<TypeScriptArgumentDeclaration> Arguments => arguments;
         public TypeScriptType Result { get; set; }
 
-        public string GenerateCode(ICodeGenerationContext context)
+        public override string GenerateCode(ICodeGenerationContext context)
         {
             return string.Format("{0}({1}): {2}", Name, GenerateArgumentListCode(context), Result.GenerateCode(context));
         }

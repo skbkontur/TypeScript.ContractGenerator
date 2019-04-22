@@ -5,7 +5,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptInterfaceDefinition : TypeScriptType
     {
-        public List<TypeScriptInterfaceFunctionMember> Members => members;
+        public List<TypeScriptInterfaceMember> Members => members;
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
@@ -19,6 +19,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
             return result.ToString();
         }
 
-        private readonly List<TypeScriptInterfaceFunctionMember> members = new List<TypeScriptInterfaceFunctionMember>();
+        private readonly List<TypeScriptInterfaceMember> members = new List<TypeScriptInterfaceMember>();
     }
 }
