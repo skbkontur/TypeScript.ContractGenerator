@@ -54,6 +54,10 @@
       <None CopyToOutputDirectory="Always" Update="Files\Options\global-nullable-disabled.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\Options\global-nullable-enabled.js" />
       <None CopyToOutputDirectory="Always" Update="Files\Options\global-nullable-enabled.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\nullability-optimistic.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\nullability-optimistic.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\nullability-pessimistic.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\nullability-pessimistic.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\Options\optional-properties-disabled.js" />
       <None CopyToOutputDirectory="Always" Update="Files\Options\optional-properties-disabled.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\Options\optional-properties-enabled.js" />
