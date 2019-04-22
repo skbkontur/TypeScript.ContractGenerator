@@ -2,11 +2,11 @@ using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Internals
 {
-    internal class TypeScriptImportDefaultFromPathStatement : TypeScriptImportStatement
+    internal class TypeScriptImportFromPathStatement : TypeScriptImportStatement
     {
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return $"import {TypeName} from '{context.GetReferenceFromUnitToAnother(CurrentUnit.Path, PathToUnit)}';";
+            return $"import {{ {TypeName} }} from '{context.GetReferenceFromUnitToAnother(CurrentUnit.Path, PathToUnit)}';";
         }
 
         public string TypeName { get; set; }
