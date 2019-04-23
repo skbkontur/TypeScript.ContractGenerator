@@ -28,18 +28,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             Unit.Body.Add(
                 new TypeScriptExportStatement
                     {
-                        Declaration = new TypeScriptConstantDefinition
-                            {
-                                Name = typeGenerator.Options.Pluralize(Type.Name),
-                                Value = new TypeScriptObjectLiteral(values.Select(x => new TypeScriptObjectLiteralProperty
-                                    {
-                                        Name = new TypeScriptStringLiteral {Value = x},
-                                        Value = new TypeScriptCastExpression(new TypeScriptStringLiteral
-                                            {
-                                                Value = x,
-                                            }, new TypeScriptTypeReference(Type.Name)),
-                                    }))
-                            }
+                        Declaration = new TypeScriptConstantDefinition(typeGenerator.Options.Pluralize(Type.Name),
+                                                                       new TypeScriptObjectLiteral(values.Select(x => new TypeScriptObjectLiteralProperty(
+                                                                                                                          new TypeScriptStringLiteral(x),
+                                                                                                                          new TypeScriptCastExpression(
+                                                                                                                              new TypeScriptStringLiteral(x),
+                                                                                                                              new TypeScriptTypeReference(Type.Name))))))
                     }
                 );
             Declaration = enumResult;

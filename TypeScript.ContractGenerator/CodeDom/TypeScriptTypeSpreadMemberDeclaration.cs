@@ -2,11 +2,16 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptTypeSpreadMemberDeclaration : TypeScriptTypeMemberDeclarationBase
     {
-        public TypeScriptType Type { get; set; }
+        public TypeScriptTypeSpreadMemberDeclaration(TypeScriptType type)
+        {
+            Type = type;
+        }
+
+        public TypeScriptType Type { get; }
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return string.Format("...{0};", Type.GenerateCode(context));
+            return $"...{Type.GenerateCode(context)};";
         }
     }
 }

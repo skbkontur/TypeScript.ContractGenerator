@@ -2,13 +2,20 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptTernaryIfExpression : TypeScriptExpression
     {
-        public TypeScriptExpression Condition { get; set; }
-        public TypeScriptExpression True { get; set; }
-        public TypeScriptExpression False { get; set; }
+        public TypeScriptTernaryIfExpression(TypeScriptExpression condition, TypeScriptExpression trueBranch, TypeScriptExpression falseBranch)
+        {
+            Condition = condition;
+            TrueBranch = trueBranch;
+            FalseBranch = falseBranch;
+        }
+
+        public TypeScriptExpression Condition { get; }
+        public TypeScriptExpression TrueBranch { get; }
+        public TypeScriptExpression FalseBranch { get; }
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return $"{Condition.GenerateCode(context)} ? {True.GenerateCode(context)} : {False.GenerateCode(context)}";
+            return $"{Condition.GenerateCode(context)} ? {TrueBranch.GenerateCode(context)} : {FalseBranch.GenerateCode(context)}";
         }
     }
 }

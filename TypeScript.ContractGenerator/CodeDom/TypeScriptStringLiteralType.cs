@@ -9,7 +9,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return string.Format("'{0}'", value);
+            return $"'{value}'";
         }
 
         private readonly string value;

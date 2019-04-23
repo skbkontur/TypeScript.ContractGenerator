@@ -1,37 +1,38 @@
 using System.Collections.Generic;
-using System.Linq;
+
+using JetBrains.Annotations;
+
+using SkbKontur.TypeScript.ContractGenerator.Extensions;
 
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptFunctionCallExpression : TypeScriptExpression
     {
-        public TypeScriptFunctionCallExpression(TypeScriptExpression methodName, params TypeScriptExpression[] arguments)
+        public TypeScriptFunctionCallExpression([NotNull] TypeScriptExpression methodName,
+                                                [NotNull, ItemNotNull] params TypeScriptExpression[] arguments)
         {
             MethodName = methodName;
-            Arguments.AddRange(arguments);
+            TypeParameters = new List<TypeScriptType>();
+            Arguments = new List<TypeScriptExpression>(arguments);
         }
 
-        public TypeScriptFunctionCallExpression(TypeScriptExpression methodName, TypeScriptType[] typeParameters, params TypeScriptExpression[] arguments)
+        public TypeScriptFunctionCallExpression([NotNull] TypeScriptExpression methodName,
+                                                [NotNull, ItemNotNull] TypeScriptType[] typeParameters,
+                                                [NotNull, ItemNotNull] params TypeScriptExpression[] arguments)
         {
             MethodName = methodName;
-            TypeParameters.AddRange(typeParameters);
-            Arguments.AddRange(arguments);
+            TypeParameters = new List<TypeScriptType>(typeParameters);
+            Arguments = new List<TypeScriptExpression>(arguments);
         }
-        
-        public TypeScriptExpression MethodName { get; set; }
-        public List<TypeScriptType> TypeParameters => typeParameters;
-        public List<TypeScriptExpression> Arguments => arguments;
+
+        public TypeScriptExpression MethodName { get; }
+        public List<TypeScriptType> TypeParameters { get; }
+        public List<TypeScriptExpression> Arguments { get; }
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return TypeParameters.Count == 0
-                       ? string.Format("{0}({1})", MethodName.GenerateCode(context), string.Join(", ", Arguments.Select(x => x.GenerateCode(context))))
-                       : string.Format("{0}<{1}>({2})", MethodName.GenerateCode(context),
-                                       string.Join(", ", TypeParameters.Select(x => x.GenerateCode(context))),
-                                       string.Join(", ", Arguments.Select(x => x.GenerateCode(context))));
+            var typeArguments = TypeParameters.Count == 0 ? string.Empty : $"<{TypeParameters.EnumerateWithComma(context)}>";
+            return $"{MethodName.GenerateCode(context)}{typeArguments}({Arguments.EnumerateWithComma(context)})";
         }
-
-        private readonly List<TypeScriptExpression> arguments = new List<TypeScriptExpression>();
-        private readonly List<TypeScriptType> typeParameters = new List<TypeScriptType>();
     }
 }

@@ -7,7 +7,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 
         public string GenerateCode(ICodeGenerationContext context)
         {
-            return string.Format("{0}: {1}", Name, Type.GenerateCode(context));
+            return $"{Name}: {Type.GenerateCode(context)}";
         }
     }
 }

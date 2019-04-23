@@ -1,17 +1,19 @@
+using JetBrains.Annotations;
+
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptObjectLiteralSpread : TypeScriptObjectLiteralInitializer
     {
-        public TypeScriptObjectLiteralSpread(TypeScriptVariableReference expression)
+        public TypeScriptObjectLiteralSpread([NotNull] TypeScriptVariableReference expression)
         {
             Expression = expression;
         }
 
-        public TypeScriptVariableReference Expression { get; set; }
+        public TypeScriptVariableReference Expression { get; }
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return string.Format("...{0}", Expression.GenerateCode(context));
+            return $"...{Expression.GenerateCode(context)}";
         }
     }
 }

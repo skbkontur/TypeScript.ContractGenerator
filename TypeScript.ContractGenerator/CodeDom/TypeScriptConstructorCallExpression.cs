@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using System.Linq;
+
+using SkbKontur.TypeScript.ContractGenerator.Extensions;
 
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
@@ -8,17 +9,15 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
         public TypeScriptConstructorCallExpression(TypeScriptExpression className, params TypeScriptExpression[] arguments)
         {
             ClassName = className;
-            Arguments.AddRange(arguments);
+            Arguments = new List<TypeScriptExpression>(arguments);
         }
 
-        public TypeScriptExpression ClassName { get; set; }
-        public List<TypeScriptExpression> Arguments => arguments;
+        public TypeScriptExpression ClassName { get; }
+        public List<TypeScriptExpression> Arguments { get; }
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return string.Format("new {0}({1})", ClassName.GenerateCode(context), string.Join(", ", Arguments.Select(x => x.GenerateCode(context))));
+            return $"new {ClassName.GenerateCode(context)}({Arguments.EnumerateWithComma(context)})";
         }
-
-        private readonly List<TypeScriptExpression> arguments = new List<TypeScriptExpression>();
     }
 }

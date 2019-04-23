@@ -1,22 +1,21 @@
 using System.Collections.Generic;
-using System.Linq;
+
+using SkbKontur.TypeScript.ContractGenerator.Extensions;
 
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptArrayExpression : TypeScriptExpression
     {
-        public TypeScriptArrayExpression(params TypeScriptExpression[] arguments)
+        public TypeScriptArrayExpression(params TypeScriptExpression[] items)
         {
-            Items.AddRange(arguments);
+            Items = new List<TypeScriptExpression>(items);
         }
 
-        public List<TypeScriptExpression> Items => items;
+        public List<TypeScriptExpression> Items { get; }
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return string.Format("[{0}]", string.Join(", ", Items.Select(x => x.GenerateCode(context))));
+            return $"[{Items.EnumerateWithComma(context)}]";
         }
-
-        private readonly List<TypeScriptExpression> items = new List<TypeScriptExpression>();
     }
 }

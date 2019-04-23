@@ -7,11 +7,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
             Value = value;
         }
 
-        public string Value { get; private set; }
+        public string Value { get; }
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return string.Format("`{0}`", Value);
+            return $"`{Value}`";
         }
     }
 }
