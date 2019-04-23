@@ -17,7 +17,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return $"new {ClassName.GenerateCode(context)}({Arguments.EnumerateWithComma(context)})";
+            return $"new {ClassName.GenerateCode(context)}({Arguments.GenerateCodeCommaSeparated(context)})";
         }
     }
 }

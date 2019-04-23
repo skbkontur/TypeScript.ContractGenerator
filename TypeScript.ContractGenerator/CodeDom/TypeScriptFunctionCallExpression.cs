@@ -31,8 +31,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            var typeArguments = TypeParameters.Count == 0 ? string.Empty : $"<{TypeParameters.EnumerateWithComma(context)}>";
-            return $"{MethodName.GenerateCode(context)}{typeArguments}({Arguments.EnumerateWithComma(context)})";
+            var typeArguments = TypeParameters.Count == 0 ? string.Empty : $"<{TypeParameters.GenerateCodeCommaSeparated(context)}>";
+            return $"{MethodName.GenerateCode(context)}{typeArguments}({Arguments.GenerateCodeCommaSeparated(context)})";
         }
     }
 }

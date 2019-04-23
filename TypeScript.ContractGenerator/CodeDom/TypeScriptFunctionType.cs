@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using System.Linq;
+
+using SkbKontur.TypeScript.ContractGenerator.Extensions;
 
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
@@ -10,12 +11,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return string.Format("({0}) => {1}", GenerateArgumentListCode(context), Result.GenerateCode(context));
-        }
-
-        private string GenerateArgumentListCode(ICodeGenerationContext context)
-        {
-            return string.Join(", ", Arguments.Select(x => x.GenerateCode(context)));
+            return $"({Arguments.GenerateCodeCommaSeparated(context)}) => {Result.GenerateCode(context)}";
         }
 
         private readonly List<TypeScriptArgumentDeclaration> arguments = new List<TypeScriptArgumentDeclaration>();

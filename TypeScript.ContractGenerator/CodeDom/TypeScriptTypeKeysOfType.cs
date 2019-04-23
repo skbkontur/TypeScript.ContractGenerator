@@ -6,7 +6,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return string.Format("$Keys<{0}>", TargetType.GenerateCode(context));
+            return $"$Keys<{TargetType.GenerateCode(context)}>";
         }
     }
 }

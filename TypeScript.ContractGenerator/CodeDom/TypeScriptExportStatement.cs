@@ -4,7 +4,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
     {
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return "export " + Declaration.GenerateCode(context);
+            return $"export {Declaration.GenerateCode(context)}";
         }
 
         public TypeScriptStatement Declaration { get; set; }

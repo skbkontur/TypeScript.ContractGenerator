@@ -8,7 +8,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptMethodCallExpression : TypeScriptExpression
     {
-        public TypeScriptMethodCallExpression([NotNull] TypeScriptExpression subject, [NotNull] string methodName, [NotNull, ItemNotNull] params TypeScriptExpression[] arguments)
+        public TypeScriptMethodCallExpression([NotNull] TypeScriptExpression subject, [NotNull] string methodName,
+                                              [NotNull, ItemNotNull] params TypeScriptExpression[] arguments)
         {
             Subject = subject;
             MethodName = methodName;
@@ -21,7 +22,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return $"{Subject.GenerateCode(context)}.{MethodName}({Arguments.EnumerateWithComma(context)})";
+            return $"{Subject.GenerateCode(context)}.{MethodName}({Arguments.GenerateCodeCommaSeparated(context)})";
         }
     }
 }
