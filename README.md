@@ -115,6 +115,10 @@ When **disabled** produces all types as-is.
 
 This option is **disabled** by default. When **enabled**, global `Nullable<T>` is used instead of union `null | T`
 
+### NullabilityMode
+
+This option is set to `Pessimistic` by default. When set to `Pessimistic`, generates `Nullable` property for properties that have no nullability attributes. When set to `Optimistic`, generates not null property for properties that have no nullability attributes.
+
 ## Attributes
 
 There are several attributes that can be applied to properties

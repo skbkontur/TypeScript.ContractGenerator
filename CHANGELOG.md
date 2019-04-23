@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.6 - 2019.04.23
+- Fix cyclic dependency bug when generating code for child types
+- Pass `TypeScriptUnit` to `ResolveProperty` for `BuildAndImport` availability
+- Add `NullabilityMode` option
+- Add more code generation classes to CodeDom
+
 ## v1.5 - 2019.03.14
 - Add `ContractGeneratorIgnore` and `ContractGeneratorInferValue` attributes that can be applied to properties
 - Add `ResolveProperty` method to `ICustomTypeGenerator` for property customization
