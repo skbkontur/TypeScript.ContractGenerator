@@ -1,24 +1,28 @@
 using System.Collections.Generic;
-using System.Linq;
+
+using JetBrains.Annotations;
+
+using SkbKontur.TypeScript.ContractGenerator.Extensions;
 
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
-    public class TypeScriptInterfaceFunctionMember
+    public class TypeScriptInterfaceFunctionMember : TypeScriptInterfaceMember
     {
-        public string Name { get; set; }
-        public List<TypeScriptArgumentDeclaration> Arguments => arguments;
-        public TypeScriptType Result { get; set; }
-
-        public string GenerateCode(ICodeGenerationContext context)
+        public TypeScriptInterfaceFunctionMember([NotNull] string name, [NotNull] TypeScriptType result,
+                                                 [NotNull, ItemNotNull] params TypeScriptArgumentDeclaration[] arguments)
         {
-            return string.Format("{0}({1}): {2}", Name, GenerateArgumentListCode(context), Result.GenerateCode(context));
+            Name = name;
+            Result = result;
+            Arguments = new List<TypeScriptArgumentDeclaration>(arguments);
         }
 
-        private string GenerateArgumentListCode(ICodeGenerationContext context)
-        {
-            return string.Join(", ", Arguments.Select(x => x.GenerateCode(context)));
-        }
+        public string Name { get; }
+        public TypeScriptType Result { get; }
+        public List<TypeScriptArgumentDeclaration> Arguments { get; }
 
-        private readonly List<TypeScriptArgumentDeclaration> arguments = new List<TypeScriptArgumentDeclaration>();
+        public override string GenerateCode(ICodeGenerationContext context)
+        {
+            return $"{Name}({Arguments.GenerateCodeCommaSeparated(context)}): {Result.GenerateCode(context)}";
+        }
     }
 }

@@ -1,26 +1,28 @@
 using System.Collections.Generic;
-using System.Linq;
+
+using JetBrains.Annotations;
+
+using SkbKontur.TypeScript.ContractGenerator.Extensions;
 
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptMethodCallExpression : TypeScriptExpression
     {
-        public TypeScriptMethodCallExpression(TypeScriptExpression subject, string methodName, params TypeScriptExpression[] arguments)
+        public TypeScriptMethodCallExpression([NotNull] TypeScriptExpression subject, [NotNull] string methodName,
+                                              [NotNull, ItemNotNull] params TypeScriptExpression[] arguments)
         {
             Subject = subject;
             MethodName = methodName;
-            Arguments.AddRange(arguments);
+            Arguments = new List<TypeScriptExpression>(arguments);
         }
 
-        public TypeScriptExpression Subject { get; set; }
-        public string MethodName { get; set; }
-        public List<TypeScriptExpression> Arguments => arguments;
+        public TypeScriptExpression Subject { get; }
+        public string MethodName { get; }
+        public List<TypeScriptExpression> Arguments { get; }
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return string.Format("{0}.{1}({2})", Subject.GenerateCode(context), MethodName, string.Join(", ", Arguments.Select(x => x.GenerateCode(context))));
+            return $"{Subject.GenerateCode(context)}.{MethodName}({Arguments.GenerateCodeCommaSeparated(context)})";
         }
-
-        private readonly List<TypeScriptExpression> arguments = new List<TypeScriptExpression>();
     }
 }

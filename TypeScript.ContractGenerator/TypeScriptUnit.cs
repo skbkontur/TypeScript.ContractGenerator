@@ -29,6 +29,21 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return new TypeScriptTypeReference(typeDeclaration.Name);
         }
 
+        public TypeScriptVariableReference AddSymbolImport(string symbolName, string path)
+        {
+            var importedSymbol = new ImportedSymbol(symbolName, symbolName, path);
+            if (!symbolImports.ContainsKey(importedSymbol))
+            {
+                symbolImports.Add(importedSymbol, new TypeScriptImportFromPathStatement
+                    {
+                        TypeName = symbolName,
+                        CurrentUnit = this,
+                        PathToUnit = path,
+                    });
+            }
+            return new TypeScriptVariableReference(symbolName);
+        }
+
         public TypeScriptVariableReference AddDefaultSymbolImport(string localName, string path)
         {
             var importedSymbol = new ImportedSymbol("default", localName, path);

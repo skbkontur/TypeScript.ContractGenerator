@@ -1,8 +1,10 @@
+using JetBrains.Annotations;
+
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptCastExpression : TypeScriptExpression
     {
-        public TypeScriptCastExpression(TypeScriptExpression expression, TypeScriptType targetType)
+        public TypeScriptCastExpression([NotNull] TypeScriptExpression expression, [NotNull] TypeScriptType targetType)
         {
             Expression = expression;
             TargetType = targetType;

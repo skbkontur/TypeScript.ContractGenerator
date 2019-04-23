@@ -1,21 +1,19 @@
+using JetBrains.Annotations;
+
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptReturnStatement : TypeScriptStatement
     {
-        public TypeScriptReturnStatement()
-        {
-        }
-
-        public TypeScriptReturnStatement(TypeScriptExpression expression)
+        public TypeScriptReturnStatement([NotNull] TypeScriptExpression expression)
         {
             Expression = expression;
         }
 
-        public TypeScriptExpression Expression { get; set; }
+        public TypeScriptExpression Expression { get; }
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return "return " + Expression.GenerateCode(context) + ";";
+            return $"return {Expression.GenerateCode(context)};";
         }
     }
 }

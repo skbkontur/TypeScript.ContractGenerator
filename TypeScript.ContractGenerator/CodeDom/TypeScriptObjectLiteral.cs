@@ -2,16 +2,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using JetBrains.Annotations;
+
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptObjectLiteral : TypeScriptExpression
     {
-        public TypeScriptObjectLiteral(IEnumerable<TypeScriptObjectLiteralInitializer> properties)
+        public TypeScriptObjectLiteral([NotNull, ItemNotNull] params TypeScriptObjectLiteralInitializer[] properties)
         {
-            this.properties = properties.ToList();
+            Properties = new List<TypeScriptObjectLiteralInitializer>(properties);
         }
 
-        public List<TypeScriptObjectLiteralInitializer> Properties => properties;
+        public List<TypeScriptObjectLiteralInitializer> Properties { get; }
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
@@ -24,7 +26,5 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
             result.Append("}");
             return result.ToString();
         }
-
-        private readonly List<TypeScriptObjectLiteralInitializer> properties;
     }
 }

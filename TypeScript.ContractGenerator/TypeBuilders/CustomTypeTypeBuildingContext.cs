@@ -65,7 +65,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                 if (property.GetCustomAttributes<ContractGeneratorIgnoreAttribute>().Any())
                     continue;
 
-                var (isNullable, type) = TypeScriptGeneratorHelpers.ProcessNullable(property, property.PropertyType);
+                var (isNullable, type) = TypeScriptGeneratorHelpers.ProcessNullable(property, property.PropertyType, typeGenerator.Options.NullabilityMode);
 
                 if (TryGetGetOnlyEnumPropertyValue(property, out var value))
                 {

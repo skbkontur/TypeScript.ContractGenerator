@@ -8,11 +8,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            if (GenericTypeArguments != null && GenericTypeArguments.Length > 0)
-            {
-                return string.Format("type {0}<{1}> = {2};", Name, string.Join(", ", GenericTypeArguments), Definition.GenerateCode(context));
-            }
-            return string.Format("type {0} = {1};", Name, Definition.GenerateCode(context));
+            var genericArgs = string.Join(", ", GenericTypeArguments ?? new string[0]);
+            genericArgs = string.IsNullOrEmpty(genericArgs) ? string.Empty : $"<{genericArgs}>";
+            return $"type {Name}{genericArgs} = {Definition.GenerateCode(context)};";
         }
     }
 }

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+using SkbKontur.TypeScript.ContractGenerator.Extensions;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
@@ -47,7 +47,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return $"{genericTypeReference.GenerateCode(context)}<{string.Join(", ", genericArguments.Select(x => x.GenerateCode(context)))}>";
+            return $"{genericTypeReference.GenerateCode(context)}<{genericArguments.GenerateCodeCommaSeparated(context)}>";
         }
 
         private readonly TypeScriptTypeReference genericTypeReference;

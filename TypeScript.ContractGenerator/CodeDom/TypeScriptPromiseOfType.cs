@@ -1,21 +1,19 @@
+using JetBrains.Annotations;
+
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptPromiseOfType : TypeScriptType
     {
-        public TypeScriptPromiseOfType()
-        {
-        }
-
-        public TypeScriptPromiseOfType(TypeScriptType targetType)
+        public TypeScriptPromiseOfType([NotNull] TypeScriptType targetType)
         {
             TargetType = targetType;
         }
 
-        public TypeScriptType TargetType { get; set; }
+        public TypeScriptType TargetType { get; }
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return string.Format("Promise<{0}>", TargetType.GenerateCode(context));
+            return $"Promise<{TargetType.GenerateCode(context)}>";
         }
     }
 }

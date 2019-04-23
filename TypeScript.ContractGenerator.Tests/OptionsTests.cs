@@ -63,6 +63,18 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             var expectedCode = GetExpectedCode($"Options/{expectedFileName}");
             generatedCode.Should().Be(expectedCode);
         }
+
+        [TestCase("nullability-pessimistic", NullabilityMode.Pessimistic)]
+        [TestCase("nullability-optimistic", NullabilityMode.Optimistic)]
+        public void NullabilityModeTest(string expectedFileName, NullabilityMode mode)
+        {
+            var options = TypeScriptGenerationOptions.Default;
+            options.NullabilityMode = mode;
+
+            var generatedCode = GenerateCode(options, CustomTypeGenerator.Null, typeof(NullabilityModeRootType)).Single().Replace("\r\n", "\n");
+            var expectedCode = GetExpectedCode($"Options/{expectedFileName}");
+            generatedCode.Should().Be(expectedCode);
+        }
     }
 
     public class OptionsTypeScriptTests : TypeScriptTestBase
