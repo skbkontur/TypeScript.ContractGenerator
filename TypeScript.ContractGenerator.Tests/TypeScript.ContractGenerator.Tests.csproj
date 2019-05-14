@@ -25,6 +25,12 @@
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\abstract-class.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\custom-property-resolver.js" />
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\custom-property-resolver.ts" />
+      <None Update="Files\CustomGenerator\inherit-abstract-class.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Files\CustomGenerator\inherit-abstract-class.ts">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\nullable-types.js" />
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\nullable-types.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\simple-types.js" />
