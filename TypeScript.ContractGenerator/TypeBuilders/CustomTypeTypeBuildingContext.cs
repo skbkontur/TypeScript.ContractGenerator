@@ -36,12 +36,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         public override void Initialize(ITypeGenerator typeGenerator)
         {
+            Declaration = CreateComplexTypeScriptDeclarationWithoutDefinition(Type);
+            Unit.Body.Add(new TypeScriptExportTypeStatement {Declaration = Declaration});
+
             if (Type.BaseType != typeof(object) && Type.BaseType != typeof(ValueType) && Type.BaseType != typeof(MarshalByRefObject) && Type.BaseType != null)
             {
                 typeGenerator.ResolveType(Type.BaseType);
             }
-            Declaration = CreateComplexTypeScriptDeclarationWithoutDefinition(Type);
-            Unit.Body.Add(new TypeScriptExportTypeStatement {Declaration = Declaration});
         }
 
         public override void BuildDefinition(ITypeGenerator typeGenerator)
