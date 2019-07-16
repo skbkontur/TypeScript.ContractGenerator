@@ -132,10 +132,8 @@ namespace SkbKontur.TypeScript.ContractGenerator
         public TypeScriptType BuildAndImportType(TypeScriptUnit targetUnit, ICustomAttributeProvider attributeProvider, Type type)
         {
             var (isNullable, resultType) = TypeScriptGeneratorHelpers.ProcessNullable(attributeProvider, type, Options.NullabilityMode);
-            var result = GetTypeScriptType(targetUnit, resultType);
-            if (isNullable && Options.EnableExplicitNullability)
-                result = new TypeScriptNullableType(result);
-            return result;
+            var targetType = GetTypeScriptType(targetUnit, resultType);
+            return TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(targetType, isNullable, Options);
         }
 
         private TypeScriptType GetTypeScriptType(TypeScriptUnit targetUnit, Type type)

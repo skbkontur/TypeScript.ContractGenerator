@@ -4,6 +4,8 @@ using System.Reflection;
 
 using JetBrains.Annotations;
 
+using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+
 namespace SkbKontur.TypeScript.ContractGenerator
 {
     public static class TypeScriptGeneratorHelpers
@@ -28,6 +30,21 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return nullabilityMode == NullabilityMode.Pessimistic
                        ? attributes.All(x => x.GetType().Name != "NotNullAttribute")
                        : attributes.Any(x => x.GetType().Name == "CanBeNullAttribute");
+        }
+
+        [NotNull]
+        public static TypeScriptType BuildTargetNullableTypeByOptions([NotNull] TypeScriptType innerType, bool isNullable, [NotNull] TypeScriptGenerationOptions options)
+        {
+            if (isNullable && options.EnableExplicitNullability)
+            {
+                if (!options.UseGlobalNullable)
+                    return new TypeScriptOrNullType(innerType);
+
+                if (options.UseGlobalNullable)
+                    return new TypeScriptNullableType(innerType);
+            }
+
+            return innerType;
         }
     }
 }

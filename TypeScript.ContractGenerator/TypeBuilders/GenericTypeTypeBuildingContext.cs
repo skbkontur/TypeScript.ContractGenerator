@@ -29,7 +29,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             var arguments = new List<TypeScriptType>();
             foreach (var argument in type.GetGenericArguments())
             {
-                arguments.Add(typeGenerator.ResolveType(argument).ReferenceFrom(targetUnit, typeGenerator));
+                var targetType = typeGenerator.ResolveType(argument).ReferenceFrom(targetUnit, typeGenerator);
+                arguments.Add(targetType is INullabilityWrapperType nullabilityType ? nullabilityType.InnerType : targetType);
             }
             return new TypeScriptGenericTypeReference(typeReference as TypeScriptTypeReference, arguments.ToArray());
         }

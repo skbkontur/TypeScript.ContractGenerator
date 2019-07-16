@@ -121,15 +121,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             var propertyType = typeGenerator.BuildAndImportType(Unit, null, type);
 
             if (property.PropertyType.IsGenericParameter)
-                return new TypeScriptTypeReference(property.PropertyType.Name);
+                propertyType = new TypeScriptTypeReference(property.PropertyType.Name);
 
-            if (isNullable && options.EnableExplicitNullability && !options.UseGlobalNullable)
-                return new TypeScriptOrNullType(propertyType);
-
-            if (isNullable && options.EnableExplicitNullability && options.UseGlobalNullable)
-                return new TypeScriptNullableType(propertyType);
-
-            return propertyType;
+            return TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(propertyType, isNullable, options);
         }
 
         private static string BuildPropertyName(string propertyName)
