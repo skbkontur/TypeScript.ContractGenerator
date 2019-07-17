@@ -71,7 +71,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             {
                 var expected = File.ReadAllText($"{expectedDirectory}/{filename}").Replace("\r\n", "\n");
                 var actual = File.ReadAllText($"{actualDirectory}/{filename}").Replace("\r\n", "\n");
-                actual.Should().Be(expected);
+                actual.Diff(expected).ShouldBeEmpty();
             }
 
             var expectedDirectories = Directory.EnumerateDirectories(expectedDirectory).Select(Path.GetFileName).ToArray();

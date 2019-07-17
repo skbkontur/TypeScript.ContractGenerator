@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using FluentAssertions;
-
 using NUnit.Framework;
 
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
@@ -35,7 +33,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         {
             var generatedCode = GenerateCode(rootType).Single();
             var expectedCode = GetExpectedCode($"SimpleGenerator/{expectedFileName}");
-            generatedCode.Should().Be(expectedCode);
+            generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
 
         [TestCase(typeof(EnumWithConstGetterContainingRootType), EnumGenerationMode.FixedStringsAndDictionary, "not-annotated-const-getter-fixed-strings")]
@@ -44,7 +42,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         {
             var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnumGenerationMode = enumGenerationMode}, CustomTypeGenerator.Null, type).Single();
             var expectedCode = GetExpectedCode($"Enums/{expectedFileName}");
-            generatedCode.Should().Be(expectedCode);
+            generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
 
         [TestCase(typeof(FlatTypeLocator))]
@@ -66,7 +64,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         {
             var generatedCode = GenerateCode((ICustomTypeGenerator)Activator.CreateInstance(type), rootType).Single();
             var expectedCode = GetExpectedCode($"CustomGenerator/{expectedFileName}");
-            generatedCode.Should().Be(expectedCode);
+            generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
 
         [Test]
@@ -101,7 +99,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         {
             var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnumGenerationMode = enumGenerationMode}, CustomTypeGenerator.Null, type).Single();
             var expectedCode = GetExpectedCode($"Enums/{expectedFileName}");
-            generatedCode.Should().Be(expectedCode);
+            generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
     }
 }
