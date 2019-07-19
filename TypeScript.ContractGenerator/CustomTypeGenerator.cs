@@ -45,10 +45,9 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return this;
         }
 
-        public CustomTypeGenerator WithTypeBuildingContext<T, TContext>(Func<Type, TContext> createContext)
-            where TContext : ITypeBuildingContext
+        public CustomTypeGenerator WithTypeBuildingContext<T>(Func<Type, ITypeBuildingContext> createContext)
         {
-            typeBuildingContexts[typeof(T)] = t => createContext(t);
+            typeBuildingContexts[typeof(T)] = createContext;
             return this;
         }
 

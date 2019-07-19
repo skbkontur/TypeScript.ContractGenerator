@@ -23,6 +23,10 @@
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\array-types.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\abstract-class.js" />
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\abstract-class.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\custom-generator-builder-child.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\custom-generator-builder-child.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\custom-generator-builder.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\custom-generator-builder.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\custom-property-resolver.js" />
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\custom-property-resolver.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\inherit-abstract-class.js" />
