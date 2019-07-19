@@ -6,13 +6,14 @@ export type ArrayRootType = {
     nullableByteArray?: null | Array<null | number>;
     enums?: null | AnotherEnum[];
     nullableEnums?: null | Array<null | AnotherEnum>;
-    strings?: null | string[];
-    customTypes?: null | AnotherCustomType[];
-    stringsList?: null | string[];
+    strings?: null | Array<null | string>;
+    customTypes?: null | Array<null | AnotherCustomType>;
+    stringsList?: null | Array<null | string>;
     customTypesDict?: null | {
         [key in string]?: AnotherCustomType;
     };
     set?: null | HashSet<string>;
+    notNullsArray?: null | AnotherCustomType[];
 };
 export type AnotherEnum = 'B' | 'C';
 export const AnotherEnums = {

@@ -22,33 +22,28 @@ namespace SkbKontur.TypeScript.ContractGenerator
             this.customTypeGenerator = customTypeGenerator ?? throw new ArgumentNullException(nameof(customTypeGenerator));
             rootTypes = rootTypesProvider?.GetRootTypes() ?? throw new ArgumentNullException(nameof(rootTypesProvider));
             typeUnitFactory = new DefaultTypeScriptGeneratorOutput();
-            typeDeclarations = new Dictionary<Type, ITypeBuildingContext>();
+            typeDeclarations = new Dictionary<TypeDeclarationKey, ITypeBuildingContext>();
         }
 
         public TypeScriptUnit[] Generate()
         {
             ValidateOptions(Options);
-
-            foreach (var type in rootTypes)
-                RequestTypeBuild(type);
-
-            while (typeDeclarations.Values.Any(x => !x.IsDefinitionBuilt))
-            {
-                foreach (var currentType in typeDeclarations.ToArray())
-                {
-                    if (!currentType.Value.IsDefinitionBuilt)
-                        currentType.Value.BuildDefinition(this);
-                }
-            }
+            BuildAllDefinitions();
             return typeUnitFactory.Units;
         }
 
         public void GenerateFiles(string targetPath, JavaScriptTypeChecker javaScriptTypeChecker)
         {
             ValidateOptions(Options, javaScriptTypeChecker);
+            BuildAllDefinitions();
+            FilesGenerator.GenerateFiles(targetPath, typeUnitFactory, FilesGenerationContext.Create(javaScriptTypeChecker));
+        }
 
+        private void BuildAllDefinitions()
+        {
             foreach (var type in rootTypes)
                 RequestTypeBuild(type);
+
             while (typeDeclarations.Values.Any(x => !x.IsDefinitionBuilt))
             {
                 foreach (var currentType in typeDeclarations.ToArray())
@@ -57,7 +52,6 @@ namespace SkbKontur.TypeScript.ContractGenerator
                         currentType.Value.BuildDefinition(this);
                 }
             }
-            FilesGenerator.GenerateFiles(targetPath, typeUnitFactory, FilesGenerationContext.Create(javaScriptTypeChecker));
         }
 
         [SuppressMessage("ReSharper", "ParameterOnlyUsedForPreconditionCheck.Local")]
@@ -79,24 +73,32 @@ namespace SkbKontur.TypeScript.ContractGenerator
         [NotNull]
         public ITypeBuildingContext ResolveType([NotNull] Type type)
         {
-            if (typeDeclarations.ContainsKey(type))
+            return ResolveType(type, customAttributeProvider : null);
+        }
+
+        [NotNull]
+        private ITypeBuildingContext ResolveType([NotNull] Type type, [CanBeNull] ICustomAttributeProvider customAttributeProvider)
+        {
+            var typeDeclarationKey = new TypeDeclarationKey(type, customAttributeProvider);
+            if (typeDeclarations.ContainsKey(typeDeclarationKey))
             {
-                return typeDeclarations[type];
+                return typeDeclarations[typeDeclarationKey];
             }
             var typeLocation = customTypeGenerator.GetTypeLocation(type);
-            var typeBuildingContext = customTypeGenerator.ResolveType(typeLocation, type, typeUnitFactory) ?? GetTypeBuildingContext(typeLocation, type);
-            typeDeclarations.Add(type, typeBuildingContext);
+            var typeBuildingContext = customTypeGenerator.ResolveType(typeLocation, type, typeUnitFactory)
+                                      ?? GetTypeBuildingContext(typeLocation, type, customAttributeProvider);
+            typeDeclarations.Add(typeDeclarationKey, typeBuildingContext);
             typeBuildingContext.Initialize(this);
             return typeBuildingContext;
         }
 
-        private ITypeBuildingContext GetTypeBuildingContext(string typeLocation, Type type)
+        private ITypeBuildingContext GetTypeBuildingContext(string typeLocation, Type type, ICustomAttributeProvider customAttributeProvider)
         {
             if (BuildInTypeBuildingContext.Accept(type))
                 return new BuildInTypeBuildingContext(type);
 
             if (ArrayTypeBuildingContext.Accept(type))
-                return new ArrayTypeBuildingContext(type);
+                return new ArrayTypeBuildingContext(type, customAttributeProvider, Options);
 
             if (DictionaryTypeBuildingContext.Accept(type))
                 return new DictionaryTypeBuildingContext(type);
@@ -114,7 +116,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
                 var underlyingType = type.GenericTypeArguments.Single();
                 if (Options.EnableExplicitNullability)
                     return new NullableTypeBuildingContext(underlyingType, Options.UseGlobalNullable);
-                return GetTypeBuildingContext(typeLocation, underlyingType);
+                return GetTypeBuildingContext(typeLocation, underlyingType, underlyingType);
             }
 
             if (type.IsGenericType && !type.IsGenericTypeDefinition)
@@ -129,20 +131,23 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return new CustomTypeTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), type, customTypeGenerator, Options);
         }
 
-        public TypeScriptType BuildAndImportType(TypeScriptUnit targetUnit, ICustomAttributeProvider attributeProvider, Type type)
+        [NotNull]
+        public TypeScriptType BuildAndImportType([NotNull] TypeScriptUnit targetUnit, [CanBeNull] ICustomAttributeProvider customAttributeProvider, [NotNull] Type type)
         {
-            var (isNullable, resultType) = TypeScriptGeneratorHelpers.ProcessNullable(attributeProvider, type, Options.NullabilityMode);
-            var targetType = GetTypeScriptType(targetUnit, resultType);
+            var (isNullable, resultType) = TypeScriptGeneratorHelpers.ProcessNullable(customAttributeProvider, type, Options.NullabilityMode);
+            var targetType = GetTypeScriptType(targetUnit, resultType, customAttributeProvider);
             return TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(targetType, isNullable, Options);
         }
 
-        private TypeScriptType GetTypeScriptType(TypeScriptUnit targetUnit, Type type)
+        [NotNull]
+        private TypeScriptType GetTypeScriptType([NotNull] TypeScriptUnit targetUnit, [NotNull] Type type, [CanBeNull] ICustomAttributeProvider customAttributeProvider)
         {
-            if (typeDeclarations.ContainsKey(type))
-                return typeDeclarations[type].ReferenceFrom(targetUnit, this);
+            var typeDeclarationKey = new TypeDeclarationKey(type, customAttributeProvider);
+            if (typeDeclarations.ContainsKey(typeDeclarationKey))
+                return typeDeclarations[typeDeclarationKey].ReferenceFrom(targetUnit, this);
             if (type.IsGenericTypeDefinition && type.GetGenericTypeDefinition() == typeof(Nullable<>))
-                return new TypeScriptNullableType(GetTypeScriptType(targetUnit, type.GetGenericArguments()[0]));
-            var context = ResolveType(type);
+                return new TypeScriptNullableType(GetTypeScriptType(targetUnit, type.GetGenericArguments()[0], type.GetGenericArguments()[0]));
+            var context = ResolveType(type, customAttributeProvider);
             return context.ReferenceFrom(targetUnit, this);
         }
 
@@ -152,6 +157,6 @@ namespace SkbKontur.TypeScript.ContractGenerator
         private readonly Type[] rootTypes;
         private readonly DefaultTypeScriptGeneratorOutput typeUnitFactory;
         private readonly ICustomTypeGenerator customTypeGenerator;
-        private readonly Dictionary<Type, ITypeBuildingContext> typeDeclarations;
+        private readonly Dictionary<TypeDeclarationKey, ITypeBuildingContext> typeDeclarations;
     }
 }

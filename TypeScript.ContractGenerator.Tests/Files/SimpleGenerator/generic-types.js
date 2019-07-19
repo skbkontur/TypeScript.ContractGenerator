@@ -2,7 +2,7 @@
 export type GenericContainingRootType = {
     genericIntChild?: null | GenericChildType<number>;
     genericNullableIntChild?: null | GenericChildType<number>;
-    arrayGenericNullableIntChild?: null | GenericChildType<number>[];
+    arrayGenericNullableIntChild?: null | Array<null | GenericChildType<number>>;
     severalGenericParameters?: null | ChildWithSeveralGenericParameters<string, number>;
     genericChildType?: null | GenericChildType<ChildWithConstraint<string>>;
     genericHell?: null | GenericChildType<ChildWithConstraint<GenericChildType<string>>>;
@@ -10,7 +10,7 @@ export type GenericContainingRootType = {
 };
 export type GenericChildType<T> = {
     childType?: null | T;
-    childTypes?: null | T[];
+    childTypes?: null | Array<null | T>;
 };
 export type ChildWithSeveralGenericParameters<T1, T2> = {
     item1?: null | T1;

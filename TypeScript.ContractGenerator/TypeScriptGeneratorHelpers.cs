@@ -1,10 +1,10 @@
 using System;
-using System.Linq;
 using System.Reflection;
 
 using JetBrains.Annotations;
 
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+using SkbKontur.TypeScript.ContractGenerator.Extensions;
 
 namespace SkbKontur.TypeScript.ContractGenerator
 {
@@ -26,16 +26,15 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         private static bool CanBeNull([NotNull] ICustomAttributeProvider attributeContainer, NullabilityMode nullabilityMode)
         {
-            var attributes = attributeContainer.GetCustomAttributes(inherit : true);
             return nullabilityMode == NullabilityMode.Pessimistic
-                       ? attributes.All(x => x.GetType().Name != "NotNullAttribute")
-                       : attributes.Any(x => x.GetType().Name == "CanBeNullAttribute");
+                       ? !attributeContainer.IsNameDefined(AnnotationsNames.NotNull)
+                       : attributeContainer.IsNameDefined(AnnotationsNames.CanBeNull);
         }
 
         [NotNull]
         public static TypeScriptType BuildTargetNullableTypeByOptions([NotNull] TypeScriptType innerType, bool isNullable, [NotNull] TypeScriptGenerationOptions options)
         {
-            if (isNullable && options.EnableExplicitNullability)
+            if (!(innerType is INullabilityWrapperType) && isNullable && options.EnableExplicitNullability)
             {
                 if (!options.UseGlobalNullable)
                     return new TypeScriptOrNullType(innerType);
