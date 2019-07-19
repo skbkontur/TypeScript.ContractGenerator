@@ -19,7 +19,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [TestCase(EnumGenerationMode.FixedStringsAndDictionary, "enum-generation-fixed-strings")]
         public void EnumGenerationModeTest(EnumGenerationMode enumGenerationMode, string expectedFileName)
         {
-            var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnumGenerationMode = enumGenerationMode}, CustomTypeGenerator.Null, typeof(DefaultEnum)).Single().Replace("\r\n", "\n");
+            var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnumGenerationMode = enumGenerationMode}, CustomTypeGenerator.Null, typeof(DefaultEnum)).Single();
             var expectedCode = GetExpectedCode($"Options/{expectedFileName}");
             generatedCode.Should().Be(expectedCode);
         }
@@ -28,7 +28,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [TestCase(false, "optional-properties-disabled")]
         public void OptionalPropertiesTest(bool optionalPropertiesEnabled, string expectedFileName)
         {
-            var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnableOptionalProperties = optionalPropertiesEnabled}, CustomTypeGenerator.Null, typeof(SingleNullablePropertyType)).Single().Replace("\r\n", "\n");
+            var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnableOptionalProperties = optionalPropertiesEnabled}, CustomTypeGenerator.Null, typeof(SingleNullablePropertyType)).Single();
             var expectedCode = GetExpectedCode($"Options/{expectedFileName}");
             generatedCode.Should().Be(expectedCode);
         }
@@ -37,7 +37,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [TestCase(false, "explicit-nullability-disabled")]
         public void ExplicitNullabilityTest(bool explicitNullabilityEnabled, string expectedFileName)
         {
-            var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnableExplicitNullability = explicitNullabilityEnabled}, CustomTypeGenerator.Null, typeof(ExplicitNullabilityRootType)).Single().Replace("\r\n", "\n");
+            var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnableExplicitNullability = explicitNullabilityEnabled}, CustomTypeGenerator.Null, typeof(ExplicitNullabilityRootType)).Single();
             var expectedCode = GetExpectedCode($"Options/{expectedFileName}");
             generatedCode.Should().Be(expectedCode);
         }
@@ -46,7 +46,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [TestCase(false, "global-nullable-disabled")]
         public void GlobalNullableTest(bool useGlobalNullable, string expectedFileName)
         {
-            var generatedCode = GenerateCode(new TypeScriptGenerationOptions {UseGlobalNullable = useGlobalNullable}, CustomTypeGenerator.Null, typeof(GlobalNullableRootType)).Single().Replace("\r\n", "\n");
+            var generatedCode = GenerateCode(new TypeScriptGenerationOptions {UseGlobalNullable = useGlobalNullable}, CustomTypeGenerator.Null, typeof(GlobalNullableRootType)).Single();
             var expectedCode = GetExpectedCode($"Options/{expectedFileName}");
             generatedCode.Should().Be(expectedCode);
         }
@@ -59,7 +59,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             if (!string.IsNullOrEmpty(pluralizeSuffix))
                 options.Pluralize = s => s + pluralizeSuffix;
 
-            var generatedCode = GenerateCode(options, CustomTypeGenerator.Null, typeof(EnumContainingRootType)).Single().Replace("\r\n", "\n");
+            var generatedCode = GenerateCode(options, CustomTypeGenerator.Null, typeof(EnumContainingRootType)).Single();
             var expectedCode = GetExpectedCode($"Options/{expectedFileName}");
             generatedCode.Should().Be(expectedCode);
         }
@@ -71,7 +71,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             var options = TypeScriptGenerationOptions.Default;
             options.NullabilityMode = mode;
 
-            var generatedCode = GenerateCode(options, CustomTypeGenerator.Null, typeof(NullabilityModeRootType)).Single().Replace("\r\n", "\n");
+            var generatedCode = GenerateCode(options, CustomTypeGenerator.Null, typeof(NullabilityModeRootType)).Single();
             var expectedCode = GetExpectedCode($"Options/{expectedFileName}");
             generatedCode.Should().Be(expectedCode);
         }
@@ -87,7 +87,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [TestCase(EnumGenerationMode.TypeScriptEnum, "enum-generation-typescript-enum")]
         public void EnumGenerationModeTest(EnumGenerationMode enumGenerationMode, string expectedFileName)
         {
-            var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnumGenerationMode = enumGenerationMode}, CustomTypeGenerator.Null, typeof(DefaultEnum)).Single().Replace("\r\n", "\n");
+            var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnumGenerationMode = enumGenerationMode}, CustomTypeGenerator.Null, typeof(DefaultEnum)).Single();
             var expectedCode = GetExpectedCode($"Options/{expectedFileName}");
             generatedCode.Should().Be(expectedCode);
         }

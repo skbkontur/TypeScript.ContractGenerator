@@ -35,7 +35,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             var generator = new TypeScriptGenerator(options, customTypeGenerator, new RootTypesProvider(rootType));
             if (JavaScriptTypeChecker == JavaScriptTypeChecker.Flow && options.EnumGenerationMode == EnumGenerationMode.TypeScriptEnum)
                 throw new ArgumentException("Invalid EnumGenerationMode for JavaScriptTypeChecker.Flow");
-            return generator.Generate().Select(x => x.GenerateCode(new DefaultCodeGenerationContext(JavaScriptTypeChecker))).ToArray();
+            return generator.Generate().Select(x => x.GenerateCode(new DefaultCodeGenerationContext(JavaScriptTypeChecker)).Replace("\r\n", "\n")).ToArray();
         }
 
         protected void GenerateFiles(ICustomTypeGenerator customTypeGenerator, string folderName, params Type[] rootTypes)
@@ -94,6 +94,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         }
 
         private readonly FilesGenerationContext filesGenerationContext;
-        private JavaScriptTypeChecker JavaScriptTypeChecker => filesGenerationContext.JavaScriptTypeChecker;
+        protected JavaScriptTypeChecker JavaScriptTypeChecker => filesGenerationContext.JavaScriptTypeChecker;
     }
 }
