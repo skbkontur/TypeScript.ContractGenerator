@@ -17,9 +17,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
         {
         }
 
-        protected virtual (string ClassName, string Location) GetApiBase(Type controllerType)
+        protected virtual TypeLocation GetApiBase(Type controllerType)
         {
-            return ("ApiBase", "../apiBase/ApiBase");
+            return new TypeLocation
+                {
+                    Name = "ApiBase",
+                    Location = "../apiBase/ApiBase", 
+                };
         }
 
         protected virtual string GetApiName(Type controllerType)
@@ -74,8 +78,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                 };
             var typeScriptClassDefinition = new TypeScriptClassDefinition
                 {
-                    BaseClass = new TypeScriptTypeReference(baseApi.ClassName),
-                    ImplementedInterfaces = new TypeScriptType[] {new TypeScriptTypeReference("I" + apiName)},
+                    BaseClass = new TypeScriptTypeReference(baseApi.Name),
+                    ImplementedInterfaces = new TypeScriptType[] {new TypeScriptTypeReference(interfaceName)},
                 };
 
             typeScriptClassDefinition.Members.AddRange(
