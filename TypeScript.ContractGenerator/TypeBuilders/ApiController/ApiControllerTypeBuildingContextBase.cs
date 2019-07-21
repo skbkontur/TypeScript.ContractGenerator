@@ -59,16 +59,17 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
         {
             var baseApi = GetApiBase(type);
             var apiName = GetApiName(type);
+            var interfaceName = "I" + apiName;
             var methodInfos = GetMethodsToImplement(type);
 
             var definition = new TypeScriptInterfaceDefinition();
             definition.Members.AddRange(methodInfos
                                             .SelectMany(x => BuildApiInterfaceMember(x, buildAndImportType, type)));
-            targetUnit.AddSymbolImport(baseApi.ClassName, baseApi.Location);
+            targetUnit.AddSymbolImport(baseApi.Name, baseApi.Location);
 
             var interfaceDeclaration = new TypeScriptInterfaceDeclaration
                 {
-                    Name = "I" + apiName,
+                    Name = interfaceName,
                     Definition = definition
                 };
             var typeScriptClassDefinition = new TypeScriptClassDefinition
