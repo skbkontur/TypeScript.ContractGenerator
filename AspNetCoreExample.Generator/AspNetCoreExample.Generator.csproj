@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp2.0</TargetFramework>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\AspNetCoreExample.Api\AspNetCoreExample.Api.csproj" />
+      <ProjectReference Include="..\AspNetCoreExample.Infection\AspNetCoreExample.Infection.csproj" />
+      <ProjectReference Include="..\TypeScript.ContractGenerator\TypeScript.ContractGenerator.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <TypeScriptCompile Include="output\apiBase\ApiBase.ts" />
+      <TypeScriptCompile Include="output\apiBase\UserApiBase.ts" />
+      <TypeScriptCompile Include="output\dataTypes\Guid.ts" />
+    </ItemGroup>
+
+</Project>

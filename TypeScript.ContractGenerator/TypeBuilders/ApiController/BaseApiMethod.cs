@@ -1,4 +1,4 @@
-namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
+namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
 {
     public enum BaseApiMethod
     {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
 
-namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
+namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
 {
     public abstract class ApiControllerTypeBuildingContextBase : TypeBuildingContext
     {
@@ -59,11 +59,23 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
             var baseApi = GetApiBase(type);
             var apiName = GetApiName(type);
+            var methodInfos = GetMethodsToImplement(type);
+
+            var definition = new TypeScriptInterfaceDefinition();
+            definition.Members.AddRange(methodInfos
+                                            .SelectMany(x => BuildApiInterfaceMember(x, buildAndImportType, type)));
+            targetUnit.AddSymbolImport(baseApi.ClassName, baseApi.Location);
+
+            var interfaceDeclaration = new TypeScriptInterfaceDeclaration
+                {
+                    Name = "I" + apiName,
+                    Definition = definition
+                };
             var typeScriptClassDefinition = new TypeScriptClassDefinition
                 {
                     BaseClass = new TypeScriptTypeReference(baseApi.ClassName),
+                    ImplementedInterfaces = new TypeScriptType[] {new TypeScriptTypeReference("I" + apiName)},
                 };
-            var methodInfos = GetMethodsToImplement(type);
 
             typeScriptClassDefinition.Members.AddRange(
                 methodInfos
@@ -77,16 +89,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                             Defintion = typeScriptClassDefinition
                         }
                 });
-            var definition = new TypeScriptInterfaceDefinition();
-            definition.Members.AddRange(methodInfos
-                                            .SelectMany(x => BuildApiInterfaceMember(x, buildAndImportType, type)));
-            targetUnit.AddSymbolImport(baseApi.ClassName, baseApi.Location);
-
-            var interfaceDeclaration = new TypeScriptInterfaceDeclaration
-                {
-                    Name = "I" + apiName,
-                    Definition = definition
-                };
 
             return interfaceDeclaration;
         }

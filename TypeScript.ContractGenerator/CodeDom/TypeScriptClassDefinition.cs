@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
@@ -8,6 +9,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
         public List<TypeScriptClassMemberDefinition> Members => members;
 
         public TypeScriptType BaseClass { get; set; }
+        public TypeScriptType[] ImplementedInterfaces { get; set; }
 
         public string GenerateBody(string name, ICodeGenerationContext context)
         {
@@ -17,6 +19,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
                 result.Append(name).Append(" ");
             if (BaseClass != null)
                 result.Append("extends ").Append(BaseClass.GenerateCode(context)).Append(" ");
+            if (ImplementedInterfaces?.Any() == true)
+                result.Append("implements ").Append(string.Join(", ", ImplementedInterfaces.Select(x => x.GenerateCode(context)))).Append(" ");
             result.Append("{").Append(context.NewLine);
             foreach (var member in Members)
             {
