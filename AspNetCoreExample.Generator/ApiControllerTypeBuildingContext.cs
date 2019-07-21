@@ -3,8 +3,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-using AspNetCoreExample.Infection;
-
 using Microsoft.AspNetCore.Mvc;
 
 using SkbKontur.TypeScript.ContractGenerator;
@@ -103,8 +101,9 @@ namespace AspNetCoreExample.Generator
 
         protected override MethodInfo[] GetMethodsToImplement(Type controllerType)
         {
-            return controllerType.GetMethods()
-                                 .Where(x => x.GetCustomAttribute<GenerateContractsAttribute>() != null)
+            return controllerType.GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                                 .Where(m => !m.IsSpecialName)
+                                 .Where(x => x.DeclaringType == controllerType)
                                  .ToArray();
         }
 

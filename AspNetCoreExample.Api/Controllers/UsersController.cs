@@ -1,5 +1,4 @@
 ﻿using AspNetCoreExample.Api.Models;
-using AspNetCoreExample.Infection;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,13 +7,13 @@ namespace AspNetCoreExample.Api.Controllers
     [Route("v1/users")]
     public class UsersController : ControllerBase
     {
-        [HttpPost, GenerateContracts]
+        [HttpPost]
         public ActionResult CreateUsers([FromBody] User[] users)
         {
             return Ok();
         }
 
-        [HttpGet, GenerateContracts]
+        [HttpGet]
         public ActionResult<User[]> SearchUsers([FromQuery] string name)
         {
             return Ok();

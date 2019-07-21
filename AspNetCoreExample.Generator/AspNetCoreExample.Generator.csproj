@@ -7,7 +7,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\AspNetCoreExample.Api\AspNetCoreExample.Api.csproj" />
-      <ProjectReference Include="..\AspNetCoreExample.Infection\AspNetCoreExample.Infection.csproj" />
       <ProjectReference Include="..\TypeScript.ContractGenerator\TypeScript.ContractGenerator.csproj" />
     </ItemGroup>
 
