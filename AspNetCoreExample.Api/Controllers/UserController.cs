@@ -1,7 +1,6 @@
 using System;
 
 using AspNetCoreExample.Api.Models;
-using AspNetCoreExample.Infection;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,19 +9,19 @@ namespace AspNetCoreExample.Api.Controllers
     [Route("v1/user")]
     public class UserController : ControllerBase
     {
-        [HttpPost, GenerateContracts]
+        [HttpPost]
         public ActionResult CreateUser([FromBody] User user)
         {
             return Ok();
         }
         
-        [HttpDelete("{userId}"), GenerateContracts]
+        [HttpDelete("{userId}")]
         public ActionResult DeleteUser(Guid userId)
         {
             return Ok();
         }
 
-        [HttpGet("{userId}"), GenerateContracts]
+        [HttpGet("{userId}")]
         public ActionResult<User> GetUser(Guid userId)
         {
             return Ok(null);
