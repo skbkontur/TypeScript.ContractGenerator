@@ -24,10 +24,14 @@ namespace AspNetCoreExample.Generator
             return typeof(ControllerBase).IsAssignableFrom(type);
         }
 
-        protected override (string, string) GetApiBase(Type controllerType)
+        protected override TypeLocation GetApiBase(Type controllerType)
         {
-            var apiBase = GetApiBaseName(controllerType);
-            return (apiBase, $"apiBase/{apiBase}");
+            var apiBaseName = GetApiBaseName(controllerType);
+            return new TypeLocation
+                {
+                    Name = apiBaseName,
+                    Location = $"apiBase/{apiBaseName}",
+                };
         }
 
         private string GetApiBaseName(Type controllerType)
