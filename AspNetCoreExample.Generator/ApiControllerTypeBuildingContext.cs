@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 using SkbKontur.TypeScript.ContractGenerator;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController;
@@ -74,11 +75,9 @@ namespace AspNetCoreExample.Generator
 
         protected override string BuildRoute(Type controllerType, MethodInfo methodInfo)
         {
-            var routeTemplate = methodInfo.GetCustomAttribute<RouteAttribute>()?.Template
-                                ?? methodInfo.GetCustomAttribute<HttpGetAttribute>()?.Template
-                                ?? methodInfo.GetCustomAttribute<HttpPutAttribute>()?.Template
-                                ?? methodInfo.GetCustomAttribute<HttpPostAttribute>()?.Template
-                                ?? methodInfo.GetCustomAttribute<HttpDeleteAttribute>()?.Template;
+            var routeTemplate = methodInfo.GetCustomAttributes()
+                                          .Select(x => x is IRouteTemplateProvider routeTemplateProvider ? routeTemplateProvider.Template : null)
+                                          .SingleOrDefault(x => !string.IsNullOrEmpty(x));
             return AppendRoutePrefix(routeTemplate, controllerType);
         }
 
