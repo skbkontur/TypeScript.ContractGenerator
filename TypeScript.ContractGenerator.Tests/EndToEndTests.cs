@@ -84,7 +84,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             units.Select(x => x.Path).Should().Equal("", "a/b/c");
             var expectedCodeRoot = GetExpectedCode("CustomGenerator/custom-generator-builder");
             var expectedCodeChild = GetExpectedCode("CustomGenerator/custom-generator-builder-child");
-            code.Should().Equal(expectedCodeRoot, expectedCodeChild);
+            code.Length.Should().Be(2);
+            code[0].Diff(expectedCodeRoot).ShouldBeEmpty();
+            code[1].Diff(expectedCodeChild).ShouldBeEmpty();
         }
     }
 }
