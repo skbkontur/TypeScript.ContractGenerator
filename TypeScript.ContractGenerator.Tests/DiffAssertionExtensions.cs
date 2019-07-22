@@ -53,9 +53,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
                     case ChangeType.Inserted:
                         return $"+ {RemoveFirstIfWhitespace(p.Text, 2)}";
                     case ChangeType.Imaginary:
-                        return "";
                     case ChangeType.Modified:
-                        return $"! {RemoveFirstIfWhitespace(p.Text, 2)}";
+                        throw new NotSupportedException();
                     default:
                         throw new ArgumentOutOfRangeException();
                     }

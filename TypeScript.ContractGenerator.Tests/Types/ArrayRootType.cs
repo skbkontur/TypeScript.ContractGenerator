@@ -18,6 +18,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
 
         [ItemNotNull]
         public AnotherCustomType[] NotNullsArray { get; set; }
+
+        [NotNull, ItemNotNull]
+        public AnotherCustomType[] NotNullNotNullsArray { get; set; }
     }
 
     public enum AnotherEnum

@@ -14,6 +14,7 @@ export type ArrayRootType = {
     };
     set?: null | string[];
     notNullsArray?: null | AnotherCustomType[];
+    notNullNotNullsArray: AnotherCustomType[];
 };
 export type AnotherEnum = 'B' | 'C';
 export const AnotherEnums = {

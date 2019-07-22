@@ -9,5 +9,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
         public string CanBeNullString { get; set; }
 
         public string MaybeNotNullString { get; set; }
+
+        public string[] MaybeItemNotNullArray { get; set; }
     }
 }
