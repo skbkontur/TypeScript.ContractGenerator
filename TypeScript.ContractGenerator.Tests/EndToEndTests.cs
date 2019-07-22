@@ -35,7 +35,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         {
             var generatedCode = GenerateCode(rootType).Single();
             var expectedCode = GetExpectedCode($"SimpleGenerator/{expectedFileName}");
-            generatedCode.Should().Be(expectedCode);
+            generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
 
         [TestCase(typeof(EnumWithConstGetterContainingRootType), EnumGenerationMode.FixedStringsAndDictionary, "not-annotated-const-getter-fixed-strings")]
@@ -44,7 +44,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         {
             var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnumGenerationMode = enumGenerationMode}, CustomTypeGenerator.Null, type).Single();
             var expectedCode = GetExpectedCode($"Enums/{expectedFileName}");
-            generatedCode.Should().Be(expectedCode);
+            generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
 
         [TestCase(typeof(FlatTypeLocator))]
@@ -66,14 +66,14 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         {
             var generatedCode = GenerateCode((ICustomTypeGenerator)Activator.CreateInstance(type), rootType).Single();
             var expectedCode = GetExpectedCode($"CustomGenerator/{expectedFileName}");
-            generatedCode.Should().Be(expectedCode);
+            generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
 
         [Test]
         public void CustomGeneratorBuilderTest()
         {
             var customGenerator = new CustomTypeGenerator()
-                                  .WithTypeLocation<AnotherCustomType>(x => "a/b/c")
+                .WithTypeLocation<AnotherCustomType>(x => "a/b/c")
                 .WithTypeRedirect<byte[]>("ByteArray", @"DataTypes\ByteArray")
                 .WithTypeBuildingContext<HashSet<string>>(x => new CollectionTypeBuildingContext(x));
 
@@ -84,24 +84,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             units.Select(x => x.Path).Should().Equal("", "a/b/c");
             var expectedCodeRoot = GetExpectedCode("CustomGenerator/custom-generator-builder");
             var expectedCodeChild = GetExpectedCode("CustomGenerator/custom-generator-builder-child");
-            code.Should().Equal(expectedCodeRoot, expectedCodeChild);
-        }
-    }
-
-    public class EndToEndTypeScriptTests : TypeScriptTestBase
-    {
-        public EndToEndTypeScriptTests(JavaScriptTypeChecker javaScriptTypeChecker)
-            : base(javaScriptTypeChecker)
-        {
-        }
-
-        [TestCase(typeof(EnumWithConstGetterContainingRootType), EnumGenerationMode.TypeScriptEnum, "not-annotated-const-getter-typescript-enum")]
-        [TestCase(typeof(AnnotatedEnumWithConstGetterContainingRootType), EnumGenerationMode.TypeScriptEnum, "annotated-const-getter-typescript-enum")]
-        public void GenerateEnumWithConstGetterTest(Type type, EnumGenerationMode enumGenerationMode, string expectedFileName)
-        {
-            var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnumGenerationMode = enumGenerationMode}, CustomTypeGenerator.Null, type).Single();
-            var expectedCode = GetExpectedCode($"Enums/{expectedFileName}");
-            generatedCode.Should().Be(expectedCode);
+            code.Length.Should().Be(2);
+            code[0].Diff(expectedCodeRoot).ShouldBeEmpty();
+            code[1].Diff(expectedCodeChild).ShouldBeEmpty();
         }
     }
 }

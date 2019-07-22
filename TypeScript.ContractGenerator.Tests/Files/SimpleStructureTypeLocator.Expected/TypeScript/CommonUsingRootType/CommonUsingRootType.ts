@@ -3,5 +3,5 @@
 import { CommonType } from './../CommonType/CommonType';
 
 export type CommonUsingRootType = {
-    commonTypes?: null | CommonType[];
+    commonTypes?: null | Array<null | CommonType>;
 };

@@ -1,4 +1,4 @@
 
 export type GenericRootType<TType> = {
-    type?: TType;
+    type?: null | TType;
 };
