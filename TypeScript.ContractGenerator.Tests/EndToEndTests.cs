@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using FluentAssertions;
+
 using NUnit.Framework;
 
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
@@ -71,7 +73,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         public void CustomGeneratorBuilderTest()
         {
             var customGenerator = new CustomTypeGenerator()
-                                  .WithTypeLocation<AnotherCustomType>(x => "a/b/c")
+                .WithTypeLocation<AnotherCustomType>(x => "a/b/c")
                 .WithTypeRedirect<byte[]>("ByteArray", @"DataTypes\ByteArray")
                 .WithTypeBuildingContext<HashSet<string>>(x => new CollectionTypeBuildingContext(x));
 
@@ -83,23 +85,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             var expectedCodeRoot = GetExpectedCode("CustomGenerator/custom-generator-builder");
             var expectedCodeChild = GetExpectedCode("CustomGenerator/custom-generator-builder-child");
             code.Should().Equal(expectedCodeRoot, expectedCodeChild);
-        }
-    }
-
-    public class EndToEndTypeScriptTests : TypeScriptTestBase
-    {
-        public EndToEndTypeScriptTests(JavaScriptTypeChecker javaScriptTypeChecker)
-            : base(javaScriptTypeChecker)
-        {
-        }
-
-        [TestCase(typeof(EnumWithConstGetterContainingRootType), EnumGenerationMode.TypeScriptEnum, "not-annotated-const-getter-typescript-enum")]
-        [TestCase(typeof(AnnotatedEnumWithConstGetterContainingRootType), EnumGenerationMode.TypeScriptEnum, "annotated-const-getter-typescript-enum")]
-        public void GenerateEnumWithConstGetterTest(Type type, EnumGenerationMode enumGenerationMode, string expectedFileName)
-        {
-            var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnumGenerationMode = enumGenerationMode}, CustomTypeGenerator.Null, type).Single();
-            var expectedCode = GetExpectedCode($"Enums/{expectedFileName}");
-            generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
     }
 }
