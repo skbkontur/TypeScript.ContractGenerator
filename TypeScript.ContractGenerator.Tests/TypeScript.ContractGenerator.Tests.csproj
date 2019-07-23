@@ -20,6 +20,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\method-class.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\method-class.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\array-types.js" />
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\array-types.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\CustomGenerator\abstract-class.js" />

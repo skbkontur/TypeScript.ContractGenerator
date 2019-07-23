@@ -62,6 +62,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [TestCase(typeof(EnumWithConstGetterContainingRootType), typeof(TestCustomPropertyResolver), "custom-property-resolver")]
         [TestCase(typeof(FirstInheritor), typeof(TestCustomTypeGenerator), "inherit-abstract-class")]
         [TestCase(typeof(AbstractClassRootType), typeof(TestCustomTypeGenerator), "abstract-class")]
+        [TestCase(typeof(MethodRootType), typeof(TestCustomTypeGenerator), "method-class")]
         public void CustomGeneratorTest(Type rootType, Type type, string expectedFileName)
         {
             var generatedCode = GenerateCode((ICustomTypeGenerator)Activator.CreateInstance(type), rootType).Single();
