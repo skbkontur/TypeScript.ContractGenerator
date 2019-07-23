@@ -142,11 +142,12 @@ namespace SkbKontur.TypeScript.ContractGenerator
         [NotNull]
         private TypeScriptType GetTypeScriptType([NotNull] TypeScriptUnit targetUnit, [NotNull] Type type, [CanBeNull] ICustomAttributeProvider customAttributeProvider)
         {
+            customAttributeProvider = ArrayTypeBuildingContext.Accept(type) ? customAttributeProvider : null;
             var typeDeclarationKey = new TypeDeclarationKey(type, customAttributeProvider);
             if (typeDeclarations.ContainsKey(typeDeclarationKey))
                 return typeDeclarations[typeDeclarationKey].ReferenceFrom(targetUnit, this);
             if (type.IsGenericTypeDefinition && type.GetGenericTypeDefinition() == typeof(Nullable<>))
-                return new TypeScriptNullableType(GetTypeScriptType(targetUnit, type.GetGenericArguments()[0], type.GetGenericArguments()[0]));
+                return new TypeScriptNullableType(GetTypeScriptType(targetUnit, type.GetGenericArguments()[0], null));
             var context = ResolveType(type, customAttributeProvider);
             return context.ReferenceFrom(targetUnit, this);
         }

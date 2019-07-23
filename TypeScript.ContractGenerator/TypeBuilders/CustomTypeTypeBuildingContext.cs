@@ -118,8 +118,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         private TypeScriptType GetMaybeNullableComplexType(ITypeGenerator typeGenerator, Type type, PropertyInfo property, bool isNullable)
         {
-            var customAttributesProvider = ArrayTypeBuildingContext.Accept(type) ? property : null;
-            var propertyType = typeGenerator.BuildAndImportType(Unit, customAttributesProvider, type);
+            var propertyType = typeGenerator.BuildAndImportType(Unit, property, type);
 
             if (property.PropertyType.IsGenericParameter)
                 propertyType = new TypeScriptTypeReference(property.PropertyType.Name);
