@@ -12,6 +12,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
         public TypeDeclarationKey([NotNull] Type type, [CanBeNull] ICustomAttributeProvider customAttributeProvider)
         {
             this.type = type;
+            required = customAttributeProvider?.IsNameDefined(AnnotationsNames.Required) ?? false;
             notNull = customAttributeProvider?.IsNameDefined(AnnotationsNames.NotNull) ?? false;
             canBeNull = customAttributeProvider?.IsNameDefined(AnnotationsNames.CanBeNull) ?? false;
             itemNotNull = customAttributeProvider?.IsNameDefined(AnnotationsNames.ItemNotNull) ?? false;
@@ -25,6 +26,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
         private readonly bool canBeNull;
         private readonly bool itemNotNull;
         private readonly bool itemCanBeNull;
+        private readonly bool required;
 
         public override bool Equals([CanBeNull] object obj)
         {
@@ -39,7 +41,8 @@ namespace SkbKontur.TypeScript.ContractGenerator
                    && notNull == other.notNull
                    && canBeNull == other.canBeNull
                    && itemNotNull == other.itemNotNull
-                   && itemCanBeNull == other.itemCanBeNull;
+                   && itemCanBeNull == other.itemCanBeNull
+                   && required == other.required;
         }
 
         public override int GetHashCode()
@@ -51,13 +54,14 @@ namespace SkbKontur.TypeScript.ContractGenerator
                 hashCode = (hashCode * 397) ^ canBeNull.GetHashCode();
                 hashCode = (hashCode * 397) ^ itemNotNull.GetHashCode();
                 hashCode = (hashCode * 397) ^ itemCanBeNull.GetHashCode();
+                hashCode = (hashCode * 397) ^ required.GetHashCode();
                 return hashCode;
             }
         }
 
         public override string ToString()
         {
-            return $"Type: {type.Name}, NN: {notNull}, CBN: {canBeNull}, INN: {itemNotNull}, ICBN: {itemCanBeNull}";
+            return $"Type: {type.Name}, NN: {notNull}, CBN: {canBeNull}, INN: {itemNotNull}, ICBN: {itemCanBeNull}, R: {required}";
         }
     }
 }

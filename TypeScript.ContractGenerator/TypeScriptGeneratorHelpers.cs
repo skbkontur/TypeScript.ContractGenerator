@@ -27,7 +27,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
         private static bool CanBeNull([NotNull] ICustomAttributeProvider attributeContainer, NullabilityMode nullabilityMode)
         {
             return nullabilityMode == NullabilityMode.Pessimistic
-                       ? !attributeContainer.IsNameDefined(AnnotationsNames.NotNull)
+                       ? !attributeContainer.IsNameDefined(AnnotationsNames.NotNull) && !attributeContainer.IsNameDefined(AnnotationsNames.Required)
                        : attributeContainer.IsNameDefined(AnnotationsNames.CanBeNull);
         }
 
