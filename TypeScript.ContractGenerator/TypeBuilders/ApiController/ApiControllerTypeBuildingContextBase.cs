@@ -45,6 +45,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             return type;
         }
 
+        protected virtual TypeScriptType ResolveReturnType(MethodInfo methodInfo, Func<ICustomAttributeProvider, Type, TypeScriptType> buildAndImportType)
+        {
+            return null;
+        }
+
         protected virtual bool PassParameterToCall(ParameterInfo parameterInfo, Type controllerType) => true;
         
         protected virtual TypeScriptStatement WrapCall(MethodInfo methodInfo, TypeScriptReturnStatement call) => call;
@@ -125,9 +130,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
 
         private TypeScriptType GetMethodResult(MethodInfo methodInfo, Func<ICustomAttributeProvider, Type, TypeScriptType> buildAndImportType)
         {
-            var realType = ResolveReturnType(methodInfo.ReturnType);
-            return new TypeScriptPromiseOfType(buildAndImportType(methodInfo, realType));
+            if (methodResults.TryGetValue(methodInfo, out var result))
+                return result;
+            return methodResults[methodInfo] = ResolveReturnType(methodInfo, buildAndImportType) ?? new TypeScriptPromiseOfType(buildAndImportType(methodInfo, ResolveReturnType(methodInfo.ReturnType)));
         }
+
+        private Dictionary<MethodInfo, TypeScriptType> methodResults = new Dictionary<MethodInfo, TypeScriptType>();
 
         private TypeScriptReturnStatement CreateCall(MethodInfo methodInfo, Type controllerType)
         {
