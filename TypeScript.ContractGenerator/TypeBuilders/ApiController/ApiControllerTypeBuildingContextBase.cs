@@ -46,6 +46,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
         }
 
         protected virtual bool PassParameterToCall(ParameterInfo parameterInfo, Type controllerType) => true;
+        
+        protected virtual TypeScriptStatement WrapCall(MethodInfo methodInfo, TypeScriptReturnStatement call) => call;
 
         protected abstract BaseApiMethod ResolveBaseApiMethod(MethodInfo methodInfo);
         protected abstract string BuildRoute(Type controllerType, MethodInfo methodInfo);
@@ -104,7 +106,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                 {
                     IsAsync = true,
                     Result = GetMethodResult(methodInfo, buildAndImportType),
-                    Body = {CreateCall(methodInfo, controllerType)}
+                    Body = {WrapCall(methodInfo, CreateCall(methodInfo, controllerType))}
                 };
             functionDefinition.Arguments.AddRange(
                 methodInfo.GetParameters().Where(x => PassParameterToCall(x, controllerType)).Select(x => new TypeScriptArgumentDeclaration
