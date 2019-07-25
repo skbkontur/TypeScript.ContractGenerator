@@ -4,10 +4,10 @@ using SkbKontur.TypeScript.ContractGenerator.Extensions;
 
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
-    public class TypeScriptFunctionType : TypeScriptType
+    public class TypeScriptFunctionType : TypeScriptExpression
     {
         public List<TypeScriptArgumentDeclaration> Arguments => arguments;
-        public TypeScriptType Result { get; set; }
+        public TypeScriptExpression Result { get; set; }
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
