@@ -18,7 +18,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
                 return (true, underlyingType);
             }
 
-            if (attributeContainer == null || !type.IsClass)
+            if (attributeContainer == null || !type.IsClass && !type.IsInterface)
                 return (false, type);
 
             return (CanBeNull(attributeContainer, nullabilityMode), type);
