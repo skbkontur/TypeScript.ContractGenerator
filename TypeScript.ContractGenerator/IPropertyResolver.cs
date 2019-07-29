@@ -7,6 +7,6 @@ namespace SkbKontur.TypeScript.ContractGenerator
 {
     public interface IPropertyResolver
     {
-        bool TryResolveProperty(TypeScriptUnit unit, ITypeGenerator typeGenerator, Type type, PropertyInfo property, out TypeScriptTypeMemberDeclaration result);
+        TypeScriptTypeMemberDeclaration ResolveProperty(TypeScriptUnit unit, ITypeGenerator typeGenerator, Type type, PropertyInfo property);
     }
 }
