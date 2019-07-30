@@ -5,21 +5,19 @@ using System.Reflection;
 
 using SkbKontur.TypeScript.ContractGenerator.Attributes;
 
-namespace SkbKontur.TypeScript.ContractGenerator
+namespace SkbKontur.TypeScript.ContractGenerator.TypeProviders
 {
     public class AttributeRootTypesProvider : IRootTypesProvider
     {
-        public AttributeRootTypesProvider(Assembly[] assemblies, params Type[] additionalTypes)
+        public AttributeRootTypesProvider(params Assembly[] assemblies)
         {
             attributeSearchTypes = assemblies.SelectMany(x => x.GetTypes()).ToArray();
-            this.additionalTypes = additionalTypes;
         }
 
         public Type[] GetRootTypes()
         {
             return attributeSearchTypes.Where(x => x.GetCustomAttributes<ContractGeneratorGenerateAttribute>().Any())
                                        .SelectMany(x => GetTypes(x, x.GetCustomAttribute<ContractGeneratorGenerateAttribute>().Scope))
-                                       .Concat(additionalTypes)
                                        .ToArray();
         }
 
@@ -44,6 +42,5 @@ namespace SkbKontur.TypeScript.ContractGenerator
         }
 
         private readonly Type[] attributeSearchTypes;
-        private readonly Type[] additionalTypes;
     }
 }

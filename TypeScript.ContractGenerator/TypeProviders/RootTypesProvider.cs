@@ -2,7 +2,7 @@ using System;
 
 using JetBrains.Annotations;
 
-namespace SkbKontur.TypeScript.ContractGenerator
+namespace SkbKontur.TypeScript.ContractGenerator.TypeProviders
 {
     public class RootTypesProvider : IRootTypesProvider
     {

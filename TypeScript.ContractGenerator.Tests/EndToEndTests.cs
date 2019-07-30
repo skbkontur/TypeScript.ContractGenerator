@@ -10,6 +10,7 @@ using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 using SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators;
 using SkbKontur.TypeScript.ContractGenerator.Tests.Types;
+using SkbKontur.TypeScript.ContractGenerator.TypeProviders;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests
 {
