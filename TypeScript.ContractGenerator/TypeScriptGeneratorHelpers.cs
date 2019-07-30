@@ -18,7 +18,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
                 return (true, underlyingType);
             }
 
-            if (attributeContainer == null || !type.IsClass)
+            if (attributeContainer == null || !type.IsClass && !type.IsInterface)
                 return (false, type);
 
             return (CanBeNull(attributeContainer, nullabilityMode), type);
@@ -27,7 +27,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
         private static bool CanBeNull([NotNull] ICustomAttributeProvider attributeContainer, NullabilityMode nullabilityMode)
         {
             return nullabilityMode == NullabilityMode.Pessimistic
-                       ? !attributeContainer.IsNameDefined(AnnotationsNames.NotNull)
+                       ? !attributeContainer.IsNameDefined(AnnotationsNames.NotNull) && !attributeContainer.IsNameDefined(AnnotationsNames.Required)
                        : attributeContainer.IsNameDefined(AnnotationsNames.CanBeNull);
         }
 

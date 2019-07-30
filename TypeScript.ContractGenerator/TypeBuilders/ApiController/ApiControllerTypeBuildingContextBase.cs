@@ -45,7 +45,14 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             return type;
         }
 
+        protected virtual TypeScriptType ResolveReturnType(MethodInfo methodInfo, Func<ICustomAttributeProvider, Type, TypeScriptType> buildAndImportType)
+        {
+            return null;
+        }
+
         protected virtual bool PassParameterToCall(ParameterInfo parameterInfo, Type controllerType) => true;
+        
+        protected virtual TypeScriptStatement WrapCall(MethodInfo methodInfo, TypeScriptReturnStatement call) => call;
 
         protected abstract BaseApiMethod ResolveBaseApiMethod(MethodInfo methodInfo);
         protected abstract string BuildRoute(Type controllerType, MethodInfo methodInfo);
@@ -104,7 +111,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                 {
                     IsAsync = true,
                     Result = GetMethodResult(methodInfo, buildAndImportType),
-                    Body = {CreateCall(methodInfo, controllerType)}
+                    Body = {WrapCall(methodInfo, CreateCall(methodInfo, controllerType))}
                 };
             functionDefinition.Arguments.AddRange(
                 methodInfo.GetParameters().Where(x => PassParameterToCall(x, controllerType)).Select(x => new TypeScriptArgumentDeclaration
@@ -123,9 +130,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
 
         private TypeScriptType GetMethodResult(MethodInfo methodInfo, Func<ICustomAttributeProvider, Type, TypeScriptType> buildAndImportType)
         {
-            var realType = ResolveReturnType(methodInfo.ReturnType);
-            return new TypeScriptPromiseOfType(buildAndImportType(methodInfo, realType));
+            if (methodResults.TryGetValue(methodInfo, out var result))
+                return result;
+            return methodResults[methodInfo] = ResolveReturnType(methodInfo, buildAndImportType) ?? new TypeScriptPromiseOfType(buildAndImportType(methodInfo, ResolveReturnType(methodInfo.ReturnType)));
         }
+
+        private Dictionary<MethodInfo, TypeScriptType> methodResults = new Dictionary<MethodInfo, TypeScriptType>();
 
         private TypeScriptReturnStatement CreateCall(MethodInfo methodInfo, Type controllerType)
         {

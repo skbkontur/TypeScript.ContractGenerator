@@ -26,7 +26,7 @@ export type AnotherCustomType = {
 };
 export type HashSet<T> = {
     count: number;
-    comparer: IEqualityComparer<T>;
+    comparer?: null | IEqualityComparer<T>;
 };
 export type IEqualityComparer<T> = {
 };

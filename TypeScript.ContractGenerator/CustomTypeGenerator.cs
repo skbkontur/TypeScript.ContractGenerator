@@ -36,6 +36,12 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         public virtual TypeScriptTypeMemberDeclaration ResolveProperty(TypeScriptUnit unit, ITypeGenerator typeGenerator, Type type, PropertyInfo property)
         {
+            foreach (var propertyResolver in propertyResolvers)
+            {
+                var result = propertyResolver.ResolveProperty(unit, typeGenerator, type, property);
+                if(result != null)
+                    return result;
+            }
             return null;
         }
 
@@ -69,6 +75,12 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return this;
         }
 
+        public CustomTypeGenerator WithPropertyResolver(IPropertyResolver propertyResolver)
+        {
+            propertyResolvers.Add(propertyResolver);
+            return this;
+        }
+
         [NotNull]
         public static ICustomTypeGenerator Null => new NullCustomTypeGenerator();
 
@@ -77,5 +89,6 @@ namespace SkbKontur.TypeScript.ContractGenerator
         private readonly Dictionary<Type, Func<Type, ITypeBuildingContext>> typeBuildingContexts = new Dictionary<Type, Func<Type, ITypeBuildingContext>>();
         private readonly List<(Func<Type, bool> Accept, Func<TypeScriptUnit, Type, ITypeBuildingContext> CreateContext)> typeBuildingContextsWithAcceptanceChecking = new List<(Func<Type, bool> Accept, Func<TypeScriptUnit, Type, ITypeBuildingContext> CreateContext)>();
         private readonly List<(Func<Type, bool> Accept, Func<Type, string> GetLocation)> typeLocationRules = new List<(Func<Type, bool> Accept, Func<Type, string> GetLocation)>();
+        private readonly List<IPropertyResolver> propertyResolvers = new List<IPropertyResolver>();
     }
 }
