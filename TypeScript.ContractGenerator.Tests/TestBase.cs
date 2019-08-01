@@ -8,7 +8,6 @@ using NUnit.Framework;
 
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
-using SkbKontur.TypeScript.ContractGenerator.TypeProviders;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests
 {
