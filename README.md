@@ -121,7 +121,4 @@ This option is set to `Pessimistic` by default. When set to `Pessimistic`, gener
 
 ## Attributes
 
-There are several attributes that can be applied to properties
-
-* `ContractGeneratorIgnore` attribute makes generator skip current property.
-* `ContractGeneratorInferValue` signals to generator that value in property is constant. This attribute can be used only in classes that have default parameterless constructor.
+There is `ContractGeneratorIgnore` attribute that can be applied to properties and makes generator skip current property.
