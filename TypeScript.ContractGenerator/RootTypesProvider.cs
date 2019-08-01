@@ -18,7 +18,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
         }
 
         [NotNull]
-        public static IRootTypesProvider Default = new RootTypesProvider();
+        public static readonly IRootTypesProvider Default = new RootTypesProvider();
 
         private readonly Type[] rootTypes;
     }

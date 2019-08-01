@@ -6,7 +6,9 @@ using System.Reflection;
 
 using JetBrains.Annotations;
 
+using SkbKontur.TypeScript.ContractGenerator.Attributes;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+using SkbKontur.TypeScript.ContractGenerator.Extensions;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
 
@@ -76,6 +78,34 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return ResolveType(type, customAttributeProvider : null);
         }
 
+        [CanBeNull]
+        public TypeScriptTypeMemberDeclaration ResolveProperty([NotNull] TypeScriptUnit unit, [NotNull] Type type, [NotNull] PropertyInfo property)
+        {
+            var customMemberDeclaration = customTypeGenerator.ResolveProperty(unit, this, type, property);
+            if (customMemberDeclaration != null)
+                return customMemberDeclaration;
+
+            if (property.GetCustomAttributes<ContractGeneratorIgnoreAttribute>().Any())
+                return null;
+
+            var (isNullable, trueType) = TypeScriptGeneratorHelpers.ProcessNullable(property, property.PropertyType, Options.NullabilityMode);
+            return new TypeScriptTypeMemberDeclaration
+                {
+                    Name = property.Name.ToLowerCamelCase(),
+                    Optional = isNullable && Options.EnableOptionalProperties,
+                    Type = GetMaybeNullableComplexType(unit, trueType, property, isNullable),
+                };
+        }
+
+        private TypeScriptType GetMaybeNullableComplexType(TypeScriptUnit unit, Type type, PropertyInfo property, bool isNullable)
+        {
+            var propertyType = BuildAndImportType(unit, property, type);
+            if (property.PropertyType.IsGenericParameter)
+                propertyType = new TypeScriptTypeReference(property.PropertyType.Name);
+
+            return TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(propertyType, isNullable, Options);
+        }
+
         [NotNull]
         private ITypeBuildingContext ResolveType([NotNull] Type type, [CanBeNull] ICustomAttributeProvider customAttributeProvider)
         {
@@ -126,9 +156,9 @@ namespace SkbKontur.TypeScript.ContractGenerator
                 return new GenericParameterTypeBuildingContext(type);
 
             if (type.IsGenericTypeDefinition)
-                return new CustomTypeTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), type, customTypeGenerator, Options);
+                return new CustomTypeTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), type);
 
-            return new CustomTypeTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), type, customTypeGenerator, Options);
+            return new CustomTypeTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), type);
         }
 
         [NotNull]

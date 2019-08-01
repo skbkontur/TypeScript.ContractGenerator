@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.8 - 2019.08.01
+- Add `RequiredAttribute` support
+- Check interfaces' nullability
+- Custom property resolving setup via fluent configuration
+- Correct attributes retrieving for overriden properties
+- Add `TypeScriptArrowFunction` to CodeDom
+- Move `ResolveProperty` to `ITypeGenerator`
+- Remove `ContractGeneratorInferValue` attribute
+- Add `DerivedTypesUnionBuildingContext`
+
 ## v1.7 - 2019.07.22
 - Fix nullability issues in generic types
 - Add ItemNotNull/ItemCanBeNull support
