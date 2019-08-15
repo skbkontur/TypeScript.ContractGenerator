@@ -8,6 +8,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
         public ChildWithSeveralGenericParameters<string, int> SeveralGenericParameters { get; set; }
         public GenericChildType<ChildWithConstraint<string>> GenericChildType { get; set; }
         public GenericChildType<ChildWithConstraint<GenericChildType<string>>> GenericHell { get; set; }
+        public GenericChildTypeWithAttributes<int> GenericNotNullAttribute { get; set; }
     }
 
     public class GenericChildType<T>
@@ -26,5 +27,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
     {
         public T1 Item1 { get; set; }
         public T2 Item2 { get; set; }
+    }
+
+    public class GenericChildTypeWithAttributes<T>
+    {
+        [NotNull]
+        public T NotNullProperty { get; set; }
     }
 }

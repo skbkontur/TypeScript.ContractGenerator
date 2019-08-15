@@ -1,8 +1,10 @@
 using System;
-using System.Linq;
 using System.Reflection;
 
 using JetBrains.Annotations;
+
+using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+using SkbKontur.TypeScript.ContractGenerator.Extensions;
 
 namespace SkbKontur.TypeScript.ContractGenerator
 {
@@ -16,7 +18,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
                 return (true, underlyingType);
             }
 
-            if (attributeContainer == null || !type.IsClass)
+            if (attributeContainer == null || !type.IsClass && !type.IsInterface)
                 return (false, type);
 
             return (CanBeNull(attributeContainer, nullabilityMode), type);
@@ -24,10 +26,24 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         private static bool CanBeNull([NotNull] ICustomAttributeProvider attributeContainer, NullabilityMode nullabilityMode)
         {
-            var attributes = attributeContainer.GetCustomAttributes(inherit : true);
             return nullabilityMode == NullabilityMode.Pessimistic
-                       ? attributes.All(x => x.GetType().Name != "NotNullAttribute")
-                       : attributes.Any(x => x.GetType().Name == "CanBeNullAttribute");
+                       ? !attributeContainer.IsNameDefined(AnnotationsNames.NotNull) && !attributeContainer.IsNameDefined(AnnotationsNames.Required)
+                       : attributeContainer.IsNameDefined(AnnotationsNames.CanBeNull);
+        }
+
+        [NotNull]
+        public static TypeScriptType BuildTargetNullableTypeByOptions([NotNull] TypeScriptType innerType, bool isNullable, [NotNull] TypeScriptGenerationOptions options)
+        {
+            if (!(innerType is INullabilityWrapperType) && isNullable && options.EnableExplicitNullability)
+            {
+                if (!options.UseGlobalNullable)
+                    return new TypeScriptOrNullType(innerType);
+
+                if (options.UseGlobalNullable)
+                    return new TypeScriptNullableType(innerType);
+            }
+
+            return innerType;
         }
     }
 }

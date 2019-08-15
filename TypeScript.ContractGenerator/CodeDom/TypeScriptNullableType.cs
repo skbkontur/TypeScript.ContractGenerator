@@ -1,6 +1,6 @@
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
-    public class TypeScriptNullableType : TypeScriptType
+    public class TypeScriptNullableType : TypeScriptType, INullabilityWrapperType
     {
         public TypeScriptNullableType(TypeScriptType innerType)
         {

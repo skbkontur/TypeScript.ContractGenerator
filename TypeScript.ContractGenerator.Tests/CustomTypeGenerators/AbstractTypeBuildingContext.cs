@@ -29,9 +29,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
                     Definition = new TypeScriptUnionType(types.Select(x =>
                         {
                             var resultType = typeGenerator.BuildAndImportType(unit, x, x);
-                            if(resultType is TypeScriptNullableType resultNullableType)
+                            if(resultType is INullabilityWrapperType nullableType)
                             {
-                                return resultNullableType.InnerType;
+                                return nullableType.InnerType;
                             }
                             return resultType;
                         }).ToArray())

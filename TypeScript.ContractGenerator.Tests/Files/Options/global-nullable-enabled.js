@@ -4,8 +4,8 @@ export type GlobalNullableRootType = {
     nullableInt?: ?number;
     nullableInts?: ??number[];
     intGeneric?: ?GenericClass<number>;
-    nullableIntGeneric?: ?GenericClass<?number>;
+    nullableIntGeneric?: ?GenericClass<number>;
 };
 export type GenericClass<T> = {
-    genericType?: T;
+    genericType?: ?T;
 };
