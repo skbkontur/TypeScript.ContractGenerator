@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.8 - 2019.08.01
+## v1.8 - 2019.08.26
 - Add `RequiredAttribute` support
 - Check interfaces' nullability
 - Custom property resolving setup via fluent configuration
@@ -9,6 +9,7 @@
 - Move `ResolveProperty` to `ITypeGenerator`
 - Remove `ContractGeneratorInferValue` attribute
 - Add `DerivedTypesUnionBuildingContext`
+- Add `Upload` method to api type building context
 
 ## v1.7 - 2019.07.22
 - Fix nullability issues in generic types
