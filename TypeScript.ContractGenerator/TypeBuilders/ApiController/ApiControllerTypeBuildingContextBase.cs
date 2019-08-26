@@ -54,6 +54,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
         
         protected virtual TypeScriptStatement WrapCall(MethodInfo methodInfo, TypeScriptReturnStatement call) => call;
 
+        protected virtual string GetApiClassName(string apiName) => apiName;
+        
         protected abstract BaseApiMethod ResolveBaseApiMethod(MethodInfo methodInfo);
         protected abstract string BuildRoute(Type controllerType, MethodInfo methodInfo);
         protected abstract ParameterInfo[] GetQueryParameters(ParameterInfo[] parameters, Type controllerType);
@@ -97,7 +99,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                 {
                     Declaration = new TypeScriptClassDeclaration
                         {
-                            Name = apiName,
+                            Name = GetApiClassName(apiName),
                             Defintion = typeScriptClassDefinition
                         }
                 });
@@ -152,6 +154,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                 return GenerateMethodCallWithBody(methodInfo, "delete", controllerType);
             case BaseApiMethod.Download:
                 return GenerateMethodCallWithBody(methodInfo, "download", controllerType);
+            case BaseApiMethod.Upload:
+                return GenerateMethodCallWithBody(methodInfo, "upload", controllerType);
             default:
                 throw new ArgumentOutOfRangeException();
             }
