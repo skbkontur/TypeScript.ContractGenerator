@@ -152,6 +152,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                 return GenerateMethodCallWithBody(methodInfo, "delete", controllerType);
             case BaseApiMethod.Download:
                 return GenerateMethodCallWithBody(methodInfo, "download", controllerType);
+            case BaseApiMethod.Upload:
+                return GenerateMethodCallWithBody(methodInfo, "upload", controllerType);
             default:
                 throw new ArgumentOutOfRangeException();
             }
