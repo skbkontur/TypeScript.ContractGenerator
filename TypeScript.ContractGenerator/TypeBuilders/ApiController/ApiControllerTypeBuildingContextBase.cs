@@ -179,9 +179,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
 
         private TypeScriptExpression GetBodyExpression(MethodInfo methodInfo, string methodName, Type controllerType)
         {
-            var bodyParameter = GetBody(methodInfo.GetParameters(), controllerType);
-
-            return GenerateCustomBody(methodInfo, methodName, controllerType) ?? GenerateConstructBody(bodyParameter);
+            return GenerateCustomBody(methodInfo, methodName, controllerType) ??
+                   GenerateConstructBody(GetBody(methodInfo.GetParameters(), controllerType));
         }
 
         private static TypeScriptExpression GenerateConstructBody(ParameterInfo parameter)
