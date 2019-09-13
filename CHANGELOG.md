@@ -10,6 +10,7 @@
 - Remove `ContractGeneratorInferValue` attribute
 - Add `DerivedTypesUnionBuildingContext`
 - Add `Upload` method to api type building context
+- Add `virtual GenerateCustomBody` into `ApiControllerTypeBuildingContextBase` for request body building customization
 
 ## v1.7 - 2019.07.22
 - Fix nullability issues in generic types
