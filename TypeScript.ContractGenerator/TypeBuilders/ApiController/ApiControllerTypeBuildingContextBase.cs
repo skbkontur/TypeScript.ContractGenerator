@@ -173,8 +173,14 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                         GetQueryParameters(methodInfo.GetParameters(), controllerType),
                         route
                         ),
-                    GenerateConstructBody(GetBody(methodInfo.GetParameters(), controllerType))
+                    GetBodyExpression(methodInfo, methodName, controllerType)
                     ));
+        }
+
+        private TypeScriptExpression GetBodyExpression(MethodInfo methodInfo, string methodName, Type controllerType)
+        {
+            return GenerateCustomBody(methodInfo, methodName, controllerType) ??
+                   GenerateConstructBody(GetBody(methodInfo.GetParameters(), controllerType));
         }
 
         private static TypeScriptExpression GenerateConstructBody(ParameterInfo parameter)
@@ -188,6 +194,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             return new TypeScriptObjectLiteral(
                 new TypeScriptObjectLiteralSpread(new TypeScriptVariableReference(parameter.Name))
                 );
+        }
+
+        protected virtual TypeScriptExpression GenerateCustomBody(MethodInfo methodInfo, string methodName, Type controllerType)
+        {
+            return null;
         }
 
         private static TypeScriptExpression GenerateConstructGetParams(ParameterInfo[] parameters, string routeTemplate)
