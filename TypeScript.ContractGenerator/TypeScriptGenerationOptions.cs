@@ -10,7 +10,9 @@ namespace SkbKontur.TypeScript.ContractGenerator
         public EnumGenerationMode EnumGenerationMode { get; set; } = EnumGenerationMode.FixedStringsAndDictionary;
 
         public NullabilityMode NullabilityMode { get; set; } = NullabilityMode.Pessimistic;
-        
+
+        public LinterDisableMode LinterDisableMode { get; set; } = LinterDisableMode.TsLint;
+
         public bool EnableOptionalProperties { get; set; } = true;
 
         public bool EnableExplicitNullability { get; set; } = true;

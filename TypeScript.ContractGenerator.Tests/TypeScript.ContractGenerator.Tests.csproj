@@ -2,7 +2,7 @@
 
     <PropertyGroup>
       <IsPackable>false</IsPackable>
-      <TargetFrameworks>net472;netcoreapp2.1</TargetFrameworks>
+      <TargetFrameworks>net472;netcoreapp3.0</TargetFrameworks>
       <AssemblyName>SkbKontur.TypeScript.ContractGenerator.Tests</AssemblyName>
       <RootNamespace>SkbKontur.TypeScript.ContractGenerator.Tests</RootNamespace>
     </PropertyGroup>
@@ -13,10 +13,10 @@
 
     <ItemGroup>
       <PackageReference Include="DiffPlex" Version="1.4.4" />
-      <PackageReference Include="FluentAssertions" Version="5.7.0" />
-      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+      <PackageReference Include="FluentAssertions" Version="5.9.0" />
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.3.0" />
       <PackageReference Include="NUnit" Version="3.12.0" />
-      <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
+      <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
     </ItemGroup>
 
     <ItemGroup>
