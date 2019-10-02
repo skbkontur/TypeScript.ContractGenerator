@@ -38,7 +38,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
         {
             ValidateOptions(Options, javaScriptTypeChecker);
             BuildAllDefinitions();
-            FilesGenerator.GenerateFiles(targetPath, typeUnitFactory, FilesGenerationContext.Create(javaScriptTypeChecker));
+            FilesGenerator.GenerateFiles(targetPath, typeUnitFactory, FilesGenerationContext.Create(javaScriptTypeChecker, Options.LinterDisableMode));
         }
 
         private void BuildAllDefinitions()

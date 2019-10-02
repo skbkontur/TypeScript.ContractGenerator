@@ -17,7 +17,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
     {
         protected TestBase(JavaScriptTypeChecker javaScriptTypeChecker)
         {
-            filesGenerationContext = FilesGenerationContext.Create(javaScriptTypeChecker);
+            filesGenerationContext = FilesGenerationContext.Create(javaScriptTypeChecker, LinterDisableMode.TsLint);
         }
 
         protected string[] GenerateCode(Type rootType)
