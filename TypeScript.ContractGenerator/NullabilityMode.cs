@@ -4,5 +4,6 @@ namespace SkbKontur.TypeScript.ContractGenerator
     {
         Pessimistic,
         Optimistic,
+        NullableReference,
     }
 }
