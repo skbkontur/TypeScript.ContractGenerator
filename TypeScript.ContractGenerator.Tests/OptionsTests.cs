@@ -73,6 +73,15 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             var expectedCode = GetExpectedCode($"Options/{expectedFileName}");
             generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
+
+        [Test]
+        public void TestNullableReferences()
+        {
+            var options = new TypeScriptGenerationOptions {NullabilityMode = NullabilityMode.NullableReference};
+            var generatedCode = GenerateCode(options, CustomTypeGenerator.Null, typeof(NullableReferenceType)).Single();
+            var expectedCode = GetExpectedCode("Options/nullable-reference");
+            generatedCode.Diff(expectedCode).ShouldBeEmpty();
+        }
     }
 
     public class OptionsTypeScriptTests : TypeScriptTestBase

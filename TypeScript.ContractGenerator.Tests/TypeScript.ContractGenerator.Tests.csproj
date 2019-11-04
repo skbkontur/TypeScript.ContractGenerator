@@ -5,6 +5,7 @@
       <TargetFrameworks>net472;netcoreapp3.0</TargetFrameworks>
       <AssemblyName>SkbKontur.TypeScript.ContractGenerator.Tests</AssemblyName>
       <RootNamespace>SkbKontur.TypeScript.ContractGenerator.Tests</RootNamespace>
+      <LangVersion>8</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -67,6 +68,8 @@
       <None CopyToOutputDirectory="Always" Update="Files\Options\nullability-optimistic.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\Options\nullability-pessimistic.js" />
       <None CopyToOutputDirectory="Always" Update="Files\Options\nullability-pessimistic.ts" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\nullable-reference.js" />
+      <None CopyToOutputDirectory="Always" Update="Files\Options\nullable-reference.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\Options\optional-properties-disabled.js" />
       <None CopyToOutputDirectory="Always" Update="Files\Options\optional-properties-disabled.ts" />
       <None CopyToOutputDirectory="Always" Update="Files\Options\optional-properties-enabled.js" />
