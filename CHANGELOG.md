@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.8.x - 2019.11.25
+- Use [SourceLink](https://github.com/dotnet/sourcelink) to help ReSharper decompiler show actual code.
+
 ## v1.8 - 2019.08.26
 - Add `RequiredAttribute` support
 - Check interfaces' nullability
