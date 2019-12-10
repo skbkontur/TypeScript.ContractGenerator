@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reflection;
 
 using JetBrains.Annotations;
@@ -28,8 +29,23 @@ namespace SkbKontur.TypeScript.ContractGenerator
         {
             if (NullabilityMode.NullableReference == nullabilityMode)
             {
-                var agf1 = attributeContainer.IsNameDefined(AnnotationsNames.Nullable);
-                return !attributeContainer.IsNameDefined(AnnotationsNames.Nullable);
+                var nullableAttribute = attributeContainer.GetCustomAttributes(true).SingleOrDefault(a => a.GetType().Name == AnnotationsNames.Nullable);
+                if (nullableAttribute is null)
+                {
+                    return false;
+                }
+                var flags = nullableAttribute.GetType().GetField("NullableFlags").GetValue(nullableAttribute) as byte[];
+                if (flags != null && flags[0] == 2)
+                {
+                    return true;
+                }
+                
+                if (flags != null && flags[0] == 1)
+                {
+                    return false;
+                }
+                // 1 -not null
+                return false;
             }
 
             return nullabilityMode == NullabilityMode.Pessimistic

@@ -1,13 +1,13 @@
 
 export type NullableReferenceType = {
     string: string;
-    nullableString: string;
+    nullableString?: null | string;
     array: string[];
     nullableStringArray: string[];
-    nullableArrayOfStrings: string[];
-    nullableArrayOfNullableStrings: string[];
+    nullableArrayOfStrings?: null | string[];
+    nullableArrayOfNullableStrings?: null | string[];
     list: string[];
-    nullableList: string[];
+    nullableList?: null | string[];
     dictionary: {
         [key in string]?: string;
     };
@@ -17,14 +17,14 @@ export type NullableReferenceType = {
     dictionaryWithNullableValue: {
         [key in string]?: string;
     };
-    nullableDictionary: {
+    nullableDictionary?: null | {
         [key in string]?: string;
     };
     tuple: Tuple<string, string, string>;
     nullableFirstItemTuple: Tuple<string, string, string>;
     nullableSecondItemTuple: Tuple<string, string, string>;
     nullableThirdItemTuple: Tuple<string, string, string>;
-    nullableTuple: Tuple<string, string, string>;
+    nullableTuple?: null | Tuple<string, string, string>;
 };
 export type Tuple<T1, T2, T3> = {
     item1: T1;

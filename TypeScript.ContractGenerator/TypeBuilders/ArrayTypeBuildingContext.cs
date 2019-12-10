@@ -56,6 +56,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         private bool CanItemBeNull()
         {
+            //todo add nullableAttribute
             if (elementType.IsValueType || elementType.IsEnum || customAttributeProvider == null)
                 return false;
             return options.NullabilityMode == NullabilityMode.Pessimistic

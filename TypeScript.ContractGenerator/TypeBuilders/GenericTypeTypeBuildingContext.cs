@@ -22,7 +22,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         public void BuildDefinition(ITypeGenerator typeGenerator)
         {
         }
-
+//todo add nullable attribute handler
         public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
             var typeReference = typeGenerator.ResolveType(type.GetGenericTypeDefinition()).ReferenceFrom(targetUnit, typeGenerator);
