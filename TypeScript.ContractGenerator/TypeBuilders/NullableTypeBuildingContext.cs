@@ -3,7 +3,7 @@ using System;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
-{
+{//todo
     public class NullableTypeBuildingContext : ITypeBuildingContext
     {
         public NullableTypeBuildingContext(Type nullableUnderlyingType, bool useGlobalNullable)
