@@ -92,8 +92,8 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return new TypeScriptTypeMemberDeclaration
                 {
                     Name = property.Name.ToLowerCamelCase(),
-                    Optional = isNullable && Options.EnableOptionalProperties,
-                    Type = GetMaybeNullableComplexType(unit, trueType, property, isNullable),
+                    Optional = isNullable.Length>0 && isNullable[0] && Options.EnableOptionalProperties,
+                    Type = GetMaybeNullableComplexType(unit, trueType, property, isNullable.Length>1 && isNullable[1]),
                 };
         }
 
@@ -150,7 +150,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             }
 
             if (type.IsGenericType && !type.IsGenericTypeDefinition)
-                return new GenericTypeTypeBuildingContext(type);
+                return new GenericTypeTypeBuildingContext(type, customAttributeProvider, Options);
 
             if (type.IsGenericParameter)
                 return new GenericParameterTypeBuildingContext(type);
@@ -166,7 +166,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
         {
             var (isNullable, resultType) = TypeScriptGeneratorHelpers.ProcessNullable(customAttributeProvider, type, Options.NullabilityMode);
             var targetType = GetTypeScriptType(targetUnit, resultType, customAttributeProvider);
-            return TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(targetType, isNullable, Options);
+            return TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(targetType, isNullable[0], Options);
         }
 
         [NotNull]
