@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
@@ -8,9 +10,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class GenericTypeTypeBuildingContext : ITypeBuildingContext
     {
-        public GenericTypeTypeBuildingContext(Type type)
+        public GenericTypeTypeBuildingContext(Type type, ICustomAttributeProvider customAttributeProvider, TypeScriptGenerationOptions options)
         {
             this.type = type;
+            this.customAttributeProvider = customAttributeProvider;
+            this.options = options;
         }
 
         public bool IsDefinitionBuilt => true;
@@ -30,12 +34,32 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             foreach (var argument in type.GetGenericArguments())
             {
                 var targetType = typeGenerator.ResolveType(argument).ReferenceFrom(targetUnit, typeGenerator);
+                if (options.UseGlobalNullable)
+                {
+                    var nullableAttribute = customAttributeProvider.GetCustomAttributes(true).SingleOrDefault(a => a.GetType().Name == AnnotationsNames.Nullable);
+                    if (nullableAttribute is null)
+                    {
+                        //false;
+                    }
+                    var flags = nullableAttribute.GetType().GetField("NullableFlags").GetValue(nullableAttribute) as byte[];
+                
+                    if (flags != null )
+                    {
+                        //return Enumerable.Range(0, 10).Select(index => flags.Length > 1 && flags[1] == 2).ToArray();
+                        
+                    }
+                
+                    // 1 -not null
+                
+                }
                 arguments.Add(targetType is INullabilityWrapperType nullabilityType ? nullabilityType.InnerType : targetType);
             }
             return new TypeScriptGenericTypeReference(typeReference as TypeScriptTypeReference, arguments.ToArray());
         }
 
         private readonly Type type;
+        private readonly ICustomAttributeProvider customAttributeProvider;
+        private readonly TypeScriptGenerationOptions options;
     }
 
     public class TypeScriptGenericTypeReference : TypeScriptType
