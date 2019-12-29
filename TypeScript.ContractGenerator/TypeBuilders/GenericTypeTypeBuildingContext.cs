@@ -33,28 +33,41 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             var arguments = new List<TypeScriptType>();
             foreach (var argument in type.GetGenericArguments())
             {
+                var customAttributes = type.GetCustomAttributes();
                 var targetType = typeGenerator.ResolveType(argument).ReferenceFrom(targetUnit, typeGenerator);
-                if (options.UseGlobalNullable)
+                if (IsTypeNullableMode(customAttributes))
                 {
-                    var nullableAttribute = customAttributeProvider.GetCustomAttributes(true).SingleOrDefault(a => a.GetType().Name == AnnotationsNames.Nullable);
-                    if (nullableAttribute is null)
-                    {
-                        //false;
-                    }
-                    var flags = nullableAttribute.GetType().GetField("NullableFlags").GetValue(nullableAttribute) as byte[];
-                
-                    if (flags != null )
-                    {
-                        //return Enumerable.Range(0, 10).Select(index => flags.Length > 1 && flags[1] == 2).ToArray();
-                        
-                    }
-                
-                    // 1 -not null
-                
+                    arguments.Add(targetType);
                 }
-                arguments.Add(targetType is INullabilityWrapperType nullabilityType ? nullabilityType.InnerType : targetType);
+                else
+                {
+                    arguments.Add(targetType is INullabilityWrapperType nullabilityType ? nullabilityType.InnerType : targetType);
+                }
             }
             return new TypeScriptGenericTypeReference(typeReference as TypeScriptTypeReference, arguments.ToArray());
+        }
+
+        private bool IsTypeNullableMode(IEnumerable<Attribute> customAttributes)
+        {
+            if (options.NullabilityMode == NullabilityMode.NullableReference)
+            {
+                if (customAttributes is null)
+                {
+                    return false;
+                }
+                var nullableAttribute = customAttributes.SingleOrDefault(a => a.GetType().Name == AnnotationsNames.Nullable);
+                if (nullableAttribute is null)
+                {
+                    return false;
+                }
+                var flags = nullableAttribute.GetType().GetField("NullableFlags").GetValue(nullableAttribute) as byte[];
+
+                if (flags != null)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private readonly Type type;
