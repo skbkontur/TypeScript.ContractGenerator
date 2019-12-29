@@ -43,7 +43,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
             return new TypeScriptTypeMemberDeclaration
                 {
                     Name = property.Name.ToLowerCamelCase(),
-                    Optional = isNullable[0] && typeGenerator.Options.EnableOptionalProperties,
+                    Optional = isNullable && typeGenerator.Options.EnableOptionalProperties,
                     Type = GetConstEnumType(typeGenerator, unit, property, value),
                 };
         }

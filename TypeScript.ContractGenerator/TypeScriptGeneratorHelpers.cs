@@ -12,16 +12,16 @@ namespace SkbKontur.TypeScript.ContractGenerator
 {
     public static class TypeScriptGeneratorHelpers
     {
-        public static (bool[], Type type) ProcessNullable(ICustomAttributeProvider attributeContainer, Type type, NullabilityMode nullabilityMode)
+        public static (bool, Type type) ProcessNullable(ICustomAttributeProvider attributeContainer, Type type, NullabilityMode nullabilityMode)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
                 var underlyingType = type.GetGenericArguments()[0];
-                return (new [] {true}, underlyingType);
+                return (true, underlyingType);
             }
 
             if (attributeContainer == null || !type.IsClass && !type.IsInterface)
-                return (new []{false}, type);
+                return (false, type);
 
             return (CanBeNull(attributeContainer, nullabilityMode), type);
         }
@@ -57,39 +57,31 @@ namespace SkbKontur.TypeScript.ContractGenerator
             }
         }
         
-        private static bool[] CanBeNull([NotNull] ICustomAttributeProvider attributeContainer, NullabilityMode nullabilityMode)
+        private static bool CanBeNull([NotNull] ICustomAttributeProvider attributeContainer, NullabilityMode nullabilityMode)
         {
             if (NullabilityMode.NullableReference == nullabilityMode)
             {
-
                 var nullableAttribute = attributeContainer.GetCustomAttributes(true).SingleOrDefault(a => a.GetType().Name == AnnotationsNames.Nullable);
                 if (nullableAttribute is null)
                 {
-                    return new []{false};
+                    return false;
                 }
                 var flags = nullableAttribute.GetType().GetField("NullableFlags").GetValue(nullableAttribute) as byte[];
                 
                 if (flags != null )
                 {
                     //return Enumerable.Range(0, 10).Select(index => flags.Length > 1 && flags[1] == 2).ToArray();
-                    return new []
-                        {
-                            flags[0] == 2,
-                            flags.Length > 1 && flags[1] == 2,
-                            flags.Length > 2 && flags[2] == 2,
-                        };
+                    return flags[0] == 2;
                 }
                 
                 // 1 -not null
-                return new []{ false };
+                return false;
             }
 
-            return new[]
-                {
-                    nullabilityMode == NullabilityMode.Pessimistic
-                        ? !attributeContainer.IsNameDefined(AnnotationsNames.NotNull) && !attributeContainer.IsNameDefined(AnnotationsNames.Required)
-                        : attributeContainer.IsNameDefined(AnnotationsNames.CanBeNull)
-                };
+            return
+                nullabilityMode == NullabilityMode.Pessimistic
+                    ? !attributeContainer.IsNameDefined(AnnotationsNames.NotNull) && !attributeContainer.IsNameDefined(AnnotationsNames.Required)
+                    : attributeContainer.IsNameDefined(AnnotationsNames.CanBeNull);
         }
 
         [NotNull]
