@@ -62,5 +62,20 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
             return innerType;
         }
+
+        public static int GetGenericArgumentsToSkip(Type type)
+        {
+            if (type.IsArray)
+                return 1 + GetGenericArgumentsToSkip(type.GetElementType());
+
+            if (!type.IsGenericType)
+                return type.IsValueType ? 0 : 1;
+
+            var count = 1;
+            foreach (var argument in type.GetGenericArguments())
+                count += GetGenericArgumentsToSkip(argument);
+
+            return count;
+        }
     }
 }
