@@ -35,12 +35,16 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             var typeReference = typeGenerator.ResolveType(type.GetGenericTypeDefinition()).ReferenceFrom(targetUnit, typeGenerator);
             var arguments = new List<TypeScriptType>();
             var nullableIndex = 1;
-            var nullableBytes = TypeScriptGeneratorHelpers.GetNullableFlags(customAttributeProvider) ?? new byte[0];
+            var nullableBytes = TypeScriptGeneratorHelpers.GetNullableFlags(customAttributeProvider);
             foreach (var argument in type.GetGenericArguments())
             {
                 var targetType = typeGenerator.ResolveType(argument).ReferenceFrom(targetUnit, typeGenerator);
                 if (options.NullabilityMode == NullabilityMode.NullableReference)
                 {
+                    if (customAttributeProvider is PropertyInfo prop && prop.Name == "Third")
+                    {
+                        Console.WriteLine("Here");
+                    }
                     var isNullable = nullableBytes.Length == 1 && nullableBytes[0] == 2 || nullableBytes.Length > nullableIndex && nullableBytes[nullableIndex] == 2;
                     nullableIndex += TypeScriptGeneratorHelpers.GetGenericArgumentsToSkip(argument);
                     arguments.Add(TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(targetType, !argument.IsValueType && isNullable, options));

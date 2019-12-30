@@ -25,10 +25,28 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return (CanBeNull(attributeContainer, nullabilityMode), type);
         }
 
+        [NotNull]
         public static byte[] GetNullableFlags(ICustomAttributeProvider attributeContainer)
+        {
+            byte contextFlag = 0;
+            if (attributeContainer is MemberInfo memberInfo)
+                contextFlag = GetNullableContextFlag(memberInfo.ReflectedType);
+            return GetNullableFlagsInternal(attributeContainer) ?? new[] {contextFlag};
+        }
+
+        private static byte[] GetNullableFlagsInternal(ICustomAttributeProvider attributeContainer)
         {
             var nullableAttribute = attributeContainer?.GetCustomAttributes(true).SingleOrDefault(a => a.GetType().Name == AnnotationsNames.Nullable);
             return nullableAttribute?.GetType().GetField("NullableFlags").GetValue(nullableAttribute) as byte[];
+        }
+
+        private static byte GetNullableContextFlag(ICustomAttributeProvider attributeContainer)
+        {
+            var nullableAttribute = attributeContainer?.GetCustomAttributes(true).SingleOrDefault(a => a.GetType().Name == AnnotationsNames.NullableContext);
+            var flag = nullableAttribute?.GetType().GetField("Flag").GetValue(nullableAttribute);
+            if (flag == null)
+                return 0;
+            return (byte)flag;
         }
 
         private static bool CanBeNull([NotNull] ICustomAttributeProvider attributeContainer, NullabilityMode nullabilityMode)
@@ -36,9 +54,6 @@ namespace SkbKontur.TypeScript.ContractGenerator
             if (NullabilityMode.NullableReference == nullabilityMode)
             {
                 var flags = GetNullableFlags(attributeContainer);
-                if (flags == null)
-                    return false;
-
                 return flags[0] == 2;
             }
 
@@ -68,6 +83,9 @@ namespace SkbKontur.TypeScript.ContractGenerator
             if (type.IsArray)
                 return 1 + GetGenericArgumentsToSkip(type.GetElementType());
 
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+                return 0;
+            
             if (!type.IsGenericType)
                 return type.IsValueType ? 0 : 1;
 

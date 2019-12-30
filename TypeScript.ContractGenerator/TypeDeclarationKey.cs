@@ -18,7 +18,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             canBeNull = customAttributeProvider?.IsNameDefined(AnnotationsNames.CanBeNull) ?? false;
             itemNotNull = customAttributeProvider?.IsNameDefined(AnnotationsNames.ItemNotNull) ?? false;
             itemCanBeNull = customAttributeProvider?.IsNameDefined(AnnotationsNames.ItemCanBeNull) ?? false;
-            nullableFlags = TypeScriptGeneratorHelpers.GetNullableFlags(customAttributeProvider) ?? new byte[0];
+            nullableFlags = TypeScriptGeneratorHelpers.GetNullableFlags(customAttributeProvider);
         }
 
         public override string ToString()

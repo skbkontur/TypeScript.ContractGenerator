@@ -32,9 +32,16 @@ export type NullableReferenceType = {
     nullableThirdItemTuple: Tuple<string, string, null | string>;
     nullableTuple?: null | Tuple<null | string, null | string, null | string>;
     innerTuples?: null | Tuple<null | string[], string[], null | string[]>;
+    differentContext: NullableReferenceTypeWithContext;
 };
 export type Tuple<T1, T2, T3> = {
     item1: T1;
     item2: T2;
     item3: T3;
+};
+export type NullableReferenceTypeWithContext = {
+    notNullFirst: string;
+    first?: null | string;
+    second?: null | Array<null | string[]>;
+    third: Tuple<string, null | Tuple<string, null | number, number>, null | string>;
 };
