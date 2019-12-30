@@ -150,7 +150,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             }
 
             if (type.IsGenericType && !type.IsGenericTypeDefinition)
-                return new GenericTypeTypeBuildingContext(type);
+                return new GenericTypeTypeBuildingContext(type, customAttributeProvider, Options);
 
             if (type.IsGenericParameter)
                 return new GenericParameterTypeBuildingContext(type);
@@ -172,7 +172,9 @@ namespace SkbKontur.TypeScript.ContractGenerator
         [NotNull]
         private TypeScriptType GetTypeScriptType([NotNull] TypeScriptUnit targetUnit, [NotNull] Type type, [CanBeNull] ICustomAttributeProvider customAttributeProvider)
         {
-            customAttributeProvider = ArrayTypeBuildingContext.Accept(type) || DictionaryTypeBuildingContext.Accept(type) ? customAttributeProvider : null;
+            customAttributeProvider = ArrayTypeBuildingContext.Accept(type) || DictionaryTypeBuildingContext.Accept(type) || type.IsGenericType && !type.IsGenericTypeDefinition
+                                          ? customAttributeProvider
+                                          : null;
             var typeDeclarationKey = new TypeDeclarationKey(type, customAttributeProvider);
             if (typeDeclarations.ContainsKey(typeDeclarationKey))
                 return typeDeclarations[typeDeclarationKey].ReferenceFrom(targetUnit, this);

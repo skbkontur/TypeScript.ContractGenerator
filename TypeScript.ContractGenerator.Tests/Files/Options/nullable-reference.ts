@@ -21,17 +21,17 @@ export type NullableReferenceType = {
         [key in null | string]?: null | string;
     };
     valueTypeKeyDictionary: {
-        [key in null | number]?: string;
+        [key in number]?: null | string;
     };
     complexDictionary: {
-        [key in string[]]?: string;
+        [key in string[]]?: null | string;
     };
     tuple: Tuple<string, string, string>;
-    nullableFirstItemTuple: Tuple<string, string, string>;
-    nullableSecondItemTuple: Tuple<string, string, string>;
-    nullableThirdItemTuple: Tuple<string, string, string>;
-    nullableTuple?: null | Tuple<string, string, string>;
-    innerTuples?: null | Tuple<string[], string[], string[]>;
+    nullableFirstItemTuple: Tuple<null | string, string, string>;
+    nullableSecondItemTuple: Tuple<string, null | string, string>;
+    nullableThirdItemTuple: Tuple<string, string, null | string>;
+    nullableTuple?: null | Tuple<null | string, null | string, null | string>;
+    innerTuples?: null | Tuple<null | string[], string[], null | string[]>;
 };
 export type Tuple<T1, T2, T3> = {
     item1: T1;
