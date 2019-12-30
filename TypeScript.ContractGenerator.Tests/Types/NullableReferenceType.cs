@@ -30,7 +30,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
         public Tuple<string, string?, string> NullableSecondItemTuple { get; set; }
         public Tuple<string, string, string?> NullableThirdItemTuple { get; set; }
         public Tuple<string?, string?, string?>? NullableTuple { get; set; }
-        public Tuple<string[]?, string?[], string?[]?>? InnerTuples { get; set; }
+        public Tuple<string[]?, string?[], string?[]?>? NullableTupleInnerArrays { get; set; }
 
         public NullableReferenceTypeWithContext DifferentContext { get; set; }
     }

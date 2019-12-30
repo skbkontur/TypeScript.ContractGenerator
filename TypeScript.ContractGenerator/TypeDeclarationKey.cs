@@ -23,7 +23,8 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         public override string ToString()
         {
-            return $"Type: {type.Name}, NN: {notNull}, CBN: {canBeNull}, INN: {itemNotNull}, ICBN: {itemCanBeNull}, R: {required}";
+            var flags = string.Join(",", nullableFlags);
+            return $"Type: {type.Name}, NN: {notNull}, CBN: {canBeNull}, INN: {itemNotNull}, ICBN: {itemCanBeNull}, R: {required}, NF: {flags}";
         }
 
         public override int GetHashCode()

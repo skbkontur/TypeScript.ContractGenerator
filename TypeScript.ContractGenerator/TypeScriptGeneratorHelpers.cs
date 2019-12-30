@@ -25,12 +25,20 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return (CanBeNull(attributeContainer, nullabilityMode), type);
         }
 
+        public static bool NullableReferenceCanBeNull(ICustomAttributeProvider attributeContainer, Type type, int index)
+        {
+            var nullableBytes = GetNullableFlags(attributeContainer);
+            if (nullableBytes.Length == 1 && nullableBytes[0] == 2 || nullableBytes.Length > index && nullableBytes[index] == 2)
+                return !type.IsValueType;
+            return false;
+        }
+
         [NotNull]
         public static byte[] GetNullableFlags(ICustomAttributeProvider attributeContainer)
         {
             byte contextFlag = 0;
             if (attributeContainer is MemberInfo memberInfo)
-                contextFlag = GetNullableContextFlag(memberInfo.ReflectedType);
+                contextFlag = GetNullableContextFlag(memberInfo) ?? GetNullableContextFlag(memberInfo.ReflectedType) ?? 0;
             return GetNullableFlagsInternal(attributeContainer) ?? new[] {contextFlag};
         }
 
@@ -40,18 +48,16 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return nullableAttribute?.GetType().GetField("NullableFlags").GetValue(nullableAttribute) as byte[];
         }
 
-        private static byte GetNullableContextFlag(ICustomAttributeProvider attributeContainer)
+        private static byte? GetNullableContextFlag(ICustomAttributeProvider attributeContainer)
         {
             var nullableAttribute = attributeContainer?.GetCustomAttributes(true).SingleOrDefault(a => a.GetType().Name == AnnotationsNames.NullableContext);
             var flag = nullableAttribute?.GetType().GetField("Flag").GetValue(nullableAttribute);
-            if (flag == null)
-                return 0;
-            return (byte)flag;
+            return (byte?)flag;
         }
 
         private static bool CanBeNull([NotNull] ICustomAttributeProvider attributeContainer, NullabilityMode nullabilityMode)
         {
-            if (NullabilityMode.NullableReference == nullabilityMode)
+            if (nullabilityMode == NullabilityMode.NullableReference)
             {
                 var flags = GetNullableFlags(attributeContainer);
                 return flags[0] == 2;
@@ -85,7 +91,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
                 return 0;
-            
+
             if (!type.IsGenericType)
                 return type.IsValueType ? 0 : 1;
 
