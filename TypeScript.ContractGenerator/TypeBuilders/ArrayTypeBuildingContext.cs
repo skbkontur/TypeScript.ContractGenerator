@@ -60,7 +60,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                 return false;
             if (options.NullabilityMode == NullabilityMode.NullableReference)
             {
-                var nullableBytes = TypeScriptGeneratorHelpers.GetNullableFlags(customAttributeProvider) ?? new byte[0];
+                var nullableBytes = TypeScriptGeneratorHelpers.GetNullableFlags(customAttributeProvider);
                 return nullableBytes.Length == 1 && nullableBytes[0] == 2 || nullableBytes.Length == 2 && nullableBytes[1] == 2;
             }
             return options.NullabilityMode == NullabilityMode.Pessimistic
