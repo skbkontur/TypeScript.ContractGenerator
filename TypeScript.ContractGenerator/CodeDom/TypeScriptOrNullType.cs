@@ -10,10 +10,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
                 })
         {
             InnerType = innerType;
-            // todo хочу сюда для каждого inner типа [ 0 , 1 , 0 ]
         }
-        
-        
 
         public TypeScriptType InnerType { get; }
     }

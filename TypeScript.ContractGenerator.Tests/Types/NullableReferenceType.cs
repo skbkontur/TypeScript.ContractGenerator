@@ -23,10 +23,17 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
         public Dictionary<string, string?> DictionaryWithNullableValue { get; set; }
         public Dictionary<string?, string?>? NullableDictionary { get; set; }
 
+        // todo (p.vostretsov, 30.12.2019): бажок
+        public Dictionary<int, string?> ValueTypeKeyDictionary { get; set; }
+        public Dictionary<string[], string?> ComplexDictionary { get; set; }
+
+        // todo (p.vostretsov, 30.12.2019): Not implemented
         public Tuple<string, string, string> Tuple { get; set; }
         public Tuple<string?, string, string> NullableFirstItemTuple { get; set; }
         public Tuple<string, string?, string> NullableSecondItemTuple { get; set; }
         public Tuple<string, string, string?> NullableThirdItemTuple { get; set; }
         public Tuple<string?, string?, string?>? NullableTuple { get; set; }
+
+        public Tuple<string[]?, string?[], string?[]?>? InnerTuples { get; set; }
     }
 }
