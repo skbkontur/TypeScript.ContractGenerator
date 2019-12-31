@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.9 - 2019.12.31
+- Add nullable reference support, it can be enabled with `NullabilityMode.NullableReference` option
+
 ## v1.8.31 - 2019.11.25
 - Use [SourceLink](https://github.com/dotnet/sourcelink) to help ReSharper decompiler show actual code.
 
