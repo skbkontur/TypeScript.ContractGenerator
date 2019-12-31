@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+
+using JetBrains.Annotations;
 
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
@@ -7,10 +10,14 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class DictionaryTypeBuildingContext : ITypeBuildingContext
     {
-        public DictionaryTypeBuildingContext(Type dictionaryType)
+        public DictionaryTypeBuildingContext([NotNull] Type dictionaryType,
+                                             [CanBeNull] ICustomAttributeProvider customAttributeProvider,
+                                             [NotNull] TypeScriptGenerationOptions options)
         {
             keyType = dictionaryType.GetGenericArguments()[0];
             valueType = dictionaryType.GetGenericArguments()[1];
+            this.customAttributeProvider = customAttributeProvider;
+            this.options = options;
         }
 
         public static bool Accept(Type type)
@@ -30,9 +37,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
-            var keyTypeScriptType = typeGenerator.ResolveType(keyType).ReferenceFrom(targetUnit, typeGenerator);
-            var valueTypeScriptType = typeGenerator.ResolveType(valueType).ReferenceFrom(targetUnit, typeGenerator);
-
             return new TypeScriptTypeDefintion
                 {
                     Members =
@@ -42,16 +46,39 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                                     Argument = new TypeScriptArgumentDeclaration
                                         {
                                             Name = "key",
-                                            Type = keyTypeScriptType,
+                                            Type = GetKeyType(targetUnit, typeGenerator),
                                         },
-                                    ResultType = valueTypeScriptType,
+                                    ResultType = GetValueType(targetUnit, typeGenerator),
                                     Optional = true,
                                 }
                         }
                 };
         }
 
+        private TypeScriptType GetKeyType(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
+        {
+            var key = typeGenerator.ResolveType(keyType).ReferenceFrom(targetUnit, typeGenerator);
+            return MaybeNull(keyType, key, 1);
+        }
+
+        private TypeScriptType GetValueType(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
+        {
+            var value = typeGenerator.ResolveType(valueType).ReferenceFrom(targetUnit, typeGenerator);
+            return MaybeNull(valueType, value, 1 + TypeScriptGeneratorHelpers.GetGenericArgumentsToSkip(keyType));
+        }
+
+        private TypeScriptType MaybeNull(Type trueType, TypeScriptType type, int index)
+        {
+            if (options.NullabilityMode != NullabilityMode.NullableReference)
+                return type;
+
+            var isNullable = TypeScriptGeneratorHelpers.NullableReferenceCanBeNull(customAttributeProvider, trueType, index);
+            return TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(type, isNullable, options);
+        }
+
         private readonly Type keyType;
         private readonly Type valueType;
+        private readonly ICustomAttributeProvider customAttributeProvider;
+        private readonly TypeScriptGenerationOptions options;
     }
 }

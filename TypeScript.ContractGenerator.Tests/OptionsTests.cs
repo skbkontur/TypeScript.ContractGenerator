@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using System.Reflection;
 
 using NUnit.Framework;
 
@@ -71,6 +73,15 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
 
             var generatedCode = GenerateCode(options, CustomTypeGenerator.Null, typeof(NullabilityModeRootType)).Single();
             var expectedCode = GetExpectedCode($"Options/{expectedFileName}");
+            generatedCode.Diff(expectedCode).ShouldBeEmpty();
+        }
+
+        [Test]
+        public void TestNullableReferences()
+        {
+            var options = new TypeScriptGenerationOptions {NullabilityMode = NullabilityMode.NullableReference};
+            var generatedCode = GenerateCode(options, CustomTypeGenerator.Null, typeof(NullableReferenceType)).Single();
+            var expectedCode = GetExpectedCode("Options/nullable-reference");
             generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
     }

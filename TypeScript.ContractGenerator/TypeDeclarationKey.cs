@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using System.Reflection;
 
 using JetBrains.Annotations;
@@ -17,16 +18,29 @@ namespace SkbKontur.TypeScript.ContractGenerator
             canBeNull = customAttributeProvider?.IsNameDefined(AnnotationsNames.CanBeNull) ?? false;
             itemNotNull = customAttributeProvider?.IsNameDefined(AnnotationsNames.ItemNotNull) ?? false;
             itemCanBeNull = customAttributeProvider?.IsNameDefined(AnnotationsNames.ItemCanBeNull) ?? false;
+            nullableFlags = TypeScriptGeneratorHelpers.GetNullableFlags(customAttributeProvider);
         }
 
-        [NotNull]
-        private readonly Type type;
+        public override string ToString()
+        {
+            var flags = string.Join(",", nullableFlags);
+            return $"Type: {type.Name}, NN: {notNull}, CBN: {canBeNull}, INN: {itemNotNull}, ICBN: {itemCanBeNull}, R: {required}, NF: {flags}";
+        }
 
-        private readonly bool notNull;
-        private readonly bool canBeNull;
-        private readonly bool itemNotNull;
-        private readonly bool itemCanBeNull;
-        private readonly bool required;
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = type.GetHashCode();
+                hashCode = (hashCode * 397) ^ notNull.GetHashCode();
+                hashCode = (hashCode * 397) ^ canBeNull.GetHashCode();
+                hashCode = (hashCode * 397) ^ itemNotNull.GetHashCode();
+                hashCode = (hashCode * 397) ^ itemCanBeNull.GetHashCode();
+                hashCode = (hashCode * 397) ^ required.GetHashCode();
+                hashCode = (hashCode * 397) ^ GetFlagsHash();
+                return hashCode;
+            }
+        }
 
         public override bool Equals([CanBeNull] object obj)
         {
@@ -42,26 +56,40 @@ namespace SkbKontur.TypeScript.ContractGenerator
                    && canBeNull == other.canBeNull
                    && itemNotNull == other.itemNotNull
                    && itemCanBeNull == other.itemCanBeNull
-                   && required == other.required;
+                   && required == other.required
+                   && NullableFlagsEquals(other.nullableFlags);
         }
 
-        public override int GetHashCode()
+        private bool NullableFlagsEquals(byte[] other)
         {
-            unchecked
+            if (nullableFlags.Length != other.Length)
+                return false;
+
+            for (var i = 0; i < nullableFlags.Length; i++)
             {
-                var hashCode = type.GetHashCode();
-                hashCode = (hashCode * 397) ^ notNull.GetHashCode();
-                hashCode = (hashCode * 397) ^ canBeNull.GetHashCode();
-                hashCode = (hashCode * 397) ^ itemNotNull.GetHashCode();
-                hashCode = (hashCode * 397) ^ itemCanBeNull.GetHashCode();
-                hashCode = (hashCode * 397) ^ required.GetHashCode();
-                return hashCode;
+                if (nullableFlags[i] != other[i])
+                    return false;
             }
+
+            return true;
         }
 
-        public override string ToString()
+        private int GetFlagsHash()
         {
-            return $"Type: {type.Name}, NN: {notNull}, CBN: {canBeNull}, INN: {itemNotNull}, ICBN: {itemCanBeNull}, R: {required}";
+            return new BigInteger(nullableFlags).GetHashCode();
         }
+
+        [NotNull]
+        private readonly Type type;
+
+        private readonly bool notNull;
+        private readonly bool canBeNull;
+        private readonly bool itemNotNull;
+        private readonly bool itemCanBeNull;
+
+        [NotNull]
+        private readonly byte[] nullableFlags;
+
+        private readonly bool required;
     }
 }

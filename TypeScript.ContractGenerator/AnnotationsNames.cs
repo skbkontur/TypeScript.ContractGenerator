@@ -7,5 +7,8 @@ namespace SkbKontur.TypeScript.ContractGenerator
         public const string CanBeNull = "CanBeNullAttribute";
         public const string ItemNotNull = "ItemNotNullAttribute";
         public const string ItemCanBeNull = "ItemCanBeNullAttribute";
+        
+        public const string Nullable = "NullableAttribute";
+        public const string NullableContext = "NullableContextAttribute";
     }
 }
