@@ -15,5 +15,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         public string Name => Parameter.Name;
         public ITypeInfo ParameterType => new TypeWrapper(Parameter.ParameterType);
+
+        public object[] GetCustomAttributes(bool inherit)
+        {
+            return Parameter.GetCustomAttributes(inherit);
+        }
     }
 }

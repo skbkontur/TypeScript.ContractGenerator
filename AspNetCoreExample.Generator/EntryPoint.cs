@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 using SkbKontur.TypeScript.ContractGenerator;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
-using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace AspNetCoreExample.Generator
 {

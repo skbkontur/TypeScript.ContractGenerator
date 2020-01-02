@@ -1,7 +1,4 @@
-﻿using System;
-
-using SkbKontur.TypeScript.ContractGenerator.Abstractions;
-using SkbKontur.TypeScript.ContractGenerator.Internals;
+﻿using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {

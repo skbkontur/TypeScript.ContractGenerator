@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 using JetBrains.Annotations;
 
@@ -8,8 +7,6 @@ using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
-
-using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
@@ -48,14 +45,14 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
+        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider attributeProvider)
         {
             var itemType = typeGenerator.ResolveType(elementType).ReferenceFrom(targetUnit, typeGenerator, null);
-            var resultType = TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(itemType, CanItemBeNull(customAttributeProvider), options);
+            var resultType = TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(itemType, CanItemBeNull(attributeProvider), options);
             return new TypeScriptArrayType(resultType);
         }
 
-        private bool CanItemBeNull(ICustomAttributeProvider customAttributeProvider)
+        private bool CanItemBeNull(IAttributeProvider attributeProvider)
         {
             if (elementType.IsValueType || elementType.IsEnum || customAttributeProvider == null)
                 return false;

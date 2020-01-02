@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Reflection;
 
 using JetBrains.Annotations;
 
@@ -27,7 +26,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
+        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider attributeProvider)
         {
             var typeReference = typeGenerator.ResolveType(type.GetGenericTypeDefinition()).ReferenceFrom(targetUnit, typeGenerator, null);
             var arguments = new List<TypeScriptType>();
@@ -37,7 +36,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                 var targetType = typeGenerator.ResolveType(argument).ReferenceFrom(targetUnit, typeGenerator, null);
                 if (options.NullabilityMode == NullabilityMode.NullableReference)
                 {
-                    var isNullable = TypeScriptGeneratorHelpers.NullableReferenceCanBeNull(customAttributeProvider, argument, nullableIndex);
+                    var isNullable = TypeScriptGeneratorHelpers.NullableReferenceCanBeNull(attributeProvider, argument, nullableIndex);
                     nullableIndex += TypeScriptGeneratorHelpers.GetGenericArgumentsToSkip(argument);
                     arguments.Add(TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(targetType, !argument.Type.IsValueType && isNullable, options));
                 }

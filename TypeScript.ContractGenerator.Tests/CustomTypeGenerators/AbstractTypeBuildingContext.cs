@@ -22,14 +22,16 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
             var types = Assembly
                 .GetAssembly(type.Type)
                 .GetTypes()
-                .Where(x => x.BaseType == type.Type).ToArray();
+                .Where(x => x.BaseType == type.Type)
+                .Select(x => new TypeWrapper(x))
+                .ToArray();
 
             Declaration = new TypeScriptTypeDeclaration
                 {
                     Name = type.Name,
                     Definition = new TypeScriptUnionType(types.Select(x =>
                         {
-                            var resultType = typeGenerator.BuildAndImportType(unit, x, new TypeWrapper(x));
+                            var resultType = typeGenerator.BuildAndImportType(unit, x, x);
                             if (resultType is INullabilityWrapperType nullableType)
                             {
                                 return nullableType.InnerType;

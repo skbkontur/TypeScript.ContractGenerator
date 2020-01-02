@@ -89,26 +89,25 @@ namespace SkbKontur.TypeScript.ContractGenerator
         [CanBeNull]
         public TypeScriptTypeMemberDeclaration ResolveProperty([NotNull] TypeScriptUnit unit, [NotNull] ITypeInfo typeInfo, [NotNull] IPropertyInfo propertyInfo)
         {
-            var property = propertyInfo.Property;
             var customMemberDeclaration = customTypeGenerator.ResolveProperty(unit, this, typeInfo, propertyInfo);
             if (customMemberDeclaration != null)
                 return customMemberDeclaration;
 
-            if (property.GetCustomAttributes<ContractGeneratorIgnoreAttribute>().Any())
+            if (propertyInfo.Property.GetCustomAttributes<ContractGeneratorIgnoreAttribute>().Any())
                 return null;
 
-            var (isNullable, trueType) = TypeScriptGeneratorHelpers.ProcessNullable(property, property.PropertyType, Options.NullabilityMode);
+            var (isNullable, trueType) = TypeScriptGeneratorHelpers.ProcessNullable(propertyInfo, propertyInfo.PropertyType, Options.NullabilityMode);
             return new TypeScriptTypeMemberDeclaration
                 {
-                    Name = property.Name.ToLowerCamelCase(),
+                    Name = propertyInfo.Name.ToLowerCamelCase(),
                     Optional = isNullable && Options.EnableOptionalProperties,
-                    Type = GetMaybeNullableComplexType(unit, trueType, property, isNullable),
+                    Type = GetMaybeNullableComplexType(unit, trueType, propertyInfo, isNullable),
                 };
         }
 
-        private TypeScriptType GetMaybeNullableComplexType(TypeScriptUnit unit, Type type, PropertyInfo property, bool isNullable)
+        private TypeScriptType GetMaybeNullableComplexType(TypeScriptUnit unit, ITypeInfo type, IPropertyInfo property, bool isNullable)
         {
-            var propertyType = BuildAndImportType(unit, property, new TypeWrapper(type));
+            var propertyType = BuildAndImportType(unit, property, type);
             if (property.PropertyType.IsGenericParameter)
                 propertyType = new TypeScriptTypeReference(property.PropertyType.Name);
 
@@ -155,15 +154,15 @@ namespace SkbKontur.TypeScript.ContractGenerator
         }
 
         [NotNull]
-        public TypeScriptType BuildAndImportType([NotNull] TypeScriptUnit targetUnit, [CanBeNull] ICustomAttributeProvider customAttributeProvider, [NotNull] ITypeInfo typeInfo)
+        public TypeScriptType BuildAndImportType([NotNull] TypeScriptUnit targetUnit, [CanBeNull] IAttributeProvider customAttributeProvider, [NotNull] ITypeInfo typeInfo)
         {
-            var (isNullable, resultType) = TypeScriptGeneratorHelpers.ProcessNullable(customAttributeProvider, typeInfo.Type, Options.NullabilityMode);
-            var targetType = GetTypeScriptType(targetUnit, new TypeWrapper(resultType), customAttributeProvider);
+            var (isNullable, resultType) = TypeScriptGeneratorHelpers.ProcessNullable(customAttributeProvider, typeInfo, Options.NullabilityMode);
+            var targetType = GetTypeScriptType(targetUnit, resultType, customAttributeProvider);
             return TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(targetType, isNullable, Options);
         }
 
         [NotNull]
-        private TypeScriptType GetTypeScriptType([NotNull] TypeScriptUnit targetUnit, [NotNull] ITypeInfo typeInfo, [CanBeNull] ICustomAttributeProvider customAttributeProvider)
+        private TypeScriptType GetTypeScriptType([NotNull] TypeScriptUnit targetUnit, [NotNull] ITypeInfo typeInfo, [CanBeNull] IAttributeProvider customAttributeProvider)
         {
             if (typeDeclarations.ContainsKey(typeInfo))
                 return typeDeclarations[typeInfo].ReferenceFrom(targetUnit, this, customAttributeProvider);

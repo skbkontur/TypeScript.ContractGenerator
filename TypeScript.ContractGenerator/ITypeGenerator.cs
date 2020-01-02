@@ -1,5 +1,3 @@
-using System.Reflection;
-
 using JetBrains.Annotations;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
@@ -17,7 +15,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
         TypeScriptTypeMemberDeclaration ResolveProperty([NotNull] TypeScriptUnit unit, [NotNull] ITypeInfo type, [NotNull] IPropertyInfo propertyInfo);
 
         [NotNull]
-        TypeScriptType BuildAndImportType([NotNull] TypeScriptUnit targetUnit, [CanBeNull] ICustomAttributeProvider customAttributeProvider, [NotNull] ITypeInfo type);
+        TypeScriptType BuildAndImportType([NotNull] TypeScriptUnit targetUnit, [CanBeNull] IAttributeProvider customAttributeProvider, [NotNull] ITypeInfo type);
 
         [NotNull]
         TypeScriptGenerationOptions Options { get; }

@@ -20,7 +20,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
             var definition = new TypeScriptInterfaceDefinition();
             definition.Members.AddRange(Type.Type
                                             .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-                                            .Select(x => new TypeScriptInterfaceFunctionMember(x.Name, typeGenerator.BuildAndImportType(Unit, x, new TypeWrapper(x.ReturnType)))));
+                                            .Select(x => new MethodWrapper(x))
+                                            .Select(x => new TypeScriptInterfaceFunctionMember(x.Name, typeGenerator.BuildAndImportType(Unit, x, x.ReturnType))));
             Declaration = new TypeScriptInterfaceDeclaration {Definition = definition, Name = Type.Name};
 
             base.Initialize(typeGenerator);

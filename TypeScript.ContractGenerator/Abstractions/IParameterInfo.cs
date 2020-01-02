@@ -2,7 +2,7 @@ using System.Reflection;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Abstractions
 {
-    public interface IParameterInfo
+    public interface IParameterInfo : IAttributeProvider
     {
         ParameterInfo Parameter { get; }
         

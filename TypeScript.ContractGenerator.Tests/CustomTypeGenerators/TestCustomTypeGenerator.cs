@@ -37,16 +37,14 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 
         public TypeScriptTypeMemberDeclaration ResolveProperty(TypeScriptUnit unit, ITypeGenerator typeGenerator, ITypeInfo typeInfo, IPropertyInfo propertyInfo)
         {
-            var type = typeInfo.Type;
-            var property = propertyInfo.Property;
-            var (isNullable, _) = TypeScriptGeneratorHelpers.ProcessNullable(property, property.PropertyType, typeGenerator.Options.NullabilityMode);
+            var (isNullable, _) = TypeScriptGeneratorHelpers.ProcessNullable(propertyInfo, propertyInfo.PropertyType, typeGenerator.Options.NullabilityMode);
 
-            if (!TryGetGetOnlyEnumPropertyValue(type, property, out var value))
+            if (!TryGetGetOnlyEnumPropertyValue(typeInfo, propertyInfo, out var value))
                 return null;
 
             return new TypeScriptTypeMemberDeclaration
                 {
-                    Name = property.Name.ToLowerCamelCase(),
+                    Name = propertyInfo.Name.ToLowerCamelCase(),
                     Optional = isNullable && typeGenerator.Options.EnableOptionalProperties,
                     Type = GetConstEnumType(typeGenerator, unit, propertyInfo, value),
                 };
@@ -59,14 +57,16 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
             case EnumGenerationMode.FixedStringsAndDictionary:
                 return new TypeScriptStringLiteralType(value);
             case EnumGenerationMode.TypeScriptEnum:
-                return new TypeScriptEnumValueType(typeGenerator.BuildAndImportType(unit, property.Property, property.PropertyType), value);
+                return new TypeScriptEnumValueType(typeGenerator.BuildAndImportType(unit, property, property.PropertyType), value);
             default:
                 throw new ArgumentOutOfRangeException();
             }
         }
 
-        private static bool TryGetGetOnlyEnumPropertyValue(Type type, PropertyInfo property, out string value)
+        private static bool TryGetGetOnlyEnumPropertyValue(ITypeInfo typeInfo, IPropertyInfo propertyInfo, out string value)
         {
+            var property = propertyInfo.Property;
+            var type = typeInfo.Type;
             var hasDefaultConstructor = type.GetConstructors().Any(x => x.GetParameters().Length == 0);
             var hasInferAttribute = property.GetCustomAttributes<InferValueAttribute>(true).Any();
             if (!property.PropertyType.IsEnum || property.CanWrite || !hasDefaultConstructor || !hasInferAttribute)
