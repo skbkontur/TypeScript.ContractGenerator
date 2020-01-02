@@ -24,7 +24,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
                 return new MethodTypeBuildingContext(unitFactory.GetOrCreateTypeUnit(initialUnitPath), typeInfo);
 
             if (CollectionTypeBuildingContext.Accept(type))
-                return new CollectionTypeBuildingContext(type);
+                return new CollectionTypeBuildingContext(typeInfo);
 
             if (type == typeof(TimeSpan))
                 return new StringBuildingContext();

@@ -20,9 +20,9 @@ namespace AspNetCoreExample.Generator
         {
         }
 
-        public static bool Accept(Type type)
+        public static bool Accept(ITypeInfo type)
         {
-            return typeof(ControllerBase).IsAssignableFrom(type);
+            return typeof(ControllerBase).IsAssignableFrom(type.Type);
         }
 
         protected override TypeLocation GetApiBase(ITypeInfo controllerType)

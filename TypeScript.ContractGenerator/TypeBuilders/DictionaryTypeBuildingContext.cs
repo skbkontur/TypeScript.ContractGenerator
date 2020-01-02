@@ -61,7 +61,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         private TypeScriptType GetValueType(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
         {
             var value = typeGenerator.ResolveType(valueType).ReferenceFrom(targetUnit, typeGenerator, null);
-            return MaybeNull(valueType, value, customAttributeProvider, 1 + TypeScriptGeneratorHelpers.GetGenericArgumentsToSkip(keyType.Type));
+            return MaybeNull(valueType, value, customAttributeProvider, 1 + TypeScriptGeneratorHelpers.GetGenericArgumentsToSkip(keyType));
         }
 
         private TypeScriptType MaybeNull(ITypeInfo trueType, TypeScriptType type, ICustomAttributeProvider customAttributeProvider, int index)
@@ -69,7 +69,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             if (options.NullabilityMode != NullabilityMode.NullableReference)
                 return type;
 
-            var isNullable = TypeScriptGeneratorHelpers.NullableReferenceCanBeNull(customAttributeProvider, trueType.Type, index);
+            var isNullable = TypeScriptGeneratorHelpers.NullableReferenceCanBeNull(customAttributeProvider, trueType, index);
             return TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(type, isNullable, options);
         }
 

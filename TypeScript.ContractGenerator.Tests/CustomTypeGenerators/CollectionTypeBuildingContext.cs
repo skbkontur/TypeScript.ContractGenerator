@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
@@ -11,7 +12,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 {
     public class CollectionTypeBuildingContext : ITypeBuildingContext
     {
-        public CollectionTypeBuildingContext(Type arrayType)
+        public CollectionTypeBuildingContext(ITypeInfo arrayType)
         {
             elementType = arrayType.GetGenericArguments()[0];
         }
@@ -35,10 +36,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 
         public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
         {
-            var itemType = typeGenerator.ResolveType(new TypeWrapper(elementType)).ReferenceFrom(targetUnit, typeGenerator, null);
+            var itemType = typeGenerator.ResolveType(elementType).ReferenceFrom(targetUnit, typeGenerator, null);
             return new TypeScriptArrayType(itemType);
         }
 
-        private readonly Type elementType;
+        private readonly ITypeInfo elementType;
     }
 }

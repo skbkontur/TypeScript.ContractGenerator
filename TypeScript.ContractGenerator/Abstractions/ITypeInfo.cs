@@ -2,7 +2,7 @@ using System;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Abstractions
 {
-    public interface ITypeInfo
+    public interface ITypeInfo : IEquatable<ITypeInfo>
     {
         Type Type { get; }
 

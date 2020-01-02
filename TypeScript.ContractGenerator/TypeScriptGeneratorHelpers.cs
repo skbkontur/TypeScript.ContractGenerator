@@ -4,8 +4,10 @@ using System.Reflection;
 
 using JetBrains.Annotations;
 
+using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
+using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace SkbKontur.TypeScript.ContractGenerator
 {
@@ -25,7 +27,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return (CanBeNull(attributeContainer, nullabilityMode), type);
         }
 
-        public static bool NullableReferenceCanBeNull(ICustomAttributeProvider attributeContainer, Type type, int index)
+        public static bool NullableReferenceCanBeNull(ICustomAttributeProvider attributeContainer, ITypeInfo type, int index)
         {
             var nullableBytes = GetNullableFlags(attributeContainer);
             if (nullableBytes.Length == 1 && nullableBytes[0] == 2 || nullableBytes.Length > index && nullableBytes[index] == 2)
@@ -84,12 +86,12 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return innerType;
         }
 
-        public static int GetGenericArgumentsToSkip(Type type)
+        public static int GetGenericArgumentsToSkip(ITypeInfo type)
         {
             if (type.IsArray)
                 return 1 + GetGenericArgumentsToSkip(type.GetElementType());
 
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            if (type.IsGenericType && type.GetGenericTypeDefinition().Equals(new TypeWrapper(typeof(Nullable<>))))
                 return 0;
 
             if (!type.IsGenericType)

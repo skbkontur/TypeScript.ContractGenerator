@@ -25,7 +25,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             this.customTypeGenerator = customTypeGenerator ?? throw new ArgumentNullException(nameof(customTypeGenerator));
             rootTypes = rootTypesProvider?.GetRootTypes() ?? throw new ArgumentNullException(nameof(rootTypesProvider));
             typeUnitFactory = new DefaultTypeScriptGeneratorOutput();
-            typeDeclarations = new Dictionary<TypeDeclarationKey, ITypeBuildingContext>();
+            typeDeclarations = new Dictionary<ITypeInfo, ITypeBuildingContext>();
         }
 
         public TypeScriptUnit[] Generate()
@@ -76,13 +76,12 @@ namespace SkbKontur.TypeScript.ContractGenerator
         [NotNull]
         public ITypeBuildingContext ResolveType([NotNull] ITypeInfo typeInfo)
         {
-            var type = typeInfo.Type;
-            if (typeDeclarations.ContainsKey(type))
-                return typeDeclarations[type];
+            if (typeDeclarations.ContainsKey(typeInfo))
+                return typeDeclarations[typeInfo];
             var typeLocation = customTypeGenerator.GetTypeLocation(typeInfo);
             var typeBuildingContext = customTypeGenerator.ResolveType(typeLocation, typeInfo, typeUnitFactory)
                                       ?? GetTypeBuildingContext(typeLocation, typeInfo);
-            typeDeclarations.Add(type, typeBuildingContext);
+            typeDeclarations.Add(typeInfo, typeBuildingContext);
             typeBuildingContext.Initialize(this);
             return typeBuildingContext;
         }
@@ -118,8 +117,8 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         private ITypeBuildingContext GetTypeBuildingContext(string typeLocation, ITypeInfo typeInfo)
         {
-            if (BuildInTypeBuildingContext.Accept(typeInfo))
-                return new BuildInTypeBuildingContext(typeInfo);
+            if (BuiltinTypeBuildingContext.Accept(typeInfo))
+                return new BuiltinTypeBuildingContext(typeInfo);
 
             if (ArrayTypeBuildingContext.Accept(typeInfo))
                 return new ArrayTypeBuildingContext(typeInfo, Options);
@@ -140,7 +139,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
                 var underlyingType = typeInfo.GetGenericArguments().Single();
                 if (Options.EnableExplicitNullability)
                     return new NullableTypeBuildingContext(underlyingType, Options.UseGlobalNullable);
-                return GetTypeBuildingContext(typeLocation, underlyingType, underlyingType.Type);
+                return GetTypeBuildingContext(typeLocation, underlyingType);
             }
 
             if (typeInfo.IsGenericType && !typeInfo.IsGenericTypeDefinition)
@@ -166,9 +165,8 @@ namespace SkbKontur.TypeScript.ContractGenerator
         [NotNull]
         private TypeScriptType GetTypeScriptType([NotNull] TypeScriptUnit targetUnit, [NotNull] ITypeInfo typeInfo, [CanBeNull] ICustomAttributeProvider customAttributeProvider)
         {
-            var type = typeInfo.Type;
-            if (typeDeclarations.ContainsKey(type))
-                return typeDeclarations[type].ReferenceFrom(targetUnit, this, customAttributeProvider);
+            if (typeDeclarations.ContainsKey(typeInfo))
+                return typeDeclarations[typeInfo].ReferenceFrom(targetUnit, this, customAttributeProvider);
             if (typeInfo.IsGenericTypeDefinition && typeInfo.GetGenericTypeDefinition().Type == typeof(Nullable<>))
                 return new TypeScriptNullableType(GetTypeScriptType(targetUnit, typeInfo.GetGenericArguments()[0], null));
             return ResolveType(typeInfo).ReferenceFrom(targetUnit, this, customAttributeProvider);
@@ -180,6 +178,6 @@ namespace SkbKontur.TypeScript.ContractGenerator
         private readonly Type[] rootTypes;
         private readonly DefaultTypeScriptGeneratorOutput typeUnitFactory;
         private readonly ICustomTypeGenerator customTypeGenerator;
-        private readonly Dictionary<Type, ITypeBuildingContext> typeDeclarations;
+        private readonly Dictionary<ITypeInfo, ITypeBuildingContext> typeDeclarations;
     }
 }

@@ -7,6 +7,9 @@ using JetBrains.Annotations;
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
+using SkbKontur.TypeScript.ContractGenerator.Internals;
+
+using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
@@ -24,7 +27,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             if (arrayType.IsArray)
                 return arrayType.GetElementType() ?? throw new ArgumentNullException($"Array type's {arrayType.Name} element type is not defined");
 
-            if (arrayType.IsGenericType && arrayType.GetGenericTypeDefinition().Type == typeof(List<>))
+            if (arrayType.IsGenericType && arrayType.GetGenericTypeDefinition().Equals(new TypeWrapper(typeof(List<>))))
                 return arrayType.GetGenericArguments()[0];
 
             throw new ArgumentException("arrayType should be either Array or List<T>", nameof(arrayType));
@@ -32,7 +35,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         public static bool Accept(ITypeInfo type)
         {
-            return type.IsArray || type.IsGenericType && type.GetGenericTypeDefinition().Type == typeof(List<>);
+            return type.IsArray || type.IsGenericType && type.GetGenericTypeDefinition().Equals(new TypeWrapper(typeof(List<>)));
         }
 
         public bool IsDefinitionBuilt => true;
@@ -58,7 +61,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                 return false;
 
             if (options.NullabilityMode == NullabilityMode.NullableReference)
-                return TypeScriptGeneratorHelpers.NullableReferenceCanBeNull(customAttributeProvider, elementType.Type, 1);
+                return TypeScriptGeneratorHelpers.NullableReferenceCanBeNull(customAttributeProvider, elementType, 1);
 
             return options.NullabilityMode == NullabilityMode.Pessimistic
                        ? !customAttributeProvider.IsNameDefined(AnnotationsNames.ItemNotNull)

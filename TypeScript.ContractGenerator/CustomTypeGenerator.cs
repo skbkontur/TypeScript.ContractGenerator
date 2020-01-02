@@ -14,25 +14,23 @@ namespace SkbKontur.TypeScript.ContractGenerator
     {
         public virtual string GetTypeLocation(ITypeInfo typeInfo)
         {
-            var type = typeInfo.Type;
-            if (typeLocations.TryGetValue(type, out var getLocation))
-                return getLocation(type);
-            foreach(var typeLocationRule in typeLocationRules)
-                if (typeLocationRule.Accept(type))
-                    return typeLocationRule.GetLocation(type);
+            if (typeLocations.TryGetValue(typeInfo, out var getLocation))
+                return getLocation(typeInfo);
+            foreach (var typeLocationRule in typeLocationRules)
+                if (typeLocationRule.Accept(typeInfo))
+                    return typeLocationRule.GetLocation(typeInfo);
             return string.Empty;
         }
 
         public virtual ITypeBuildingContext ResolveType(string initialUnitPath, ITypeInfo typeInfo, ITypeScriptUnitFactory unitFactory)
         {
-            var type = typeInfo.Type;
-            if (typeRedirects.TryGetValue(type, out var redirect))
-                return TypeBuilding.RedirectToType(redirect.Name, redirect.Location, type);
-            if (typeBuildingContexts.TryGetValue(type, out var createContext))
-                return createContext(type);
-            foreach(var typeBuildingContextWithAcceptanceChecking in typeBuildingContextsWithAcceptanceChecking)
-                if (typeBuildingContextWithAcceptanceChecking.Accept(type))
-                    return typeBuildingContextWithAcceptanceChecking.CreateContext(unitFactory.GetOrCreateTypeUnit(initialUnitPath), type);
+            if (typeRedirects.TryGetValue(typeInfo, out var redirect))
+                return TypeBuilding.RedirectToType(redirect.Name, redirect.Location, typeInfo);
+            if (typeBuildingContexts.TryGetValue(typeInfo, out var createContext))
+                return createContext(typeInfo);
+            foreach (var typeBuildingContextWithAcceptanceChecking in typeBuildingContextsWithAcceptanceChecking)
+                if (typeBuildingContextWithAcceptanceChecking.Accept(typeInfo))
+                    return typeBuildingContextWithAcceptanceChecking.CreateContext(unitFactory.GetOrCreateTypeUnit(initialUnitPath), typeInfo);
             return null;
         }
 
@@ -43,19 +41,19 @@ namespace SkbKontur.TypeScript.ContractGenerator
             foreach (var propertyResolver in propertyResolvers)
             {
                 var result = propertyResolver.ResolveProperty(unit, typeGenerator, type, property);
-                if(result != null)
+                if (result != null)
                     return result;
             }
             return null;
         }
 
-        public CustomTypeGenerator WithTypeLocation<T>(Func<Type, string> getLocation)
+        public CustomTypeGenerator WithTypeLocation<T>(Func<ITypeInfo, string> getLocation)
         {
-            typeLocations[typeof(T)] = getLocation;
+            typeLocations[TypeInfo.FromType<T>()] = getLocation;
             return this;
         }
 
-        public CustomTypeGenerator WithTypeLocationRule(Func<Type, bool> accept, Func<Type, string> getLocation)
+        public CustomTypeGenerator WithTypeLocationRule(Func<ITypeInfo, bool> accept, Func<ITypeInfo, string> getLocation)
         {
             typeLocationRules.Add((accept, getLocation));
             return this;
@@ -63,17 +61,17 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         public CustomTypeGenerator WithTypeRedirect<T>(string name, string location)
         {
-            typeRedirects[typeof(T)] = new TypeLocation {Name = name, Location = location};
+            typeRedirects[TypeInfo.FromType<T>()] = new TypeLocation {Name = name, Location = location};
             return this;
         }
 
-        public CustomTypeGenerator WithTypeBuildingContext<T>(Func<Type, ITypeBuildingContext> createContext)
+        public CustomTypeGenerator WithTypeBuildingContext<T>(Func<ITypeInfo, ITypeBuildingContext> createContext)
         {
-            typeBuildingContexts[typeof(T)] = createContext;
+            typeBuildingContexts[TypeInfo.FromType<T>()] = createContext;
             return this;
         }
 
-        public CustomTypeGenerator WithTypeBuildingContext(Func<Type, bool> accept, Func<TypeScriptUnit, Type, ITypeBuildingContext> createContext)
+        public CustomTypeGenerator WithTypeBuildingContext(Func<ITypeInfo, bool> accept, Func<TypeScriptUnit, ITypeInfo, ITypeBuildingContext> createContext)
         {
             typeBuildingContextsWithAcceptanceChecking.Add((accept, createContext));
             return this;
@@ -88,11 +86,11 @@ namespace SkbKontur.TypeScript.ContractGenerator
         [NotNull]
         public static ICustomTypeGenerator Null => new NullCustomTypeGenerator();
 
-        private readonly Dictionary<Type, Func<Type, string>> typeLocations = new Dictionary<Type, Func<Type, string>>();
-        private readonly Dictionary<Type, TypeLocation> typeRedirects = new Dictionary<Type, TypeLocation>();
-        private readonly Dictionary<Type, Func<Type, ITypeBuildingContext>> typeBuildingContexts = new Dictionary<Type, Func<Type, ITypeBuildingContext>>();
-        private readonly List<(Func<Type, bool> Accept, Func<TypeScriptUnit, Type, ITypeBuildingContext> CreateContext)> typeBuildingContextsWithAcceptanceChecking = new List<(Func<Type, bool> Accept, Func<TypeScriptUnit, Type, ITypeBuildingContext> CreateContext)>();
-        private readonly List<(Func<Type, bool> Accept, Func<Type, string> GetLocation)> typeLocationRules = new List<(Func<Type, bool> Accept, Func<Type, string> GetLocation)>();
+        private readonly Dictionary<ITypeInfo, Func<ITypeInfo, string>> typeLocations = new Dictionary<ITypeInfo, Func<ITypeInfo, string>>();
+        private readonly Dictionary<ITypeInfo, TypeLocation> typeRedirects = new Dictionary<ITypeInfo, TypeLocation>();
+        private readonly Dictionary<ITypeInfo, Func<ITypeInfo, ITypeBuildingContext>> typeBuildingContexts = new Dictionary<ITypeInfo, Func<ITypeInfo, ITypeBuildingContext>>();
+        private readonly List<(Func<ITypeInfo, bool> Accept, Func<TypeScriptUnit, ITypeInfo, ITypeBuildingContext> CreateContext)> typeBuildingContextsWithAcceptanceChecking = new List<(Func<ITypeInfo, bool> Accept, Func<TypeScriptUnit, ITypeInfo, ITypeBuildingContext> CreateContext)>();
+        private readonly List<(Func<ITypeInfo, bool> Accept, Func<ITypeInfo, string> GetLocation)> typeLocationRules = new List<(Func<ITypeInfo, bool> Accept, Func<ITypeInfo, string> GetLocation)>();
         private readonly List<IPropertyResolver> propertyResolvers = new List<IPropertyResolver>();
     }
 }

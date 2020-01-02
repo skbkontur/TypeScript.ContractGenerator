@@ -17,14 +17,14 @@ namespace AspNetCoreExample.Generator
             var customTypeGenerator = new CustomTypeGenerator()
                 .WithTypeRedirect<Guid>("Guid", @"dataTypes\Guid")
                 .WithTypeLocationRule(
-                    x => typeof(ControllerBase).IsAssignableFrom(x),
+                    x => typeof(ControllerBase).IsAssignableFrom(x.Type),
                     x => $"api/{x.Name}".Replace("Controller", "Api")
                 )
                 .WithTypeLocationRule(
                     x => x.FullName.StartsWith(modelsNamespace),
                     x => "dto/" + x.FullName.Substring(modelsNamespace.Length + 1).Replace(".", "/")
                 )
-                .WithTypeBuildingContext(ApiControllerTypeBuildingContext.Accept, (unit, type) => new ApiControllerTypeBuildingContext(unit, new TypeWrapper(type)));
+                .WithTypeBuildingContext(ApiControllerTypeBuildingContext.Accept, (unit, type) => new ApiControllerTypeBuildingContext(unit, type));
 
             var typeScriptCodeGenerator = new TypeScriptGenerator(
                 new TypeScriptGenerationOptions

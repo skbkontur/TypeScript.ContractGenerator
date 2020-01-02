@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 
@@ -49,6 +50,32 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         public ITypeInfo GetElementType()
         {
             return new TypeWrapper(Type.GetElementType());
+        }
+
+        public bool Equals(ITypeInfo other)
+        {
+            return Type == other?.Type;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+                return false;
+
+            if (ReferenceEquals(this, obj))
+                return true;
+
+            return obj is ITypeInfo typeInfo && Equals(typeInfo);
+        }
+
+        public override int GetHashCode()
+        {
+            return Type.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return Type.ToString();
         }
     }
 }
