@@ -1,15 +1,16 @@
-using System;
 using System.Linq;
 using System.Reflection;
 
+using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+using SkbKontur.TypeScript.ContractGenerator.Internals;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 {
     public class AbstractTypeBuildingContext : TypeBuildingContext
     {
-        public AbstractTypeBuildingContext(TypeScriptUnit unit, Type type)
+        public AbstractTypeBuildingContext(TypeScriptUnit unit, ITypeInfo type)
             : base(unit, type)
         {
             this.unit = unit;
@@ -19,17 +20,17 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
         public override void Initialize(ITypeGenerator typeGenerator)
         {
             var types = Assembly
-                .GetAssembly(type)
+                .GetAssembly(type.Type)
                 .GetTypes()
-                .Where(x => x.BaseType == type).ToArray();
+                .Where(x => x.BaseType == type.Type).ToArray();
 
             Declaration = new TypeScriptTypeDeclaration
                 {
                     Name = type.Name,
                     Definition = new TypeScriptUnionType(types.Select(x =>
                         {
-                            var resultType = typeGenerator.BuildAndImportType(unit, x, x);
-                            if(resultType is INullabilityWrapperType nullableType)
+                            var resultType = typeGenerator.BuildAndImportType(unit, x, new TypeWrapper(x));
+                            if (resultType is INullabilityWrapperType nullableType)
                             {
                                 return nullableType.InnerType;
                             }
@@ -40,6 +41,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
         }
 
         private readonly TypeScriptUnit unit;
-        private readonly Type type;
+        private readonly ITypeInfo type;
     }
 }

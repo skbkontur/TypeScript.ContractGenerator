@@ -2,26 +2,27 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
+using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class BuildInTypeBuildingContext : ITypeBuildingContext
     {
-        public BuildInTypeBuildingContext(Type type)
+        public BuildInTypeBuildingContext(ITypeInfo type)
         {
             this.type = type;
         }
 
-        public static bool Accept(Type type)
+        public static bool Accept(ITypeInfo type)
         {
-            return builtinTypes.ContainsKey(type);
+            return builtinTypes.ContainsKey(type.Type);
         }
 
         public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
         {
-            if (builtinTypes.ContainsKey(type))
-                return new TypeScriptBuildInType(builtinTypes[type]);
+            if (builtinTypes.ContainsKey(type.Type))
+                return new TypeScriptBuildInType(builtinTypes[type.Type]);
             throw new ArgumentOutOfRangeException();
         }
 
@@ -35,7 +36,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        private readonly Type type;
+        private readonly ITypeInfo type;
 
         private static readonly Dictionary<Type, string> builtinTypes = new Dictionary<Type, string>
             {

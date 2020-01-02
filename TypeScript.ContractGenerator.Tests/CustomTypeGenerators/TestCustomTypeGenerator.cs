@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
+using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
 using SkbKontur.TypeScript.ContractGenerator.Tests.Types;
@@ -11,15 +12,16 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 {
     public class TestCustomTypeGenerator : ICustomTypeGenerator
     {
-        public string GetTypeLocation(Type type)
+        public string GetTypeLocation(ITypeInfo type)
         {
             return "";
         }
 
-        public ITypeBuildingContext ResolveType(string initialUnitPath, Type type, ITypeScriptUnitFactory unitFactory)
+        public ITypeBuildingContext ResolveType(string initialUnitPath, ITypeInfo typeInfo, ITypeScriptUnitFactory unitFactory)
         {
+            var type = typeInfo.Type;
             if (type == typeof(MethodRootType))
-                return new MethodTypeBuildingContext(unitFactory.GetOrCreateTypeUnit(initialUnitPath), type);
+                return new MethodTypeBuildingContext(unitFactory.GetOrCreateTypeUnit(initialUnitPath), typeInfo);
 
             if (CollectionTypeBuildingContext.Accept(type))
                 return new CollectionTypeBuildingContext(type);
@@ -28,13 +30,15 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
                 return new StringBuildingContext();
 
             if (type.IsAbstract)
-                return new AbstractTypeBuildingContext(unitFactory.GetOrCreateTypeUnit(initialUnitPath), type);
+                return new AbstractTypeBuildingContext(unitFactory.GetOrCreateTypeUnit(initialUnitPath), typeInfo);
 
             return null;
         }
 
-        public TypeScriptTypeMemberDeclaration ResolveProperty(TypeScriptUnit unit, ITypeGenerator typeGenerator, Type type, PropertyInfo property)
+        public TypeScriptTypeMemberDeclaration ResolveProperty(TypeScriptUnit unit, ITypeGenerator typeGenerator, ITypeInfo typeInfo, IPropertyInfo propertyInfo)
         {
+            var type = typeInfo.Type;
+            var property = propertyInfo.Property;
             var (isNullable, _) = TypeScriptGeneratorHelpers.ProcessNullable(property, property.PropertyType, typeGenerator.Options.NullabilityMode);
 
             if (!TryGetGetOnlyEnumPropertyValue(type, property, out var value))
@@ -44,18 +48,18 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
                 {
                     Name = property.Name.ToLowerCamelCase(),
                     Optional = isNullable && typeGenerator.Options.EnableOptionalProperties,
-                    Type = GetConstEnumType(typeGenerator, unit, property, value),
+                    Type = GetConstEnumType(typeGenerator, unit, propertyInfo, value),
                 };
         }
 
-        private static TypeScriptType GetConstEnumType(ITypeGenerator typeGenerator, TypeScriptUnit unit, PropertyInfo property, string value)
+        private static TypeScriptType GetConstEnumType(ITypeGenerator typeGenerator, TypeScriptUnit unit, IPropertyInfo property, string value)
         {
             switch (typeGenerator.Options.EnumGenerationMode)
             {
             case EnumGenerationMode.FixedStringsAndDictionary:
                 return new TypeScriptStringLiteralType(value);
             case EnumGenerationMode.TypeScriptEnum:
-                return new TypeScriptEnumValueType(typeGenerator.BuildAndImportType(unit, property, property.PropertyType), value);
+                return new TypeScriptEnumValueType(typeGenerator.BuildAndImportType(unit, property.Property, property.PropertyType), value);
             default:
                 throw new ArgumentOutOfRangeException();
             }

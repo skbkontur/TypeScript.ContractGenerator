@@ -7,13 +7,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 
 using SkbKontur.TypeScript.ContractGenerator;
+using SkbKontur.TypeScript.ContractGenerator.Abstractions;
+using SkbKontur.TypeScript.ContractGenerator.Internals;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController;
 
 namespace AspNetCoreExample.Generator
 {
     public class ApiControllerTypeBuildingContext : ApiControllerTypeBuildingContextBase
     {
-        public ApiControllerTypeBuildingContext(TypeScriptUnit unit, Type type)
+        public ApiControllerTypeBuildingContext(TypeScriptUnit unit, ITypeInfo type)
             : base(unit, type)
         {
         }
@@ -23,7 +25,7 @@ namespace AspNetCoreExample.Generator
             return typeof(ControllerBase).IsAssignableFrom(type);
         }
 
-        protected override TypeLocation GetApiBase(Type controllerType)
+        protected override TypeLocation GetApiBase(ITypeInfo controllerType)
         {
             var apiBaseName = GetApiBaseName(controllerType);
             return new TypeLocation
@@ -33,91 +35,94 @@ namespace AspNetCoreExample.Generator
                 };
         }
 
-        private string GetApiBaseName(Type controllerType)
+        private string GetApiBaseName(ITypeInfo controllerType)
         {
             if (IsUserScopedApi(controllerType))
                 return "UserApiBase";
             return "ApiBase";
         }
 
-        protected override Type ResolveReturnType(Type type)
+        protected override ITypeInfo ResolveReturnType(ITypeInfo typeInfo)
         {
+            var type = typeInfo.Type;
             if (type.IsGenericType)
             {
                 var genericTypeDefinition = type.GetGenericTypeDefinition();
                 if (genericTypeDefinition == typeof(Task<>) || genericTypeDefinition == typeof(ActionResult<>))
-                    return ResolveReturnType(type.GetGenericArguments()[0]);
+                    return ResolveReturnType(new TypeWrapper(type.GetGenericArguments()[0]));
             }
 
             if (type == typeof(Task))
-                return typeof(void);
+                return new TypeWrapper(typeof(void));
             if (type == typeof(ActionResult))
-                return typeof(void);
-            return type;
+                return new TypeWrapper(typeof(void));
+            return new TypeWrapper(type);
         }
 
-        protected override BaseApiMethod ResolveBaseApiMethod(MethodInfo methodInfo)
+        protected override BaseApiMethod ResolveBaseApiMethod(IMethodInfo methodInfo)
         {
-            if (methodInfo.GetCustomAttribute<HttpGetAttribute>() != null)
+            var method = methodInfo.Method;
+            if (method.GetCustomAttribute<HttpGetAttribute>() != null)
                 return BaseApiMethod.Get;
 
-            if (methodInfo.GetCustomAttribute<HttpPostAttribute>() != null)
+            if (method.GetCustomAttribute<HttpPostAttribute>() != null)
                 return BaseApiMethod.Post;
 
-            if (methodInfo.GetCustomAttribute<HttpPutAttribute>() != null)
+            if (method.GetCustomAttribute<HttpPutAttribute>() != null)
                 return BaseApiMethod.Put;
 
-            if (methodInfo.GetCustomAttribute<HttpDeleteAttribute>() != null)
+            if (method.GetCustomAttribute<HttpDeleteAttribute>() != null)
                 return BaseApiMethod.Delete;
 
-            throw new NotSupportedException($"Unresolved http verb for method {methodInfo.Name} at controller {methodInfo.DeclaringType?.Name}");
+            throw new NotSupportedException($"Unresolved http verb for method {methodInfo.Name} at controller {methodInfo.Method.DeclaringType?.Name}");
         }
 
-        protected override string BuildRoute(Type controllerType, MethodInfo methodInfo)
+        protected override string BuildRoute(ITypeInfo controllerType, IMethodInfo methodInfo)
         {
-            var routeTemplate = methodInfo.GetCustomAttributes()
+            var routeTemplate = methodInfo.Method.GetCustomAttributes()
                                           .Select(x => x is IRouteTemplateProvider routeTemplateProvider ? routeTemplateProvider.Template : null)
                                           .SingleOrDefault(x => !string.IsNullOrEmpty(x));
             return AppendRoutePrefix(routeTemplate, controllerType);
         }
 
-        protected override bool PassParameterToCall(ParameterInfo parameterInfo, Type controllerType)
+        protected override bool PassParameterToCall(IParameterInfo parameterInfo, ITypeInfo controllerType)
         {
             if (IsUserScopedApi(controllerType) && parameterInfo.Name == "userId")
                 return false;
             return true;
         }
 
-        protected override ParameterInfo[] GetQueryParameters(ParameterInfo[] parameters, Type controllerType)
+        protected override IParameterInfo[] GetQueryParameters(IParameterInfo[] parameters, ITypeInfo controllerType)
         {
-            return parameters.Where(x => PassParameterToCall(x, controllerType) && !x.GetCustomAttributes<FromBodyAttribute>().Any()).ToArray();
+            return parameters.Where(x => PassParameterToCall(x, controllerType) && !x.Parameter.GetCustomAttributes<FromBodyAttribute>().Any()).ToArray();
         }
 
-        protected override ParameterInfo GetBody(ParameterInfo[] parameters, Type controllerType)
+        protected override IParameterInfo GetBody(IParameterInfo[] parameters, ITypeInfo controllerType)
         {
-            return parameters.SingleOrDefault(x => PassParameterToCall(x, controllerType) && x.GetCustomAttributes<FromBodyAttribute>().Any());
+            return parameters.SingleOrDefault(x => PassParameterToCall(x, controllerType) && x.Parameter.GetCustomAttributes<FromBodyAttribute>().Any());
         }
 
-        protected override MethodInfo[] GetMethodsToImplement(Type controllerType)
+        protected override IMethodInfo[] GetMethodsToImplement(ITypeInfo controllerType)
         {
-            return controllerType.GetMethods(BindingFlags.Instance | BindingFlags.Public)
+            return controllerType.Type.GetMethods(BindingFlags.Instance | BindingFlags.Public)
                                  .Where(m => !m.IsSpecialName)
                                  .Where(x => x.DeclaringType == controllerType)
+                                 .Select(x => new MethodWrapper(x))
                                  .ToArray();
         }
 
-        private string AppendRoutePrefix(string routeTemplate, Type controllerType)
+        private string AppendRoutePrefix(string routeTemplate, ITypeInfo controllerType)
         {
-            var routeAttribute = controllerType.GetCustomAttribute<RouteAttribute>();
+            var routeAttribute = controllerType.Type.GetCustomAttribute<RouteAttribute>();
             var fullRoute = (routeAttribute == null ? "" : routeAttribute.Template + "/") + routeTemplate;
             if (IsUserScopedApi(controllerType))
                 return fullRoute.Substring("v1/user/{userId}/".Length);
             return fullRoute.Substring("v1/".Length);
         }
 
-        private bool IsUserScopedApi(Type controller)
+        private bool IsUserScopedApi(ITypeInfo controller)
         {
-            var route = controller.GetCustomAttribute<RouteAttribute>();
+            var route = controller.Type.GetCustomAttribute<RouteAttribute>();
             return route?.Template.StartsWith("v1/user/{userId}") ?? false;
         }
     }

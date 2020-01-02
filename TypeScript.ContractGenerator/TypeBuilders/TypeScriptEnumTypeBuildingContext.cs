@@ -1,20 +1,20 @@
-using System;
 using System.Linq;
 
+using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class TypeScriptEnumTypeBuildingContext : TypeBuildingContext
     {
-        public TypeScriptEnumTypeBuildingContext(TypeScriptUnit unit, Type type)
+        public TypeScriptEnumTypeBuildingContext(TypeScriptUnit unit, ITypeInfo type)
             : base(unit, type)
         {
         }
 
         public override void Initialize(ITypeGenerator typeGenerator)
         {
-            var values = Type.GetEnumNames();
+            var values = Type.Type.GetEnumNames();
             var enumResult = new JavaScriptEnumDeclaration
                 {
                     Name = Type.Name,

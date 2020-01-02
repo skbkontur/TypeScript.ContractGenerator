@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using SkbKontur.TypeScript.ContractGenerator;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace AspNetCoreExample.Generator
 {
@@ -23,7 +24,7 @@ namespace AspNetCoreExample.Generator
                     x => x.FullName.StartsWith(modelsNamespace),
                     x => "dto/" + x.FullName.Substring(modelsNamespace.Length + 1).Replace(".", "/")
                 )
-                .WithTypeBuildingContext(ApiControllerTypeBuildingContext.Accept, (unit, type) => new ApiControllerTypeBuildingContext(unit, type));
+                .WithTypeBuildingContext(ApiControllerTypeBuildingContext.Accept, (unit, type) => new ApiControllerTypeBuildingContext(unit, new TypeWrapper(type)));
 
             var typeScriptCodeGenerator = new TypeScriptGenerator(
                 new TypeScriptGenerationOptions

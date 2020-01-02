@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+using SkbKontur.TypeScript.ContractGenerator.Internals;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
@@ -34,7 +35,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 
         public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
         {
-            var itemType = typeGenerator.ResolveType(elementType).ReferenceFrom(targetUnit, typeGenerator, null);
+            var itemType = typeGenerator.ResolveType(new TypeWrapper(elementType)).ReferenceFrom(targetUnit, typeGenerator, null);
             return new TypeScriptArrayType(itemType);
         }
 

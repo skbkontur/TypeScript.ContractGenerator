@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 using JetBrains.Annotations;
 
+using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
@@ -12,8 +12,9 @@ namespace SkbKontur.TypeScript.ContractGenerator
 {
     public class CustomTypeGenerator : ICustomTypeGenerator
     {
-        public virtual string GetTypeLocation(Type type)
+        public virtual string GetTypeLocation(ITypeInfo typeInfo)
         {
+            var type = typeInfo.Type;
             if (typeLocations.TryGetValue(type, out var getLocation))
                 return getLocation(type);
             foreach(var typeLocationRule in typeLocationRules)
@@ -22,8 +23,9 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return string.Empty;
         }
 
-        public virtual ITypeBuildingContext ResolveType(string initialUnitPath, Type type, ITypeScriptUnitFactory unitFactory)
+        public virtual ITypeBuildingContext ResolveType(string initialUnitPath, ITypeInfo typeInfo, ITypeScriptUnitFactory unitFactory)
         {
+            var type = typeInfo.Type;
             if (typeRedirects.TryGetValue(type, out var redirect))
                 return TypeBuilding.RedirectToType(redirect.Name, redirect.Location, type);
             if (typeBuildingContexts.TryGetValue(type, out var createContext))
@@ -34,8 +36,10 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return null;
         }
 
-        public virtual TypeScriptTypeMemberDeclaration ResolveProperty(TypeScriptUnit unit, ITypeGenerator typeGenerator, Type type, PropertyInfo property)
+        public virtual TypeScriptTypeMemberDeclaration ResolveProperty(TypeScriptUnit unit, ITypeGenerator typeGenerator, ITypeInfo typeInfo, IPropertyInfo propertyInfo)
         {
+            var type = typeInfo.Type;
+            var property = propertyInfo.Property;
             foreach (var propertyResolver in propertyResolvers)
             {
                 var result = propertyResolver.ResolveProperty(unit, typeGenerator, type, property);

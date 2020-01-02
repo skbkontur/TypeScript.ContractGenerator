@@ -1,6 +1,6 @@
 using System;
-using System.Reflection;
 
+using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
 using SkbKontur.TypeScript.ContractGenerator.Tests.Types;
@@ -10,18 +10,20 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 {
     public class TestCustomPropertyResolver : ICustomTypeGenerator
     {
-        public string GetTypeLocation(Type type)
+        public string GetTypeLocation(ITypeInfo type)
         {
             return "";
         }
 
-        public ITypeBuildingContext ResolveType(string initialUnitPath, Type type, ITypeScriptUnitFactory unitFactory)
+        public ITypeBuildingContext ResolveType(string initialUnitPath, ITypeInfo type, ITypeScriptUnitFactory unitFactory)
         {
             return null;
         }
 
-        public TypeScriptTypeMemberDeclaration ResolveProperty(TypeScriptUnit unit, ITypeGenerator typeGenerator, Type type, PropertyInfo property)
+        public TypeScriptTypeMemberDeclaration ResolveProperty(TypeScriptUnit unit, ITypeGenerator typeGenerator, ITypeInfo typeInfo, IPropertyInfo propertyInfo)
         {
+            var type = typeInfo.Type;
+            var property = propertyInfo.Property;
             if (type == typeof(EnumWithConstGetterContainingRootType) && property.PropertyType.IsEnum && !property.CanWrite)
             {
                 return new TypeScriptTypeMemberDeclaration

@@ -5,21 +5,23 @@ using System.Text.RegularExpressions;
 
 using JetBrains.Annotations;
 
+using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class CustomTypeTypeBuildingContext : TypeBuildingContext
     {
-        public CustomTypeTypeBuildingContext([NotNull] TypeScriptUnit unit, [NotNull] Type type)
+        public CustomTypeTypeBuildingContext([NotNull] TypeScriptUnit unit, [NotNull] ITypeInfo type)
             : base(unit, type)
         {
         }
 
         public override bool IsDefinitionBuilt => Declaration.Definition != null;
 
-        private TypeScriptTypeDeclaration CreateComplexTypeScriptDeclarationWithoutDefinition(Type type)
+        private TypeScriptTypeDeclaration CreateComplexTypeScriptDeclarationWithoutDefinition(ITypeInfo type)
         {
             var result = new TypeScriptTypeDeclaration
                 {
@@ -35,10 +37,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             Declaration = CreateComplexTypeScriptDeclarationWithoutDefinition(Type);
             Unit.Body.Add(new TypeScriptExportTypeStatement {Declaration = Declaration});
 
-            if (Type.BaseType != typeof(object) && Type.BaseType != typeof(ValueType) && Type.BaseType != typeof(MarshalByRefObject) && Type.BaseType != null)
-            {
+            var baseType = Type.BaseType.Type;
+            if (baseType != typeof(object) && baseType != typeof(ValueType) && baseType != typeof(MarshalByRefObject) && baseType != null)
                 typeGenerator.ResolveType(Type.BaseType);
-            }
         }
 
         public override void BuildDefinition(ITypeGenerator typeGenerator)
@@ -49,8 +50,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         protected virtual TypeScriptTypeDefintion CreateComplexTypeScriptDefinition(ITypeGenerator typeGenerator)
         {
             var result = new TypeScriptTypeDefintion();
-            result.Members.AddRange(Type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                                        .Select(x => typeGenerator.ResolveProperty(Unit, Type, x))
+            result.Members.AddRange(Type.Type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                                        .Select(x => typeGenerator.ResolveProperty(Unit, Type, new PropertyWrapper(x)))
                                         .Where(x => x != null));
             return result;
         }

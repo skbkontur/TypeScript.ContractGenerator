@@ -1,13 +1,13 @@
-using System;
 using System.Reflection;
 
+using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class GenericParameterTypeBuildingContext : ITypeBuildingContext
     {
-        public GenericParameterTypeBuildingContext(Type type)
+        public GenericParameterTypeBuildingContext(ITypeInfo type)
         {
             this.type = type;
         }
@@ -27,6 +27,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             return new TypeScriptTypeReference(type.Name);
         }
 
-        private readonly Type type;
+        private readonly ITypeInfo type;
     }
 }

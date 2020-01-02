@@ -1,13 +1,14 @@
 using System;
 using System.Reflection;
 
+using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class NullableTypeBuildingContext : ITypeBuildingContext
     {
-        public NullableTypeBuildingContext(Type nullableUnderlyingType, bool useGlobalNullable)
+        public NullableTypeBuildingContext(ITypeInfo nullableUnderlyingType, bool useGlobalNullable)
         {
             itemType = nullableUnderlyingType;
             this.useGlobalNullable = useGlobalNullable;
@@ -31,7 +32,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                        : new TypeScriptOrNullType(itemTypeScriptType);
         }
 
-        private readonly Type itemType;
+        private readonly ITypeInfo itemType;
         private readonly bool useGlobalNullable;
     }
 }
