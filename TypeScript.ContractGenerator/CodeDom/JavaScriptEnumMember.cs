@@ -13,6 +13,5 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
             }
             return $"{Name} = {ValueLiteral.GenerateCode(context)}";
         }
-
     }
 }

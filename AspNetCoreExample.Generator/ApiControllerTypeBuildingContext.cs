@@ -8,8 +8,11 @@ using Microsoft.AspNetCore.Mvc.Routing;
 
 using SkbKontur.TypeScript.ContractGenerator;
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
+using SkbKontur.TypeScript.ContractGenerator.Extensions;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController;
+
+using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 
 namespace AspNetCoreExample.Generator
 {
@@ -44,34 +47,32 @@ namespace AspNetCoreExample.Generator
 
         protected override ITypeInfo ResolveReturnType(ITypeInfo typeInfo)
         {
-            var type = typeInfo.Type;
-            if (type.IsGenericType)
+            if (typeInfo.IsGenericType)
             {
-                var genericTypeDefinition = type.GetGenericTypeDefinition();
-                if (genericTypeDefinition == typeof(Task<>) || genericTypeDefinition == typeof(ActionResult<>))
-                    return ResolveReturnType(new TypeWrapper(type.GetGenericArguments()[0]));
+                var genericTypeDefinition = typeInfo.GetGenericTypeDefinition();
+                if (genericTypeDefinition.Equals(new TypeWrapper(typeof(Task<>))) || genericTypeDefinition.Equals(new TypeWrapper(typeof(ActionResult<>))))
+                    return ResolveReturnType(typeInfo.GetGenericArguments()[0]);
             }
 
-            if (type == typeof(Task))
+            if (typeInfo.Equals(TypeInfo.FromType<Task>()))
                 return new TypeWrapper(typeof(void));
-            if (type == typeof(ActionResult))
+            if (typeInfo.Equals(TypeInfo.FromType<ActionResult>()))
                 return new TypeWrapper(typeof(void));
-            return new TypeWrapper(type);
+            return typeInfo;
         }
 
         protected override BaseApiMethod ResolveBaseApiMethod(IMethodInfo methodInfo)
         {
-            var method = methodInfo.Method;
-            if (method.GetCustomAttribute<HttpGetAttribute>() != null)
+            if (methodInfo.GetCustomAttributes<HttpGetAttribute>().Any())
                 return BaseApiMethod.Get;
 
-            if (method.GetCustomAttribute<HttpPostAttribute>() != null)
+            if (methodInfo.GetCustomAttributes<HttpPostAttribute>().Any())
                 return BaseApiMethod.Post;
 
-            if (method.GetCustomAttribute<HttpPutAttribute>() != null)
+            if (methodInfo.GetCustomAttributes<HttpPutAttribute>().Any())
                 return BaseApiMethod.Put;
 
-            if (method.GetCustomAttribute<HttpDeleteAttribute>() != null)
+            if (methodInfo.GetCustomAttributes<HttpDeleteAttribute>().Any())
                 return BaseApiMethod.Delete;
 
             throw new NotSupportedException($"Unresolved http verb for method {methodInfo.Name} at controller {methodInfo.Method.DeclaringType?.Name}");
@@ -79,7 +80,7 @@ namespace AspNetCoreExample.Generator
 
         protected override string BuildRoute(ITypeInfo controllerType, IMethodInfo methodInfo)
         {
-            var routeTemplate = methodInfo.Method.GetCustomAttributes()
+            var routeTemplate = methodInfo.GetCustomAttributes(false)
                                           .Select(x => x is IRouteTemplateProvider routeTemplateProvider ? routeTemplateProvider.Template : null)
                                           .SingleOrDefault(x => !string.IsNullOrEmpty(x));
             return AppendRoutePrefix(routeTemplate, controllerType);
@@ -94,26 +95,26 @@ namespace AspNetCoreExample.Generator
 
         protected override IParameterInfo[] GetQueryParameters(IParameterInfo[] parameters, ITypeInfo controllerType)
         {
-            return parameters.Where(x => PassParameterToCall(x, controllerType) && !x.Parameter.GetCustomAttributes<FromBodyAttribute>().Any()).ToArray();
+            return parameters.Where(x => PassParameterToCall(x, controllerType) && !x.GetCustomAttributes<FromBodyAttribute>().Any()).ToArray();
         }
 
         protected override IParameterInfo GetBody(IParameterInfo[] parameters, ITypeInfo controllerType)
         {
-            return parameters.SingleOrDefault(x => PassParameterToCall(x, controllerType) && x.Parameter.GetCustomAttributes<FromBodyAttribute>().Any());
+            return parameters.SingleOrDefault(x => PassParameterToCall(x, controllerType) && x.GetCustomAttributes<FromBodyAttribute>().Any());
         }
 
         protected override IMethodInfo[] GetMethodsToImplement(ITypeInfo controllerType)
         {
             return controllerType.Type.GetMethods(BindingFlags.Instance | BindingFlags.Public)
                                  .Where(m => !m.IsSpecialName)
-                                 .Where(x => x.DeclaringType == controllerType)
-                                 .Select(x => new MethodWrapper(x))
+                                 .Where(x => x.DeclaringType == controllerType.Type)
+                                 .Select(x => (IMethodInfo)new MethodWrapper(x))
                                  .ToArray();
         }
 
         private string AppendRoutePrefix(string routeTemplate, ITypeInfo controllerType)
         {
-            var routeAttribute = controllerType.Type.GetCustomAttribute<RouteAttribute>();
+            var routeAttribute = controllerType.GetCustomAttributes<RouteAttribute>().SingleOrDefault();
             var fullRoute = (routeAttribute == null ? "" : routeAttribute.Template + "/") + routeTemplate;
             if (IsUserScopedApi(controllerType))
                 return fullRoute.Substring("v1/user/{userId}/".Length);
@@ -122,7 +123,7 @@ namespace AspNetCoreExample.Generator
 
         private bool IsUserScopedApi(ITypeInfo controller)
         {
-            var route = controller.Type.GetCustomAttribute<RouteAttribute>();
+            var route = controller.GetCustomAttributes<RouteAttribute>().SingleOrDefault();
             return route?.Template.StartsWith("v1/user/{userId}") ?? false;
         }
     }

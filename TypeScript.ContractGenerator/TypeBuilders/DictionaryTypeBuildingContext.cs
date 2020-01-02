@@ -4,6 +4,7 @@ using JetBrains.Annotations;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
@@ -18,7 +19,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         public static bool Accept(ITypeInfo type)
         {
-            return type.IsGenericType && type.GetGenericTypeDefinition().Type == typeof(Dictionary<,>);
+            return type.IsGenericType && type.GetGenericTypeDefinition().Equals(new TypeWrapper(typeof(Dictionary<,>)));
         }
 
         public bool IsDefinitionBuilt => true;

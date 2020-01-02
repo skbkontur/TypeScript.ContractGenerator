@@ -11,7 +11,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [Test]
         public void RootCantBeGenericType()
         {
-            new TypeScriptGenerator(TypeScriptGenerationOptions.Default, CustomTypeGenerator.Null, new RootTypesProvider(typeof(GenericRootType<CustomType>)))
+            new TypeScriptGenerator(TypeScriptGenerationOptions.Default, CustomTypeGenerator.Null, new TypesProvider(typeof(GenericRootType<CustomType>)))
                 .Generate().Should().BeEmpty();
         }
     }

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 
@@ -20,25 +21,32 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         public bool IsEnum => Type.IsEnum;
         public bool IsValueType => Type.IsValueType;
         public bool IsArray => Type.IsArray;
+        public bool IsClass => Type.IsClass;
+        public bool IsInterface => Type.IsInterface;
         public bool IsAbstract => Type.IsAbstract;
         public bool IsGenericType => Type.IsGenericType;
         public bool IsGenericParameter => Type.IsGenericParameter;
         public bool IsGenericTypeDefinition => Type.IsGenericTypeDefinition;
         public ITypeInfo BaseType => new TypeWrapper(Type.BaseType);
 
-        public IMethodInfo[] GetMethods()
+        public IMethodInfo[] GetMethods(BindingFlags bindingAttr)
         {
-            return Type.GetMethods().Select(x => (IMethodInfo)new MethodWrapper(x)).ToArray();
+            return Type.GetMethods(bindingAttr).Select(x => (IMethodInfo)new MethodWrapper(x)).ToArray();
         }
 
-        public IPropertyInfo[] GetProperties()
+        public IPropertyInfo[] GetProperties(BindingFlags bindingAttr)
         {
-            return Type.GetProperties().Select(x => (IPropertyInfo)new PropertyWrapper(x)).ToArray();
+            return Type.GetProperties(bindingAttr).Select(x => (IPropertyInfo)new PropertyWrapper(x)).ToArray();
         }
 
         public ITypeInfo[] GetGenericArguments()
         {
             return Type.GetGenericArguments().Select(x => (ITypeInfo)new TypeWrapper(x)).ToArray();
+        }
+
+        public ITypeInfo[] GetInterfaces()
+        {
+            return Type.GetInterfaces().Select(x => (ITypeInfo)new TypeWrapper(x)).ToArray();
         }
 
         public ITypeInfo GetGenericTypeDefinition()
@@ -49,6 +57,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         public ITypeInfo GetElementType()
         {
             return new TypeWrapper(Type.GetElementType());
+        }
+
+        public string[] GetEnumNames()
+        {
+            return Type.GetEnumNames();
         }
 
         public object[] GetCustomAttributes(bool inherit)

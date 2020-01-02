@@ -38,7 +38,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                 {
                     var isNullable = TypeScriptGeneratorHelpers.NullableReferenceCanBeNull(attributeProvider, argument, nullableIndex);
                     nullableIndex += TypeScriptGeneratorHelpers.GetGenericArgumentsToSkip(argument);
-                    arguments.Add(TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(targetType, !argument.Type.IsValueType && isNullable, options));
+                    arguments.Add(TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(targetType, !argument.IsValueType && isNullable, options));
                 }
                 else
                 {

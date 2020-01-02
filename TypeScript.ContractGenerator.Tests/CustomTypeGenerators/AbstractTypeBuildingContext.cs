@@ -1,9 +1,7 @@
 using System.Linq;
-using System.Reflection;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
-using SkbKontur.TypeScript.ContractGenerator.Internals;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
@@ -19,12 +17,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 
         public override void Initialize(ITypeGenerator typeGenerator)
         {
-            var types = Assembly
-                .GetAssembly(type.Type)
-                .GetTypes()
-                .Where(x => x.BaseType == type.Type)
-                .Select(x => new TypeWrapper(x))
-                .ToArray();
+            var types = typeGenerator.TypesProvider
+                                     .GetAssemblyTypes(type)
+                                     .Where(x => x.BaseType.Equals(type))
+                                     .ToArray();
 
             Declaration = new TypeScriptTypeDeclaration
                 {

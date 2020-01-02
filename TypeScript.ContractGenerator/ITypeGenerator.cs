@@ -18,6 +18,9 @@ namespace SkbKontur.TypeScript.ContractGenerator
         TypeScriptType BuildAndImportType([NotNull] TypeScriptUnit targetUnit, [CanBeNull] IAttributeProvider customAttributeProvider, [NotNull] ITypeInfo type);
 
         [NotNull]
+        ITypesProvider TypesProvider { get; }
+
+        [NotNull]
         TypeScriptGenerationOptions Options { get; }
     }
 }

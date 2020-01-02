@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Reflection;
 
 using JetBrains.Annotations;
 
@@ -19,11 +18,12 @@ namespace SkbKontur.TypeScript.ContractGenerator
     {
         [SuppressMessage("ReSharper", "ConstantNullCoalescingCondition")]
         [SuppressMessage("ReSharper", "ConstantConditionalAccessQualifier")]
-        public TypeScriptGenerator([NotNull] TypeScriptGenerationOptions options, [NotNull] ICustomTypeGenerator customTypeGenerator, [NotNull] IRootTypesProvider rootTypesProvider)
+        public TypeScriptGenerator([NotNull] TypeScriptGenerationOptions options, [NotNull] ICustomTypeGenerator customTypeGenerator, [NotNull] ITypesProvider typesProvider)
         {
             Options = options ?? throw new ArgumentNullException(nameof(options));
+            TypesProvider = typesProvider ?? throw new ArgumentNullException(nameof(typesProvider));
             this.customTypeGenerator = customTypeGenerator ?? throw new ArgumentNullException(nameof(customTypeGenerator));
-            rootTypes = rootTypesProvider?.GetRootTypes() ?? throw new ArgumentNullException(nameof(rootTypesProvider));
+            rootTypes = typesProvider?.GetRootTypes() ?? throw new ArgumentNullException(nameof(typesProvider));
             typeUnitFactory = new DefaultTypeScriptGeneratorOutput();
             typeDeclarations = new Dictionary<ITypeInfo, ITypeBuildingContext>();
         }
@@ -68,9 +68,9 @@ namespace SkbKontur.TypeScript.ContractGenerator
                 throw new ArgumentException("Invalid Pluralize function: Pluralize cannot return null, empty string or unchanged argument");
         }
 
-        private void RequestTypeBuild(Type type)
+        private void RequestTypeBuild(ITypeInfo type)
         {
-            ResolveType(new TypeWrapper(type));
+            ResolveType(type);
         }
 
         [NotNull]
@@ -93,7 +93,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             if (customMemberDeclaration != null)
                 return customMemberDeclaration;
 
-            if (propertyInfo.Property.GetCustomAttributes<ContractGeneratorIgnoreAttribute>().Any())
+            if (propertyInfo.GetCustomAttributes<ContractGeneratorIgnoreAttribute>().Any())
                 return null;
 
             var (isNullable, trueType) = TypeScriptGeneratorHelpers.ProcessNullable(propertyInfo, propertyInfo.PropertyType, Options.NullabilityMode);
@@ -133,7 +133,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
                            : new TypeScriptEnumTypeBuildingContext(targetUnit, typeInfo);
             }
 
-            if (typeInfo.IsGenericType && !typeInfo.IsGenericTypeDefinition && typeInfo.GetGenericTypeDefinition().Type == typeof(Nullable<>))
+            if (typeInfo.IsGenericType && !typeInfo.IsGenericTypeDefinition && typeInfo.GetGenericTypeDefinition().Equals(new TypeWrapper(typeof(Nullable<>))))
             {
                 var underlyingType = typeInfo.GetGenericArguments().Single();
                 if (Options.EnableExplicitNullability)
@@ -166,7 +166,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
         {
             if (typeDeclarations.ContainsKey(typeInfo))
                 return typeDeclarations[typeInfo].ReferenceFrom(targetUnit, this, customAttributeProvider);
-            if (typeInfo.IsGenericTypeDefinition && typeInfo.GetGenericTypeDefinition().Type == typeof(Nullable<>))
+            if (typeInfo.IsGenericTypeDefinition && typeInfo.GetGenericTypeDefinition().Equals(new TypeWrapper(typeof(Nullable<>))))
                 return new TypeScriptNullableType(GetTypeScriptType(targetUnit, typeInfo.GetGenericArguments()[0], null));
             return ResolveType(typeInfo).ReferenceFrom(targetUnit, this, customAttributeProvider);
         }
@@ -174,7 +174,10 @@ namespace SkbKontur.TypeScript.ContractGenerator
         [NotNull]
         public TypeScriptGenerationOptions Options { get; }
 
-        private readonly Type[] rootTypes;
+        [NotNull]
+        public ITypesProvider TypesProvider { get; }
+
+        private readonly ITypeInfo[] rootTypes;
         private readonly DefaultTypeScriptGeneratorOutput typeUnitFactory;
         private readonly ICustomTypeGenerator customTypeGenerator;
         private readonly Dictionary<ITypeInfo, ITypeBuildingContext> typeDeclarations;

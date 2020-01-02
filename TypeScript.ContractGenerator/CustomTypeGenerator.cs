@@ -36,11 +36,9 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         public virtual TypeScriptTypeMemberDeclaration ResolveProperty(TypeScriptUnit unit, ITypeGenerator typeGenerator, ITypeInfo typeInfo, IPropertyInfo propertyInfo)
         {
-            var type = typeInfo.Type;
-            var property = propertyInfo.Property;
             foreach (var propertyResolver in propertyResolvers)
             {
-                var result = propertyResolver.ResolveProperty(unit, typeGenerator, type, property);
+                var result = propertyResolver.ResolveProperty(unit, typeGenerator, typeInfo, propertyInfo);
                 if (result != null)
                     return result;
             }

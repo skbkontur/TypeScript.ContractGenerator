@@ -14,7 +14,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         public override void Initialize(ITypeGenerator typeGenerator)
         {
-            var values = Type.Type.GetEnumNames();
+            var values = Type.GetEnumNames();
             var enumResult = new TypeScriptTypeDeclaration
                 {
                     Name = Type.Name,

@@ -78,7 +78,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
                 .WithTypeRedirect<byte[]>("ByteArray", @"DataTypes\ByteArray")
                 .WithTypeBuildingContext<HashSet<string>>(x => new CollectionTypeBuildingContext(x));
 
-            var generator = new TypeScriptGenerator(TestOptions, customGenerator, new RootTypesProvider(typeof(ArrayRootType)));
+            var generator = new TypeScriptGenerator(TestOptions, customGenerator, new TypesProvider(typeof(ArrayRootType)));
             var units = generator.Generate();
             var code = units.Select(x => x.GenerateCode(new DefaultCodeGenerationContext(JavaScriptTypeChecker)).Replace("\r\n", "\n")).ToArray();
 

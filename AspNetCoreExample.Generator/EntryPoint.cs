@@ -35,7 +35,7 @@ namespace AspNetCoreExample.Generator
                         NullabilityMode = NullabilityMode.Optimistic,
                     },
                 customTypeGenerator,
-                new RootTypesProvider()
+                new TypesProvider()
                 );
             var targetPath = Path.Combine(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).FullName, "../../../output");
 

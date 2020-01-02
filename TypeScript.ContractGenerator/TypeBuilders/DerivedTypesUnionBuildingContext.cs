@@ -2,7 +2,6 @@ using System.Linq;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
-using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
@@ -28,12 +27,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         public override void BuildDefinition(ITypeGenerator typeGenerator)
         {
-            var type = Type.Type;
-            var types = type.Assembly
-                            .GetTypes()
-                            .Where(x => x != type && type.IsAssignableFrom(x) && (useAbstractChildren || !x.IsAbstract))
-                            .Select(x => typeGenerator.ResolveType(new TypeWrapper(x)).ReferenceFrom(Unit, typeGenerator, null))
-                            .ToArray();
+            var types = typeGenerator.TypesProvider
+                                     .GetAssemblyTypes(Type)
+                                     .Where(x => !x.Equals(Type) && Type.Type.IsAssignableFrom(x.Type) && (useAbstractChildren || !x.IsAbstract))
+                                     .Select(x => typeGenerator.ResolveType(x).ReferenceFrom(Unit, typeGenerator, null))
+                                     .ToArray();
             Declaration.Definition = new TypeScriptUnionType(types);
         }
 

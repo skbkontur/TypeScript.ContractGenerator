@@ -7,7 +7,6 @@ using JetBrains.Annotations;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
-using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
@@ -50,8 +49,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         protected virtual TypeScriptTypeDefintion CreateComplexTypeScriptDefinition(ITypeGenerator typeGenerator)
         {
             var result = new TypeScriptTypeDefintion();
-            result.Members.AddRange(Type.Type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                                        .Select(x => typeGenerator.ResolveProperty(Unit, Type, new PropertyWrapper(x)))
+            result.Members.AddRange(Type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                                        .Select(x => typeGenerator.ResolveProperty(Unit, Type, x))
                                         .Where(x => x != null));
             return result;
         }

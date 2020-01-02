@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Abstractions
 {
@@ -12,16 +13,20 @@ namespace SkbKontur.TypeScript.ContractGenerator.Abstractions
         bool IsEnum { get; }
         bool IsValueType { get; }
         bool IsArray { get; }
+        bool IsClass { get; }
+        bool IsInterface { get; }
         bool IsAbstract { get; }
         bool IsGenericType { get; }
         bool IsGenericParameter { get; }
         bool IsGenericTypeDefinition { get; }
         ITypeInfo BaseType { get; }
 
-        IMethodInfo[] GetMethods();
-        IPropertyInfo[] GetProperties();
+        IMethodInfo[] GetMethods(BindingFlags bindingAttr);
+        IPropertyInfo[] GetProperties(BindingFlags bindingAttr);
         ITypeInfo[] GetGenericArguments();
+        ITypeInfo[] GetInterfaces();
         ITypeInfo GetGenericTypeDefinition();
         ITypeInfo GetElementType();
+        string[] GetEnumNames();
     }
 }

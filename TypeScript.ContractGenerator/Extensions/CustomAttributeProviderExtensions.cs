@@ -14,6 +14,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Extensions
             return GetCustomAttributes(attributeProvider).Any(x => x.GetType().Name == name);
         }
 
+        public static T[] GetCustomAttributes<T>(this IAttributeProvider attributeProvider)
+            where T : Attribute
+        {
+            return GetCustomAttributes(attributeProvider).Where(x => x.GetType() == typeof(T)).Cast<T>().ToArray();
+        }
+
         private static object[] GetCustomAttributes(IAttributeProvider attributeContainer)
         {
             if (attributeContainer is IPropertyInfo propertyInfo)

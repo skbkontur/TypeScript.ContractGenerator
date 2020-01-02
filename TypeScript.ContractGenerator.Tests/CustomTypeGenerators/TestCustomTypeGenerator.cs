@@ -8,6 +8,8 @@ using SkbKontur.TypeScript.ContractGenerator.Extensions;
 using SkbKontur.TypeScript.ContractGenerator.Tests.Types;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
 
+using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
+
 namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 {
     public class TestCustomTypeGenerator : ICustomTypeGenerator
@@ -19,17 +21,16 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 
         public ITypeBuildingContext ResolveType(string initialUnitPath, ITypeInfo typeInfo, ITypeScriptUnitFactory unitFactory)
         {
-            var type = typeInfo.Type;
-            if (type == typeof(MethodRootType))
+            if (typeInfo.Equals(TypeInfo.FromType<MethodRootType>()))
                 return new MethodTypeBuildingContext(unitFactory.GetOrCreateTypeUnit(initialUnitPath), typeInfo);
 
-            if (CollectionTypeBuildingContext.Accept(type))
+            if (CollectionTypeBuildingContext.Accept(typeInfo))
                 return new CollectionTypeBuildingContext(typeInfo);
 
-            if (type == typeof(TimeSpan))
+            if (typeInfo.Equals(TypeInfo.FromType<TimeSpan>()))
                 return new StringBuildingContext();
 
-            if (type.IsAbstract)
+            if (typeInfo.IsAbstract)
                 return new AbstractTypeBuildingContext(unitFactory.GetOrCreateTypeUnit(initialUnitPath), typeInfo);
 
             return null;

@@ -1,10 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+using SkbKontur.TypeScript.ContractGenerator.Internals;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
@@ -16,11 +16,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
             elementType = arrayType.GetGenericArguments()[0];
         }
 
-        public static bool Accept(Type type)
+        public static bool Accept(ITypeInfo typeInfo)
         {
-            return type.IsGenericType &&
-                   type.GetGenericArguments().Length == 1 &&
-                   type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICollection<>));
+            return typeInfo.IsGenericType &&
+                   typeInfo.GetGenericArguments().Length == 1 &&
+                   typeInfo.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition().Equals(new TypeWrapper(typeof(ICollection<>))));
         }
 
         public bool IsDefinitionBuilt => true;
