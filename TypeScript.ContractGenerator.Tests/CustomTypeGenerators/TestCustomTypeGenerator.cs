@@ -21,13 +21,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 
         public ITypeBuildingContext ResolveType(string initialUnitPath, ITypeInfo typeInfo, ITypeScriptUnitFactory unitFactory)
         {
-            if (typeInfo.Equals(TypeInfo.FromType<MethodRootType>()))
+            if (typeInfo.Equals(TypeInfo.From<MethodRootType>()))
                 return new MethodTypeBuildingContext(unitFactory.GetOrCreateTypeUnit(initialUnitPath), typeInfo);
 
             if (CollectionTypeBuildingContext.Accept(typeInfo))
                 return new CollectionTypeBuildingContext(typeInfo);
 
-            if (typeInfo.Equals(TypeInfo.FromType<TimeSpan>()))
+            if (typeInfo.Equals(TypeInfo.From<TimeSpan>()))
                 return new StringBuildingContext();
 
             if (typeInfo.IsAbstract)

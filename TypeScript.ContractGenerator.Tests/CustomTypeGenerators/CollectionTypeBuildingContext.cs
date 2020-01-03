@@ -20,7 +20,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
         {
             return typeInfo.IsGenericType &&
                    typeInfo.GetGenericArguments().Length == 1 &&
-                   typeInfo.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition().Equals(new TypeWrapper(typeof(ICollection<>))));
+                   typeInfo.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(ICollection<>))));
         }
 
         public bool IsDefinitionBuilt => true;

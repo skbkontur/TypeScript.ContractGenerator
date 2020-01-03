@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
-using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 
@@ -40,12 +39,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             if (typeInfo.IsGenericType)
             {
                 var genericTypeDefinition = typeInfo.GetGenericTypeDefinition();
-                if (genericTypeDefinition.Equals(new TypeWrapper(typeof(Task<>))))
+                if (genericTypeDefinition.Equals(TypeInfo.From(typeof(Task<>))))
                     return ResolveReturnType(typeInfo.GetGenericArguments()[0]);
             }
 
-            if (typeInfo.Equals(TypeInfo.FromType<Task>()))
-                return new TypeWrapper(typeof(void));
+            if (typeInfo.Equals(TypeInfo.From<Task>()))
+                return TypeInfo.From(typeof(void));
             return typeInfo;
         }
 

@@ -40,25 +40,25 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         private static readonly Dictionary<ITypeInfo, string> builtinTypes = new Dictionary<ITypeInfo, string>
             {
-                {TypeInfo.FromType<bool>(), "boolean"},
-                {TypeInfo.FromType<int>(), "number"},
-                {TypeInfo.FromType<uint>(), "number"},
-                {TypeInfo.FromType<short>(), "number"},
-                {TypeInfo.FromType<ushort>(), "number"},
-                {TypeInfo.FromType<byte>(), "number"},
-                {TypeInfo.FromType<sbyte>(), "number"},
-                {TypeInfo.FromType<float>(), "number"},
-                {TypeInfo.FromType<double>(), "number"},
-                {TypeInfo.FromType<decimal>(), "number"},
-                {TypeInfo.FromType<DateTime>(), "(Date | string)"},
-                {TypeInfo.FromType<TimeSpan>(), "(number | string)"},
-                {TypeInfo.FromType<string>(), "string"},
-                {TypeInfo.FromType<long>(), "string"},
-                {TypeInfo.FromType<ulong>(), "string"},
-                {TypeInfo.FromType<byte[]>(), "string"},
-                {TypeInfo.FromType<Guid>(), "string"},
-                {TypeInfo.FromType<char>(), "string"},
-                {new TypeWrapper(typeof(void)), "void"}
+                {TypeInfo.From<bool>(), "boolean"},
+                {TypeInfo.From<int>(), "number"},
+                {TypeInfo.From<uint>(), "number"},
+                {TypeInfo.From<short>(), "number"},
+                {TypeInfo.From<ushort>(), "number"},
+                {TypeInfo.From<byte>(), "number"},
+                {TypeInfo.From<sbyte>(), "number"},
+                {TypeInfo.From<float>(), "number"},
+                {TypeInfo.From<double>(), "number"},
+                {TypeInfo.From<decimal>(), "number"},
+                {TypeInfo.From<DateTime>(), "(Date | string)"},
+                {TypeInfo.From<TimeSpan>(), "(number | string)"},
+                {TypeInfo.From<string>(), "string"},
+                {TypeInfo.From<long>(), "string"},
+                {TypeInfo.From<ulong>(), "string"},
+                {TypeInfo.From<byte[]>(), "string"},
+                {TypeInfo.From<Guid>(), "string"},
+                {TypeInfo.From<char>(), "string"},
+                {TypeInfo.From(typeof(void)), "void"}
             };
     }
 }

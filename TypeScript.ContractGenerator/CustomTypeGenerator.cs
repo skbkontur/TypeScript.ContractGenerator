@@ -47,7 +47,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         public CustomTypeGenerator WithTypeLocation<T>(Func<ITypeInfo, string> getLocation)
         {
-            typeLocations[TypeInfo.FromType<T>()] = getLocation;
+            typeLocations[TypeInfo.From<T>()] = getLocation;
             return this;
         }
 
@@ -59,13 +59,13 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         public CustomTypeGenerator WithTypeRedirect<T>(string name, string location)
         {
-            typeRedirects[TypeInfo.FromType<T>()] = new TypeLocation {Name = name, Location = location};
+            typeRedirects[TypeInfo.From<T>()] = new TypeLocation {Name = name, Location = location};
             return this;
         }
 
         public CustomTypeGenerator WithTypeBuildingContext<T>(Func<ITypeInfo, ITypeBuildingContext> createContext)
         {
-            typeBuildingContexts[TypeInfo.FromType<T>()] = createContext;
+            typeBuildingContexts[TypeInfo.From<T>()] = createContext;
             return this;
         }
 

@@ -93,7 +93,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             if (customMemberDeclaration != null)
                 return customMemberDeclaration;
 
-            if (propertyInfo.GetCustomAttributes<ContractGeneratorIgnoreAttribute>().Any())
+            if (propertyInfo.IsNameDefined(nameof(ContractGeneratorIgnoreAttribute)))
                 return null;
 
             var (isNullable, trueType) = TypeScriptGeneratorHelpers.ProcessNullable(propertyInfo, propertyInfo.PropertyType, Options.NullabilityMode);
@@ -133,7 +133,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
                            : new TypeScriptEnumTypeBuildingContext(targetUnit, typeInfo);
             }
 
-            if (typeInfo.IsGenericType && !typeInfo.IsGenericTypeDefinition && typeInfo.GetGenericTypeDefinition().Equals(new TypeWrapper(typeof(Nullable<>))))
+            if (typeInfo.IsGenericType && !typeInfo.IsGenericTypeDefinition && typeInfo.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(Nullable<>))))
             {
                 var underlyingType = typeInfo.GetGenericArguments().Single();
                 if (Options.EnableExplicitNullability)
@@ -166,7 +166,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
         {
             if (typeDeclarations.ContainsKey(typeInfo))
                 return typeDeclarations[typeInfo].ReferenceFrom(targetUnit, this, customAttributeProvider);
-            if (typeInfo.IsGenericTypeDefinition && typeInfo.GetGenericTypeDefinition().Equals(new TypeWrapper(typeof(Nullable<>))))
+            if (typeInfo.IsGenericTypeDefinition && typeInfo.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(Nullable<>))))
                 return new TypeScriptNullableType(GetTypeScriptType(targetUnit, typeInfo.GetGenericArguments()[0], null));
             return ResolveType(typeInfo).ReferenceFrom(targetUnit, this, customAttributeProvider);
         }

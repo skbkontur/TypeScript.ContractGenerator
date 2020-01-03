@@ -50,14 +50,14 @@ namespace AspNetCoreExample.Generator
             if (typeInfo.IsGenericType)
             {
                 var genericTypeDefinition = typeInfo.GetGenericTypeDefinition();
-                if (genericTypeDefinition.Equals(new TypeWrapper(typeof(Task<>))) || genericTypeDefinition.Equals(new TypeWrapper(typeof(ActionResult<>))))
+                if (genericTypeDefinition.Equals(TypeInfo.From(typeof(Task<>))) || genericTypeDefinition.Equals(TypeInfo.From(typeof(ActionResult<>))))
                     return ResolveReturnType(typeInfo.GetGenericArguments()[0]);
             }
 
-            if (typeInfo.Equals(TypeInfo.FromType<Task>()))
-                return new TypeWrapper(typeof(void));
-            if (typeInfo.Equals(TypeInfo.FromType<ActionResult>()))
-                return new TypeWrapper(typeof(void));
+            if (typeInfo.Equals(TypeInfo.From<Task>()))
+                return TypeInfo.From(typeof(void));
+            if (typeInfo.Equals(TypeInfo.From<ActionResult>()))
+                return TypeInfo.From(typeof(void));
             return typeInfo;
         }
 

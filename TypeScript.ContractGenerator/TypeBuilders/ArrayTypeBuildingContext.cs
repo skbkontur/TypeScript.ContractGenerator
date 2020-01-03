@@ -5,7 +5,6 @@ using JetBrains.Annotations;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
-using SkbKontur.TypeScript.ContractGenerator.Extensions;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
@@ -24,7 +23,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             if (arrayType.IsArray)
                 return arrayType.GetElementType() ?? throw new ArgumentNullException($"Array type's {arrayType.Name} element type is not defined");
 
-            if (arrayType.IsGenericType && arrayType.GetGenericTypeDefinition().Equals(new TypeWrapper(typeof(List<>))))
+            if (arrayType.IsGenericType && arrayType.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(List<>))))
                 return arrayType.GetGenericArguments()[0];
 
             throw new ArgumentException("arrayType should be either Array or List<T>", nameof(arrayType));
@@ -32,7 +31,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         public static bool Accept(ITypeInfo type)
         {
-            return type.IsArray || type.IsGenericType && type.GetGenericTypeDefinition().Equals(new TypeWrapper(typeof(List<>)));
+            return type.IsArray || type.IsGenericType && type.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(List<>)));
         }
 
         public bool IsDefinitionBuilt => true;

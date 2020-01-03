@@ -5,7 +5,6 @@ using JetBrains.Annotations;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
-using SkbKontur.TypeScript.ContractGenerator.Extensions;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace SkbKontur.TypeScript.ContractGenerator
@@ -14,7 +13,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
     {
         public static (bool, ITypeInfo) ProcessNullable(IAttributeProvider attributeContainer, ITypeInfo type, NullabilityMode nullabilityMode)
         {
-            if (type.IsGenericType && type.GetGenericTypeDefinition().Equals(new TypeWrapper(typeof(Nullable<>))))
+            if (type.IsGenericType && type.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(Nullable<>))))
             {
                 var underlyingType = type.GetGenericArguments()[0];
                 return (true, underlyingType);
@@ -38,10 +37,10 @@ namespace SkbKontur.TypeScript.ContractGenerator
         public static byte[] GetNullableFlags(IAttributeProvider attributeContainer)
         {
             byte contextFlag = 0;
-            if (attributeContainer is IPropertyInfo propertyInfo)
-                contextFlag = GetNullableContextFlag(propertyInfo) ?? GetNullableContextFlag(new TypeWrapper(propertyInfo.Property.ReflectedType)) ?? 0;
-            if (attributeContainer is IMethodInfo methodInfo)
-                contextFlag = GetNullableContextFlag(methodInfo) ?? GetNullableContextFlag(new TypeWrapper(methodInfo.Method.ReflectedType)) ?? 0;
+            if (attributeContainer is PropertyWrapper propertyInfo)
+                contextFlag = GetNullableContextFlag(propertyInfo) ?? GetNullableContextFlag(TypeInfo.From(propertyInfo.Property.ReflectedType)) ?? 0;
+            if (attributeContainer is MethodWrapper methodInfo)
+                contextFlag = GetNullableContextFlag(methodInfo) ?? GetNullableContextFlag(TypeInfo.From(methodInfo.Method.ReflectedType)) ?? 0;
             return GetNullableFlagsInternal(attributeContainer) ?? new[] {contextFlag};
         }
 
@@ -92,7 +91,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             if (type.IsArray)
                 return 1 + GetGenericArgumentsToSkip(type.GetElementType());
 
-            if (type.IsGenericType && type.GetGenericTypeDefinition().Equals(new TypeWrapper(typeof(Nullable<>))))
+            if (type.IsGenericType && type.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(Nullable<>))))
                 return 0;
 
             if (!type.IsGenericType)

@@ -17,7 +17,7 @@ namespace AspNetCoreExample.Generator
             return typeof(UsersController).Assembly
                                           .GetTypes()
                                           .Where(x => typeof(ControllerBase).IsAssignableFrom(x))
-                                          .Select(x => (ITypeInfo)new TypeWrapper(x))
+                                          .Select(TypeInfo.From)
                                           .ToArray();
         }
 
@@ -25,7 +25,7 @@ namespace AspNetCoreExample.Generator
         {
             return typeof(UsersController).Assembly
                                           .GetTypes()
-                                          .Select(x => (ITypeInfo)new TypeWrapper(x))
+                                          .Select(TypeInfo.From)
                                           .ToArray();
         }
     }

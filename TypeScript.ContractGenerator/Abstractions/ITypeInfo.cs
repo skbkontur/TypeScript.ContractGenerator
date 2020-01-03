@@ -28,5 +28,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Abstractions
         ITypeInfo GetGenericTypeDefinition();
         ITypeInfo GetElementType();
         string[] GetEnumNames();
+        bool IsAssignableFrom(ITypeInfo type);
     }
 }

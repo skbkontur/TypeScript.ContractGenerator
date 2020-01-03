@@ -18,12 +18,12 @@ namespace SkbKontur.TypeScript.ContractGenerator
         [NotNull, ItemNotNull]
         public ITypeInfo[] GetRootTypes()
         {
-            return rootTypes.Select(x => (ITypeInfo)new TypeWrapper(x)).ToArray();
+            return rootTypes.Select(TypeInfo.From).ToArray();
         }
 
         public ITypeInfo[] GetAssemblyTypes(ITypeInfo type)
         {
-            return type.Type.Assembly.GetTypes().Select(x => (ITypeInfo)new TypeWrapper(x)).ToArray();
+            return type.Type.Assembly.GetTypes().Select(TypeInfo.From).ToArray();
         }
 
         [NotNull]

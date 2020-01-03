@@ -19,7 +19,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         public static bool Accept(ITypeInfo type)
         {
-            return type.IsGenericType && type.GetGenericTypeDefinition().Equals(new TypeWrapper(typeof(Dictionary<,>)));
+            return type.IsGenericType && type.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(Dictionary<,>)));
         }
 
         public bool IsDefinitionBuilt => true;

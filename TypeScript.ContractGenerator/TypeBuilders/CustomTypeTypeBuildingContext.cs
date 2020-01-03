@@ -8,6 +8,8 @@ using JetBrains.Annotations;
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
+using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
+
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
@@ -36,8 +38,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             Declaration = CreateComplexTypeScriptDeclarationWithoutDefinition(Type);
             Unit.Body.Add(new TypeScriptExportTypeStatement {Declaration = Declaration});
 
-            var baseType = Type.BaseType.Type;
-            if (baseType != typeof(object) && baseType != typeof(ValueType) && baseType != typeof(MarshalByRefObject) && baseType != null)
+            var baseType = Type.BaseType;
+            if (baseType != null && !baseType.Equals(TypeInfo.From<object>()) && !baseType.Equals(TypeInfo.From<ValueType>()) && !baseType.Equals(TypeInfo.From<MarshalByRefObject>()))
                 typeGenerator.ResolveType(Type.BaseType);
         }
 
