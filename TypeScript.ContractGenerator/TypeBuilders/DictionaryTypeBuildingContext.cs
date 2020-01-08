@@ -10,13 +10,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class DictionaryTypeBuildingContext : ITypeBuildingContext
     {
-        public DictionaryTypeBuildingContext([NotNull] Type dictionaryType,
-                                             [CanBeNull] ICustomAttributeProvider customAttributeProvider,
-                                             [NotNull] TypeScriptGenerationOptions options)
+        public DictionaryTypeBuildingContext([NotNull] Type dictionaryType, [NotNull] TypeScriptGenerationOptions options)
         {
             keyType = dictionaryType.GetGenericArguments()[0];
             valueType = dictionaryType.GetGenericArguments()[1];
-            this.customAttributeProvider = customAttributeProvider;
             this.options = options;
         }
 
@@ -35,7 +32,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
+        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
         {
             return new TypeScriptTypeDefintion
                 {
@@ -46,28 +43,28 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                                     Argument = new TypeScriptArgumentDeclaration
                                         {
                                             Name = "key",
-                                            Type = GetKeyType(targetUnit, typeGenerator),
+                                            Type = GetKeyType(targetUnit, typeGenerator, customAttributeProvider),
                                         },
-                                    ResultType = GetValueType(targetUnit, typeGenerator),
+                                    ResultType = GetValueType(targetUnit, typeGenerator, customAttributeProvider),
                                     Optional = true,
                                 }
                         }
                 };
         }
 
-        private TypeScriptType GetKeyType(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
+        private TypeScriptType GetKeyType(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
         {
-            var key = typeGenerator.ResolveType(keyType).ReferenceFrom(targetUnit, typeGenerator);
-            return MaybeNull(keyType, key, 1);
+            var key = typeGenerator.ResolveType(keyType).ReferenceFrom(targetUnit, typeGenerator, null);
+            return MaybeNull(keyType, key, customAttributeProvider, 1);
         }
 
-        private TypeScriptType GetValueType(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
+        private TypeScriptType GetValueType(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
         {
-            var value = typeGenerator.ResolveType(valueType).ReferenceFrom(targetUnit, typeGenerator);
-            return MaybeNull(valueType, value, 1 + TypeScriptGeneratorHelpers.GetGenericArgumentsToSkip(keyType));
+            var value = typeGenerator.ResolveType(valueType).ReferenceFrom(targetUnit, typeGenerator, null);
+            return MaybeNull(valueType, value, customAttributeProvider, 1 + TypeScriptGeneratorHelpers.GetGenericArgumentsToSkip(keyType));
         }
 
-        private TypeScriptType MaybeNull(Type trueType, TypeScriptType type, int index)
+        private TypeScriptType MaybeNull(Type trueType, TypeScriptType type, ICustomAttributeProvider customAttributeProvider, int index)
         {
             if (options.NullabilityMode != NullabilityMode.NullableReference)
                 return type;
@@ -78,7 +75,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         private readonly Type keyType;
         private readonly Type valueType;
-        private readonly ICustomAttributeProvider customAttributeProvider;
         private readonly TypeScriptGenerationOptions options;
     }
 }
