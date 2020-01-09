@@ -1,6 +1,3 @@
-using System;
-using System.Reflection;
-
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
@@ -24,7 +21,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
+        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider attributeProvider)
         {
             var itemTypeScriptType = typeGenerator.ResolveType(itemType).ReferenceFrom(targetUnit, typeGenerator, null);
             return useGlobalNullable

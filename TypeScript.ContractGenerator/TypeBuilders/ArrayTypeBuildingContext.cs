@@ -53,15 +53,15 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         private bool CanItemBeNull(IAttributeProvider attributeProvider)
         {
-            if (elementType.IsValueType || elementType.IsEnum || customAttributeProvider == null)
+            if (elementType.IsValueType || elementType.IsEnum || attributeProvider == null)
                 return false;
 
             if (options.NullabilityMode == NullabilityMode.NullableReference)
-                return TypeScriptGeneratorHelpers.NullableReferenceCanBeNull(customAttributeProvider, elementType, 1);
+                return TypeScriptGeneratorHelpers.NullableReferenceCanBeNull(attributeProvider, elementType, 1);
 
             return options.NullabilityMode == NullabilityMode.Pessimistic
-                       ? !customAttributeProvider.IsNameDefined(AnnotationsNames.ItemNotNull)
-                       : customAttributeProvider.IsNameDefined(AnnotationsNames.ItemCanBeNull);
+                       ? !attributeProvider.IsNameDefined(AnnotationsNames.ItemNotNull)
+                       : attributeProvider.IsNameDefined(AnnotationsNames.ItemCanBeNull);
         }
 
         [NotNull]

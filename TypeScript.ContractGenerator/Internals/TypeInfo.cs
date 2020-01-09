@@ -8,6 +8,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 {
     public class TypeInfo : ITypeInfo
     {
+        private TypeInfo(Type type)
+        {
+            Type = type;
+        }
+
         public static ITypeInfo From<T>()
         {
             return new TypeInfo(typeof(T));
@@ -16,11 +21,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         public static ITypeInfo From(Type type)
         {
             return type == null ? null : new TypeInfo(type);
-        }
-
-        private TypeInfo(Type type)
-        {
-            Type = type;
         }
 
         public Type Type { get; }

@@ -32,7 +32,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Roslyn
 
         private static string[] GenerateCode(Type rootType)
         {
-            var generator = new TypeScriptGenerator(new TypeScriptGenerationOptions(), CustomTypeGenerator.Null, new RoslynTypesProvider(rootType.FullName));
+            var generator = new TypeScriptGenerator(new TypeScriptGenerationOptions {EnumGenerationMode = EnumGenerationMode.FixedStringsAndDictionary},
+                                                    CustomTypeGenerator.Null, new RoslynTypesProvider(rootType.FullName));
             return generator.Generate().Select(x => x.GenerateCode(new DefaultCodeGenerationContext(JavaScriptTypeChecker.TypeScript)).Replace("\r\n", "\n")).ToArray();
         }
 

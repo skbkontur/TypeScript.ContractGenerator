@@ -1,5 +1,3 @@
-using System.Reflection;
-
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 

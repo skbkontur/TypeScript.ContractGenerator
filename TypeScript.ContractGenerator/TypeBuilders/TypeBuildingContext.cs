@@ -1,6 +1,3 @@
-using System;
-using System.Reflection;
-
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
@@ -31,7 +28,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public virtual TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
+        public virtual TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider attributeProvider)
         {
             return targetUnit.AddTypeImport(Type, Declaration, Unit);
         }

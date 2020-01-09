@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -32,7 +33,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Roslyn
 
         public ITypeInfo[] GetAssemblyTypes(ITypeInfo type)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         private readonly string typeName;

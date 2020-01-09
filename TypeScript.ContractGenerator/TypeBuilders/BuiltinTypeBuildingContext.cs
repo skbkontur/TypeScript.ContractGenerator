@@ -19,7 +19,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             return builtinTypes.ContainsKey(type);
         }
 
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
+        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider attributeProvider)
         {
             if (builtinTypes.ContainsKey(type))
                 return new TypeScriptBuildInType(builtinTypes[type]);

@@ -95,12 +95,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
 
         protected JavaScriptTypeChecker JavaScriptTypeChecker => filesGenerationContext.JavaScriptTypeChecker;
 
-        private readonly FilesGenerationContext filesGenerationContext;
-
         protected TypeScriptGenerationOptions TestOptions => new TypeScriptGenerationOptions
             {
                 EnumGenerationMode = EnumGenerationMode.FixedStringsAndDictionary,
                 LinterDisableMode = LinterDisableMode.TsLint,
             };
+
+        private readonly FilesGenerationContext filesGenerationContext;
     }
 }
