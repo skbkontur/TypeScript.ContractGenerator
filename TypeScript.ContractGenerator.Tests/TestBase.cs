@@ -27,7 +27,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
 
         protected string[] GenerateCode(ICustomTypeGenerator customTypeGenerator, Type rootType)
         {
-            return GenerateCode(TypeScriptGenerationOptions.Default, customTypeGenerator, rootType);
+            return GenerateCode(TestOptions, customTypeGenerator, rootType);
         }
 
         protected string[] GenerateCode(TypeScriptGenerationOptions options, ICustomTypeGenerator customTypeGenerator, Type rootType)
@@ -45,7 +45,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
                 Directory.Delete(path, recursive : true);
             Directory.CreateDirectory(path);
 
-            var generator = new TypeScriptGenerator(TypeScriptGenerationOptions.Default, customTypeGenerator, new RootTypesProvider(rootTypes));
+            var generator = new TypeScriptGenerator(TestOptions, customTypeGenerator, new RootTypesProvider(rootTypes));
             generator.GenerateFiles(path, JavaScriptTypeChecker);
         }
 
@@ -95,5 +95,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
 
         private readonly FilesGenerationContext filesGenerationContext;
         protected JavaScriptTypeChecker JavaScriptTypeChecker => filesGenerationContext.JavaScriptTypeChecker;
+
+        protected TypeScriptGenerationOptions TestOptions => new TypeScriptGenerationOptions
+            {
+                EnumGenerationMode = EnumGenerationMode.FixedStringsAndDictionary,
+                LinterDisableMode = LinterDisableMode.TsLint,
+            };
     }
 }
