@@ -11,12 +11,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class ArrayTypeBuildingContext : ITypeBuildingContext
     {
-        public ArrayTypeBuildingContext([NotNull] Type arrayType,
-                                        [CanBeNull] ICustomAttributeProvider customAttributeProvider,
-                                        [NotNull] TypeScriptGenerationOptions options)
+        public ArrayTypeBuildingContext([NotNull] Type arrayType, [NotNull] TypeScriptGenerationOptions options)
         {
             elementType = GetElementType(arrayType);
-            this.customAttributeProvider = customAttributeProvider;
             this.options = options;
         }
 
@@ -47,14 +44,14 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
+        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
         {
-            var itemType = typeGenerator.ResolveType(elementType).ReferenceFrom(targetUnit, typeGenerator);
-            var resultType = TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(itemType, CanItemBeNull(), options);
+            var itemType = typeGenerator.ResolveType(elementType).ReferenceFrom(targetUnit, typeGenerator, null);
+            var resultType = TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(itemType, CanItemBeNull(customAttributeProvider), options);
             return new TypeScriptArrayType(resultType);
         }
 
-        private bool CanItemBeNull()
+        private bool CanItemBeNull(ICustomAttributeProvider customAttributeProvider)
         {
             if (elementType.IsValueType || elementType.IsEnum || customAttributeProvider == null)
                 return false;
@@ -66,9 +63,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                        ? !customAttributeProvider.IsNameDefined(AnnotationsNames.ItemNotNull)
                        : customAttributeProvider.IsNameDefined(AnnotationsNames.ItemCanBeNull);
         }
-
-        [CanBeNull]
-        private readonly ICustomAttributeProvider customAttributeProvider;
 
         [NotNull]
         private readonly TypeScriptGenerationOptions options;

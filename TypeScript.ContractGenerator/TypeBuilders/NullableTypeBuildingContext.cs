@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
@@ -22,9 +23,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
+        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
         {
-            var itemTypeScriptType = typeGenerator.ResolveType(itemType).ReferenceFrom(targetUnit, typeGenerator);
+            var itemTypeScriptType = typeGenerator.ResolveType(itemType).ReferenceFrom(targetUnit, typeGenerator, null);
             return useGlobalNullable
                        ? (TypeScriptType)new TypeScriptNullableType(itemTypeScriptType)
                        : new TypeScriptOrNullType(itemTypeScriptType);

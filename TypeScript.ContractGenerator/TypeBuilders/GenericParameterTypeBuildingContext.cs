@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
@@ -21,7 +22,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
+        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
         {
             return new TypeScriptTypeReference(type.Name);
         }

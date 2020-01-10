@@ -11,12 +11,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class GenericTypeTypeBuildingContext : ITypeBuildingContext
     {
-        public GenericTypeTypeBuildingContext(Type type,
-                                              [CanBeNull] ICustomAttributeProvider customAttributeProvider,
-                                              [NotNull] TypeScriptGenerationOptions options)
+        public GenericTypeTypeBuildingContext(Type type, [NotNull] TypeScriptGenerationOptions options)
         {
             this.type = type;
-            this.customAttributeProvider = customAttributeProvider;
             this.options = options;
         }
 
@@ -30,14 +27,14 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
+        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
         {
-            var typeReference = typeGenerator.ResolveType(type.GetGenericTypeDefinition()).ReferenceFrom(targetUnit, typeGenerator);
+            var typeReference = typeGenerator.ResolveType(type.GetGenericTypeDefinition()).ReferenceFrom(targetUnit, typeGenerator, null);
             var arguments = new List<TypeScriptType>();
             var nullableIndex = 1;
             foreach (var argument in type.GetGenericArguments())
             {
-                var targetType = typeGenerator.ResolveType(argument).ReferenceFrom(targetUnit, typeGenerator);
+                var targetType = typeGenerator.ResolveType(argument).ReferenceFrom(targetUnit, typeGenerator, null);
                 if (options.NullabilityMode == NullabilityMode.NullableReference)
                 {
                     var isNullable = TypeScriptGeneratorHelpers.NullableReferenceCanBeNull(customAttributeProvider, argument, nullableIndex);
@@ -53,7 +50,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         }
 
         private readonly Type type;
-        private readonly ICustomAttributeProvider customAttributeProvider;
         private readonly TypeScriptGenerationOptions options;
     }
 

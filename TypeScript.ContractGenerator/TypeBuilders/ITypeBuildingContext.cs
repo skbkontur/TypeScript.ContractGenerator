@@ -1,3 +1,5 @@
+using System.Reflection;
+
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
@@ -7,6 +9,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         bool IsDefinitionBuilt { get; }
         void Initialize(ITypeGenerator typeGenerator);
         void BuildDefinition(ITypeGenerator typeGenerator);
-        TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator);
+        TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider);
     }
 }

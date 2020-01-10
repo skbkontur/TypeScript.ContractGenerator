@@ -7,11 +7,11 @@ namespace SkbKontur.TypeScript.ContractGenerator
     [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     public class TypeScriptGenerationOptions
     {
-        public EnumGenerationMode EnumGenerationMode { get; set; } = EnumGenerationMode.FixedStringsAndDictionary;
+        public EnumGenerationMode EnumGenerationMode { get; set; } = EnumGenerationMode.TypeScriptEnum;
 
         public NullabilityMode NullabilityMode { get; set; } = NullabilityMode.Pessimistic;
 
-        public LinterDisableMode LinterDisableMode { get; set; } = LinterDisableMode.TsLint;
+        public LinterDisableMode LinterDisableMode { get; set; } = LinterDisableMode.EsLint;
 
         public bool EnableOptionalProperties { get; set; } = true;
 
@@ -20,6 +20,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
         public bool UseGlobalNullable { get; set; }
 
         [NotNull]
+        [Obsolete("Will be removed in 2.0")]
         public Func<string, string> Pluralize { get; set; } = x => x + "s";
 
         [NotNull]

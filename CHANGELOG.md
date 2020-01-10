@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.10 - 2020.01.10
+- Fix type definition duplicates for custom generic type building context 
+- Add obsoletion warnings for `JavaScriptTypeChecker.Flow`, `EnumGenerationMode.FixedStringsAndDictionary` and `TypeScriptGenerationOptions.Pluralize`
+- Use `EnumGenerationMode.TypeScriptEnum` and `LinterDisableMode.EsLint` in default options
+
 ## v1.9 - 2019.12.31
 - Add nullable reference support, it can be enabled with `NullabilityMode.NullableReference` option
 

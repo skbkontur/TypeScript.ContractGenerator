@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
@@ -17,7 +18,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             return builtinTypes.ContainsKey(type);
         }
 
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
+        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
         {
             if (builtinTypes.ContainsKey(type))
                 return new TypeScriptBuildInType(builtinTypes[type]);
