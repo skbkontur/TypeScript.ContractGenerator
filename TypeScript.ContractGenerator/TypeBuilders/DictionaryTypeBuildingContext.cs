@@ -1,25 +1,25 @@
-using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 using JetBrains.Annotations;
 
+using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class DictionaryTypeBuildingContext : ITypeBuildingContext
     {
-        public DictionaryTypeBuildingContext([NotNull] Type dictionaryType, [NotNull] TypeScriptGenerationOptions options)
+        public DictionaryTypeBuildingContext([NotNull] ITypeInfo dictionaryType, [NotNull] TypeScriptGenerationOptions options)
         {
             keyType = dictionaryType.GetGenericArguments()[0];
             valueType = dictionaryType.GetGenericArguments()[1];
             this.options = options;
         }
 
-        public static bool Accept(Type type)
+        public static bool Accept(ITypeInfo type)
         {
-            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>);
+            return type.IsGenericType && type.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(Dictionary<,>)));
         }
 
         public bool IsDefinitionBuilt => true;
@@ -32,7 +32,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
+        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider attributeProvider)
         {
             return new TypeScriptTypeDefintion
                 {
@@ -43,38 +43,38 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                                     Argument = new TypeScriptArgumentDeclaration
                                         {
                                             Name = "key",
-                                            Type = GetKeyType(targetUnit, typeGenerator, customAttributeProvider),
+                                            Type = GetKeyType(targetUnit, typeGenerator, attributeProvider),
                                         },
-                                    ResultType = GetValueType(targetUnit, typeGenerator, customAttributeProvider),
+                                    ResultType = GetValueType(targetUnit, typeGenerator, attributeProvider),
                                     Optional = true,
                                 }
                         }
                 };
         }
 
-        private TypeScriptType GetKeyType(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
+        private TypeScriptType GetKeyType(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider attributeProvider)
         {
             var key = typeGenerator.ResolveType(keyType).ReferenceFrom(targetUnit, typeGenerator, null);
-            return MaybeNull(keyType, key, customAttributeProvider, 1);
+            return MaybeNull(keyType, key, attributeProvider, 1);
         }
 
-        private TypeScriptType GetValueType(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
+        private TypeScriptType GetValueType(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider attributeProvider)
         {
             var value = typeGenerator.ResolveType(valueType).ReferenceFrom(targetUnit, typeGenerator, null);
-            return MaybeNull(valueType, value, customAttributeProvider, 1 + TypeScriptGeneratorHelpers.GetGenericArgumentsToSkip(keyType));
+            return MaybeNull(valueType, value, attributeProvider, 1 + TypeScriptGeneratorHelpers.GetGenericArgumentsToSkip(keyType));
         }
 
-        private TypeScriptType MaybeNull(Type trueType, TypeScriptType type, ICustomAttributeProvider customAttributeProvider, int index)
+        private TypeScriptType MaybeNull(ITypeInfo trueType, TypeScriptType type, IAttributeProvider attributeProvider, int index)
         {
             if (options.NullabilityMode != NullabilityMode.NullableReference)
                 return type;
 
-            var isNullable = TypeScriptGeneratorHelpers.NullableReferenceCanBeNull(customAttributeProvider, trueType, index);
+            var isNullable = TypeScriptGeneratorHelpers.NullableReferenceCanBeNull(attributeProvider, trueType, index);
             return TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(type, isNullable, options);
         }
 
-        private readonly Type keyType;
-        private readonly Type valueType;
+        private readonly ITypeInfo keyType;
+        private readonly ITypeInfo valueType;
         private readonly TypeScriptGenerationOptions options;
     }
 }

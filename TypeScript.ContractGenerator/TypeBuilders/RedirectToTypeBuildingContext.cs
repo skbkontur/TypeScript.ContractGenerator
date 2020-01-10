@@ -1,13 +1,11 @@
-using System;
-using System.Reflection;
-
+using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class RedirectToTypeBuildingContext : ITypeBuildingContext
     {
-        public RedirectToTypeBuildingContext(string typeName, string path, Type type)
+        public RedirectToTypeBuildingContext(string typeName, string path, ITypeInfo type)
         {
             this.typeName = typeName;
             this.path = path;
@@ -15,7 +13,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         }
 
         public bool IsDefinitionBuilt => true;
-        
+
         public void Initialize(ITypeGenerator typeGenerator)
         {
         }
@@ -24,13 +22,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
+        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider attributeProvider)
         {
             return targetUnit.AddTypeImport(type, new TypeScriptInterfaceDeclaration {Name = typeName}, new TypeScriptUnit {Path = path});
         }
 
         private readonly string typeName;
         private readonly string path;
-        private readonly Type type;
+        private readonly ITypeInfo type;
     }
 }

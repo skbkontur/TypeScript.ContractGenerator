@@ -1,19 +1,19 @@
 using System;
 using System.Linq;
-using System.Reflection;
 
 using JetBrains.Annotations;
 
+using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
-using SkbKontur.TypeScript.ContractGenerator.Extensions;
+using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace SkbKontur.TypeScript.ContractGenerator
 {
     public static class TypeScriptGeneratorHelpers
     {
-        public static (bool, Type) ProcessNullable(ICustomAttributeProvider attributeContainer, Type type, NullabilityMode nullabilityMode)
+        public static (bool, ITypeInfo) ProcessNullable(IAttributeProvider attributeContainer, ITypeInfo type, NullabilityMode nullabilityMode)
         {
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            if (type.IsGenericType && type.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(Nullable<>))))
             {
                 var underlyingType = type.GetGenericArguments()[0];
                 return (true, underlyingType);
@@ -25,7 +25,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return (CanBeNull(attributeContainer, nullabilityMode), type);
         }
 
-        public static bool NullableReferenceCanBeNull(ICustomAttributeProvider attributeContainer, Type type, int index)
+        public static bool NullableReferenceCanBeNull(IAttributeProvider attributeContainer, ITypeInfo type, int index)
         {
             var nullableBytes = GetNullableFlags(attributeContainer);
             if (nullableBytes.Length == 1 && nullableBytes[0] == 2 || nullableBytes.Length > index && nullableBytes[index] == 2)
@@ -34,28 +34,30 @@ namespace SkbKontur.TypeScript.ContractGenerator
         }
 
         [NotNull]
-        public static byte[] GetNullableFlags(ICustomAttributeProvider attributeContainer)
+        public static byte[] GetNullableFlags(IAttributeProvider attributeContainer)
         {
             byte contextFlag = 0;
-            if (attributeContainer is MemberInfo memberInfo)
-                contextFlag = GetNullableContextFlag(memberInfo) ?? GetNullableContextFlag(memberInfo.ReflectedType) ?? 0;
+            if (attributeContainer is PropertyWrapper propertyInfo)
+                contextFlag = GetNullableContextFlag(propertyInfo) ?? GetNullableContextFlag(TypeInfo.From(propertyInfo.Property.ReflectedType)) ?? 0;
+            if (attributeContainer is MethodWrapper methodInfo)
+                contextFlag = GetNullableContextFlag(methodInfo) ?? GetNullableContextFlag(TypeInfo.From(methodInfo.Method.ReflectedType)) ?? 0;
             return GetNullableFlagsInternal(attributeContainer) ?? new[] {contextFlag};
         }
 
-        private static byte[] GetNullableFlagsInternal(ICustomAttributeProvider attributeContainer)
+        private static byte[] GetNullableFlagsInternal(IAttributeProvider attributeContainer)
         {
             var nullableAttribute = attributeContainer?.GetCustomAttributes(true).SingleOrDefault(a => a.GetType().Name == AnnotationsNames.Nullable);
             return nullableAttribute?.GetType().GetField("NullableFlags").GetValue(nullableAttribute) as byte[];
         }
 
-        private static byte? GetNullableContextFlag(ICustomAttributeProvider attributeContainer)
+        private static byte? GetNullableContextFlag(IAttributeProvider attributeContainer)
         {
             var nullableAttribute = attributeContainer?.GetCustomAttributes(true).SingleOrDefault(a => a.GetType().Name == AnnotationsNames.NullableContext);
             var flag = nullableAttribute?.GetType().GetField("Flag").GetValue(nullableAttribute);
             return (byte?)flag;
         }
 
-        private static bool CanBeNull([NotNull] ICustomAttributeProvider attributeContainer, NullabilityMode nullabilityMode)
+        private static bool CanBeNull([NotNull] IAttributeProvider attributeContainer, NullabilityMode nullabilityMode)
         {
             if (nullabilityMode == NullabilityMode.NullableReference)
             {
@@ -84,12 +86,12 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return innerType;
         }
 
-        public static int GetGenericArgumentsToSkip(Type type)
+        public static int GetGenericArgumentsToSkip(ITypeInfo type)
         {
             if (type.IsArray)
                 return 1 + GetGenericArgumentsToSkip(type.GetElementType());
 
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            if (type.IsGenericType && type.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(Nullable<>))))
                 return 0;
 
             if (!type.IsGenericType)

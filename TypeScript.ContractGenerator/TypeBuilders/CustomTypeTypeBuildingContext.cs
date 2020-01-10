@@ -5,21 +5,24 @@ using System.Text.RegularExpressions;
 
 using JetBrains.Annotations;
 
+using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+
+using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class CustomTypeTypeBuildingContext : TypeBuildingContext
     {
-        public CustomTypeTypeBuildingContext([NotNull] TypeScriptUnit unit, [NotNull] Type type)
+        public CustomTypeTypeBuildingContext([NotNull] TypeScriptUnit unit, [NotNull] ITypeInfo type)
             : base(unit, type)
         {
         }
 
         public override bool IsDefinitionBuilt => Declaration.Definition != null;
 
-        private TypeScriptTypeDeclaration CreateComplexTypeScriptDeclarationWithoutDefinition(Type type)
+        private TypeScriptTypeDeclaration CreateComplexTypeScriptDeclarationWithoutDefinition(ITypeInfo type)
         {
             var result = new TypeScriptTypeDeclaration
                 {
@@ -35,10 +38,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             Declaration = CreateComplexTypeScriptDeclarationWithoutDefinition(Type);
             Unit.Body.Add(new TypeScriptExportTypeStatement {Declaration = Declaration});
 
-            if (Type.BaseType != typeof(object) && Type.BaseType != typeof(ValueType) && Type.BaseType != typeof(MarshalByRefObject) && Type.BaseType != null)
-            {
+            var baseType = Type.BaseType;
+            if (baseType != null && !baseType.Equals(TypeInfo.From<object>()) && !baseType.Equals(TypeInfo.From<ValueType>()) && !baseType.Equals(TypeInfo.From<MarshalByRefObject>()))
                 typeGenerator.ResolveType(Type.BaseType);
-            }
         }
 
         public override void BuildDefinition(ITypeGenerator typeGenerator)

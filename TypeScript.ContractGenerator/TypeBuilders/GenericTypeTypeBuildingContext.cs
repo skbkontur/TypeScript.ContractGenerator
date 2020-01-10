@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 using JetBrains.Annotations;
 
+using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
 
@@ -11,7 +10,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class GenericTypeTypeBuildingContext : ITypeBuildingContext
     {
-        public GenericTypeTypeBuildingContext(Type type, [NotNull] TypeScriptGenerationOptions options)
+        public GenericTypeTypeBuildingContext(ITypeInfo type, [NotNull] TypeScriptGenerationOptions options)
         {
             this.type = type;
             this.options = options;
@@ -27,7 +26,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
+        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider attributeProvider)
         {
             var typeReference = typeGenerator.ResolveType(type.GetGenericTypeDefinition()).ReferenceFrom(targetUnit, typeGenerator, null);
             var arguments = new List<TypeScriptType>();
@@ -37,7 +36,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                 var targetType = typeGenerator.ResolveType(argument).ReferenceFrom(targetUnit, typeGenerator, null);
                 if (options.NullabilityMode == NullabilityMode.NullableReference)
                 {
-                    var isNullable = TypeScriptGeneratorHelpers.NullableReferenceCanBeNull(customAttributeProvider, argument, nullableIndex);
+                    var isNullable = TypeScriptGeneratorHelpers.NullableReferenceCanBeNull(attributeProvider, argument, nullableIndex);
                     nullableIndex += TypeScriptGeneratorHelpers.GetGenericArgumentsToSkip(argument);
                     arguments.Add(TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(targetType, !argument.IsValueType && isNullable, options));
                 }
@@ -49,7 +48,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             return new TypeScriptGenericTypeReference(typeReference as TypeScriptTypeReference, arguments.ToArray());
         }
 
-        private readonly Type type;
+        private readonly ITypeInfo type;
         private readonly TypeScriptGenerationOptions options;
     }
 

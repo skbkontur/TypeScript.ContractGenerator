@@ -5,62 +5,65 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
+
+using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
 {
     public abstract class ApiControllerTypeBuildingContextBase : TypeBuildingContext
     {
-        public ApiControllerTypeBuildingContextBase(TypeScriptUnit unit, Type type)
+        public ApiControllerTypeBuildingContextBase(TypeScriptUnit unit, ITypeInfo type)
             : base(unit, type)
         {
         }
 
-        protected virtual TypeLocation GetApiBase(Type controllerType)
+        protected virtual TypeLocation GetApiBase(ITypeInfo controllerType)
         {
             return new TypeLocation
                 {
                     Name = "ApiBase",
-                    Location = "../apiBase/ApiBase", 
+                    Location = "../apiBase/ApiBase",
                 };
         }
 
-        protected virtual string GetApiName(Type controllerType)
+        protected virtual string GetApiName(ITypeInfo controllerType)
         {
             return new Regex("(Api)?Controller").Replace(controllerType.Name, "Api");
         }
 
-        protected virtual Type ResolveReturnType(Type type)
+        protected virtual ITypeInfo ResolveReturnType(ITypeInfo typeInfo)
         {
-            if (type.IsGenericType)
+            if (typeInfo.IsGenericType)
             {
-                var genericTypeDefinition = type.GetGenericTypeDefinition();
-                if (genericTypeDefinition == typeof(Task<>))
-                    return ResolveReturnType(type.GetGenericArguments()[0]);
+                var genericTypeDefinition = typeInfo.GetGenericTypeDefinition();
+                if (genericTypeDefinition.Equals(TypeInfo.From(typeof(Task<>))))
+                    return ResolveReturnType(typeInfo.GetGenericArguments()[0]);
             }
 
-            if (type == typeof(Task))
-                return typeof(void);
-            return type;
+            if (typeInfo.Equals(TypeInfo.From<Task>()))
+                return TypeInfo.From(typeof(void));
+            return typeInfo;
         }
 
-        protected virtual TypeScriptType ResolveReturnType(MethodInfo methodInfo, Func<ICustomAttributeProvider, Type, TypeScriptType> buildAndImportType)
+        protected virtual TypeScriptType ResolveReturnType(IMethodInfo methodInfo, Func<IAttributeProvider, ITypeInfo, TypeScriptType> buildAndImportType)
         {
             return null;
         }
 
-        protected virtual bool PassParameterToCall(ParameterInfo parameterInfo, Type controllerType) => true;
-        
-        protected virtual TypeScriptStatement WrapCall(MethodInfo methodInfo, TypeScriptReturnStatement call) => call;
+        protected virtual bool PassParameterToCall(IParameterInfo parameterInfo, ITypeInfo controllerType) => true;
+
+        protected virtual TypeScriptStatement WrapCall(IMethodInfo methodInfo, TypeScriptReturnStatement call) => call;
 
         protected virtual string GetApiClassName(string apiName) => apiName;
-        
-        protected abstract BaseApiMethod ResolveBaseApiMethod(MethodInfo methodInfo);
-        protected abstract string BuildRoute(Type controllerType, MethodInfo methodInfo);
-        protected abstract ParameterInfo[] GetQueryParameters(ParameterInfo[] parameters, Type controllerType);
-        protected abstract ParameterInfo GetBody(ParameterInfo[] parameters, Type controllerType);
-        protected abstract MethodInfo[] GetMethodsToImplement(Type controllerType);
+
+        protected abstract BaseApiMethod ResolveBaseApiMethod(IMethodInfo methodInfo);
+        protected abstract string BuildRoute(ITypeInfo controllerType, IMethodInfo methodInfo);
+        protected abstract IParameterInfo[] GetQueryParameters(IParameterInfo[] parameters, ITypeInfo controllerType);
+        protected abstract IParameterInfo GetBody(IParameterInfo[] parameters, ITypeInfo controllerType);
+        protected abstract IMethodInfo[] GetMethodsToImplement(ITypeInfo controllerType);
 
         public override void Initialize(ITypeGenerator typeGenerator)
         {
@@ -68,7 +71,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             base.Initialize(typeGenerator);
         }
 
-        private TypeScriptTypeDeclaration GenerateInternalApiController(TypeScriptUnit targetUnit, Type type, Func<ICustomAttributeProvider, Type, TypeScriptType> buildAndImportType)
+        private TypeScriptTypeDeclaration GenerateInternalApiController(TypeScriptUnit targetUnit, ITypeInfo type, Func<IAttributeProvider, ITypeInfo, TypeScriptType> buildAndImportType)
         {
             var baseApi = GetApiBase(type);
             var apiName = GetApiName(type);
@@ -107,7 +110,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             return interfaceDeclaration;
         }
 
-        private IEnumerable<TypeScriptClassMemberDefinition> BuildApiImplMember(MethodInfo methodInfo, Func<ICustomAttributeProvider, Type, TypeScriptType> buildAndImportType, Type controllerType)
+        private IEnumerable<TypeScriptClassMemberDefinition> BuildApiImplMember(IMethodInfo methodInfo, Func<IAttributeProvider, ITypeInfo, TypeScriptType> buildAndImportType, ITypeInfo controllerType)
         {
             var functionDefinition = new TypeScriptFunctionDefinition
                 {
@@ -130,16 +133,14 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                     };
         }
 
-        private TypeScriptType GetMethodResult(MethodInfo methodInfo, Func<ICustomAttributeProvider, Type, TypeScriptType> buildAndImportType)
+        private TypeScriptType GetMethodResult(IMethodInfo methodInfo, Func<IAttributeProvider, ITypeInfo, TypeScriptType> buildAndImportType)
         {
-            if (methodResults.TryGetValue(methodInfo, out var result))
+            if (methodResults.TryGetValue(methodInfo.Method, out var result))
                 return result;
-            return methodResults[methodInfo] = ResolveReturnType(methodInfo, buildAndImportType) ?? new TypeScriptPromiseOfType(buildAndImportType(methodInfo, ResolveReturnType(methodInfo.ReturnType)));
+            return methodResults[methodInfo.Method] = ResolveReturnType(methodInfo, buildAndImportType) ?? new TypeScriptPromiseOfType(buildAndImportType(methodInfo, ResolveReturnType(methodInfo.ReturnType)));
         }
 
-        private Dictionary<MethodInfo, TypeScriptType> methodResults = new Dictionary<MethodInfo, TypeScriptType>();
-
-        private TypeScriptReturnStatement CreateCall(MethodInfo methodInfo, Type controllerType)
+        private TypeScriptReturnStatement CreateCall(IMethodInfo methodInfo, ITypeInfo controllerType)
         {
             var verb = ResolveBaseApiMethod(methodInfo);
             switch (verb)
@@ -161,7 +162,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             }
         }
 
-        private TypeScriptReturnStatement GenerateMethodCallWithBody(MethodInfo methodInfo, string methodName, Type controllerType)
+        private TypeScriptReturnStatement GenerateMethodCallWithBody(IMethodInfo methodInfo, string methodName, ITypeInfo controllerType)
         {
             var route = BuildRoute(controllerType, methodInfo);
             return new TypeScriptReturnStatement(
@@ -177,13 +178,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                     ));
         }
 
-        private TypeScriptExpression GetBodyExpression(MethodInfo methodInfo, string methodName, Type controllerType)
+        private TypeScriptExpression GetBodyExpression(IMethodInfo methodInfo, string methodName, ITypeInfo controllerType)
         {
             return GenerateCustomBody(methodInfo, methodName, controllerType) ??
                    GenerateConstructBody(GetBody(methodInfo.GetParameters(), controllerType));
         }
 
-        private static TypeScriptExpression GenerateConstructBody(ParameterInfo parameter)
+        private static TypeScriptExpression GenerateConstructBody(IParameterInfo parameter)
         {
             if (parameter == null)
                 return new TypeScriptObjectLiteral();
@@ -196,15 +197,15 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                 );
         }
 
-        protected virtual TypeScriptExpression GenerateCustomBody(MethodInfo methodInfo, string methodName, Type controllerType)
+        protected virtual TypeScriptExpression GenerateCustomBody(IMethodInfo methodInfo, string methodName, ITypeInfo controllerType)
         {
             return null;
         }
 
-        private static TypeScriptExpression GenerateConstructGetParams(ParameterInfo[] parameters, string routeTemplate)
+        private static TypeScriptExpression GenerateConstructGetParams(IParameterInfo[] parameters, string routeTemplate)
         {
             var literalProperties = parameters
-                .Select<ParameterInfo, TypeScriptObjectLiteralInitializer>(
+                .Select<IParameterInfo, TypeScriptObjectLiteralInitializer>(
                     parameter =>
                         {
                             if (routeTemplate.Contains("{" + parameter.Name + "}"))
@@ -223,7 +224,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             return result;
         }
 
-        private IEnumerable<TypeScriptInterfaceFunctionMember> BuildApiInterfaceMember(MethodInfo methodInfo, Func<ICustomAttributeProvider, Type, TypeScriptType> buildAndImportType, Type controllerType)
+        private IEnumerable<TypeScriptInterfaceFunctionMember> BuildApiInterfaceMember(IMethodInfo methodInfo, Func<IAttributeProvider, ITypeInfo, TypeScriptType> buildAndImportType, ITypeInfo controllerType)
         {
             var result = new TypeScriptInterfaceFunctionMember(
                 methodInfo.Name.ToLowerCamelCase(),
@@ -240,5 +241,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                 );
             yield return result;
         }
+
+        private readonly Dictionary<MethodInfo, TypeScriptType> methodResults = new Dictionary<MethodInfo, TypeScriptType>();
     }
 }

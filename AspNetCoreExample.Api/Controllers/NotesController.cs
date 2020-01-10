@@ -14,7 +14,7 @@ namespace AspNetCoreExample.Api.Controllers
         {
             return Ok();
         }
-        
+
         [HttpPost("batch")]
         public ActionResult AddEntries(Guid userId, [FromBody] BlogEntry[] entries)
         {

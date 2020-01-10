@@ -9,7 +9,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
             Name = name;
             Value = value;
         }
-        
+
         public string Name { get; }
         public TypeScriptExpression Value { get; }
 

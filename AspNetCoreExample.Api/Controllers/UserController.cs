@@ -14,7 +14,7 @@ namespace AspNetCoreExample.Api.Controllers
         {
             return Ok();
         }
-        
+
         [HttpDelete("{userId}")]
         public ActionResult DeleteUser(Guid userId)
         {

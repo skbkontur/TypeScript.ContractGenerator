@@ -1,13 +1,11 @@
-using System;
-using System.Reflection;
-
+using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class TypeBuildingContext : ITypeBuildingContext
     {
-        protected TypeBuildingContext(TypeScriptUnit unit, Type type)
+        protected TypeBuildingContext(TypeScriptUnit unit, ITypeInfo type)
         {
             Unit = unit;
             Type = type;
@@ -22,7 +20,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         protected TypeScriptUnit Unit { get; }
 
-        protected Type Type { get; }
+        protected ITypeInfo Type { get; }
 
         public virtual bool IsDefinitionBuilt => true;
 
@@ -30,7 +28,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public virtual TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, ICustomAttributeProvider customAttributeProvider)
+        public virtual TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider attributeProvider)
         {
             return targetUnit.AddTypeImport(Type, Declaration, Unit);
         }

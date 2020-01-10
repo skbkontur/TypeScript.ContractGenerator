@@ -16,7 +16,7 @@ namespace AspNetCoreExample.Generator
             var customTypeGenerator = new CustomTypeGenerator()
                 .WithTypeRedirect<Guid>("Guid", @"dataTypes\Guid")
                 .WithTypeLocationRule(
-                    x => typeof(ControllerBase).IsAssignableFrom(x),
+                    x => typeof(ControllerBase).IsAssignableFrom(x.Type),
                     x => $"api/{x.Name}".Replace("Controller", "Api")
                 )
                 .WithTypeLocationRule(
@@ -35,7 +35,7 @@ namespace AspNetCoreExample.Generator
                         NullabilityMode = NullabilityMode.Optimistic,
                     },
                 customTypeGenerator,
-                new RootTypesProvider()
+                new TypesProvider()
                 );
             var targetPath = Path.Combine(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).FullName, "../../../output");
 

@@ -6,7 +6,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptClassDefinition
     {
-        public List<TypeScriptClassMemberDefinition> Members => members;
+        public List<TypeScriptClassMemberDefinition> Members { get; } = new List<TypeScriptClassMemberDefinition>();
 
         public TypeScriptType BaseClass { get; set; }
         public TypeScriptType[] ImplementedInterfaces { get; set; }
@@ -31,7 +31,5 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
             result.Append("}");
             return result.ToString();
         }
-
-        private readonly List<TypeScriptClassMemberDefinition> members = new List<TypeScriptClassMemberDefinition>();
     }
 }

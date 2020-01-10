@@ -7,8 +7,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptFunctionDefinition : TypeScriptDefinition
     {
-        public List<TypeScriptArgumentDeclaration> Arguments => arguments;
-        public List<TypeScriptStatement> Body => body;
+        public List<TypeScriptArgumentDeclaration> Arguments { get; } = new List<TypeScriptArgumentDeclaration>();
+
+        public List<TypeScriptStatement> Body { get; } = new List<TypeScriptStatement>();
+
         public TypeScriptType Result { get; set; }
         public bool IsAsync { get; set; }
         public bool IsStatic { get; set; }
@@ -32,8 +34,5 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
             result.Append("}");
             return result.ToString();
         }
-
-        private readonly List<TypeScriptStatement> body = new List<TypeScriptStatement>();
-        private readonly List<TypeScriptArgumentDeclaration> arguments = new List<TypeScriptArgumentDeclaration>();
     }
 }

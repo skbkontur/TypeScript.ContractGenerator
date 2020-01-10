@@ -1,13 +1,13 @@
-using System;
 using System.Linq;
 
+using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class DerivedTypesUnionBuildingContext : TypeBuildingContext
     {
-        public DerivedTypesUnionBuildingContext(TypeScriptUnit unit, Type type, bool useAbstractChildren = false)
+        public DerivedTypesUnionBuildingContext(TypeScriptUnit unit, ITypeInfo type, bool useAbstractChildren = false)
             : base(unit, type)
         {
             this.useAbstractChildren = useAbstractChildren;
@@ -27,11 +27,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         public override void BuildDefinition(ITypeGenerator typeGenerator)
         {
-            var types = Type.Assembly
-                            .GetTypes()
-                            .Where(x => x != Type && Type.IsAssignableFrom(x) && (useAbstractChildren || !x.IsAbstract))
-                            .Select(x => typeGenerator.ResolveType(x).ReferenceFrom(Unit, typeGenerator, null))
-                            .ToArray();
+            var types = typeGenerator.TypesProvider
+                                     .GetAssemblyTypes(Type)
+                                     .Where(x => !x.Equals(Type) && Type.IsAssignableFrom(x) && (useAbstractChildren || !x.IsAbstract))
+                                     .Select(x => typeGenerator.ResolveType(x).ReferenceFrom(Unit, typeGenerator, null))
+                                     .ToArray();
             Declaration.Definition = new TypeScriptUnionType(types);
         }
 
