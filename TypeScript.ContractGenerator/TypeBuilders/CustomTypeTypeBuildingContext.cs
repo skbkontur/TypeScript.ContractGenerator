@@ -3,8 +3,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-using JetBrains.Annotations;
-
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
@@ -15,7 +13,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class CustomTypeTypeBuildingContext : TypeBuildingContext
     {
-        public CustomTypeTypeBuildingContext([NotNull] TypeScriptUnit unit, [NotNull] ITypeInfo type)
+        public CustomTypeTypeBuildingContext(TypeScriptUnit unit, ITypeInfo type)
             : base(unit, type)
         {
         }

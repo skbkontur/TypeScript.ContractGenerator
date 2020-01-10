@@ -4,6 +4,8 @@
       <TargetFramework>netstandard2.0</TargetFramework>
       <AssemblyName>SkbKontur.TypeScript.ContractGenerator</AssemblyName>
       <RootNamespace>SkbKontur.TypeScript.ContractGenerator</RootNamespace>
+      <LangVersion>8</LangVersion>
+      <Nullable>enable</Nullable>
     </PropertyGroup>
 
 </Project>

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 
-using JetBrains.Annotations;
-
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
@@ -11,14 +9,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class ArrayTypeBuildingContext : ITypeBuildingContext
     {
-        public ArrayTypeBuildingContext([NotNull] ITypeInfo arrayType, [NotNull] TypeScriptGenerationOptions options)
+        public ArrayTypeBuildingContext(ITypeInfo arrayType, TypeScriptGenerationOptions options)
         {
             elementType = GetElementType(arrayType);
             this.options = options;
         }
 
-        [NotNull]
-        private ITypeInfo GetElementType([NotNull] ITypeInfo arrayType)
+        private ITypeInfo GetElementType(ITypeInfo arrayType)
         {
             if (arrayType.IsArray)
                 return arrayType.GetElementType() ?? throw new ArgumentNullException($"Array type's {arrayType.Name} element type is not defined");
@@ -44,14 +41,14 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider attributeProvider)
+        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider? attributeProvider)
         {
             var itemType = typeGenerator.ResolveType(elementType).ReferenceFrom(targetUnit, typeGenerator, null);
             var resultType = TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(itemType, CanItemBeNull(attributeProvider), options);
             return new TypeScriptArrayType(resultType);
         }
 
-        private bool CanItemBeNull(IAttributeProvider attributeProvider)
+        private bool CanItemBeNull(IAttributeProvider? attributeProvider)
         {
             if (elementType.IsValueType || elementType.IsEnum || attributeProvider == null)
                 return false;
@@ -64,10 +61,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                        : attributeProvider.IsNameDefined(AnnotationsNames.ItemCanBeNull);
         }
 
-        [NotNull]
         private readonly TypeScriptGenerationOptions options;
-
-        [NotNull]
         private readonly ITypeInfo elementType;
     }
 }

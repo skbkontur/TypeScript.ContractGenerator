@@ -1,10 +1,8 @@
-using JetBrains.Annotations;
-
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptObjectLiteralSpread : TypeScriptObjectLiteralInitializer
     {
-        public TypeScriptObjectLiteralSpread([NotNull] TypeScriptVariableReference expression)
+        public TypeScriptObjectLiteralSpread(TypeScriptVariableReference expression)
         {
             Expression = expression;
         }

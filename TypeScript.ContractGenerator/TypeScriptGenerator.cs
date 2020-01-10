@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-using JetBrains.Annotations;
-
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.Attributes;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
@@ -18,7 +16,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
     {
         [SuppressMessage("ReSharper", "ConstantNullCoalescingCondition")]
         [SuppressMessage("ReSharper", "ConstantConditionalAccessQualifier")]
-        public TypeScriptGenerator([NotNull] TypeScriptGenerationOptions options, [NotNull] ICustomTypeGenerator customTypeGenerator, [NotNull] ITypesProvider typesProvider)
+        public TypeScriptGenerator(TypeScriptGenerationOptions options, ICustomTypeGenerator customTypeGenerator, ITypesProvider typesProvider)
         {
             Options = options ?? throw new ArgumentNullException(nameof(options));
             TypesProvider = typesProvider ?? throw new ArgumentNullException(nameof(typesProvider));
@@ -58,7 +56,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
         }
 
         [SuppressMessage("ReSharper", "ParameterOnlyUsedForPreconditionCheck.Local")]
-        private static void ValidateOptions([NotNull] TypeScriptGenerationOptions options, JavaScriptTypeChecker? javaScriptTypeChecker = null)
+        private static void ValidateOptions(TypeScriptGenerationOptions options, JavaScriptTypeChecker? javaScriptTypeChecker = null)
         {
             if (javaScriptTypeChecker == JavaScriptTypeChecker.Flow && options.EnumGenerationMode == EnumGenerationMode.TypeScriptEnum)
                 throw new ArgumentException("Flow is not compatible with TypeScript enums");
@@ -73,8 +71,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             ResolveType(type);
         }
 
-        [NotNull]
-        public ITypeBuildingContext ResolveType([NotNull] ITypeInfo typeInfo)
+        public ITypeBuildingContext ResolveType(ITypeInfo typeInfo)
         {
             if (typeDeclarations.ContainsKey(typeInfo))
                 return typeDeclarations[typeInfo];
@@ -86,8 +83,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return typeBuildingContext;
         }
 
-        [CanBeNull]
-        public TypeScriptTypeMemberDeclaration ResolveProperty([NotNull] TypeScriptUnit unit, [NotNull] ITypeInfo typeInfo, [NotNull] IPropertyInfo propertyInfo)
+        public TypeScriptTypeMemberDeclaration? ResolveProperty(TypeScriptUnit unit, ITypeInfo typeInfo, IPropertyInfo propertyInfo)
         {
             var customMemberDeclaration = customTypeGenerator.ResolveProperty(unit, this, typeInfo, propertyInfo);
             if (customMemberDeclaration != null)
@@ -153,16 +149,14 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return new CustomTypeTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), typeInfo);
         }
 
-        [NotNull]
-        public TypeScriptType BuildAndImportType([NotNull] TypeScriptUnit targetUnit, [CanBeNull] IAttributeProvider customAttributeProvider, [NotNull] ITypeInfo typeInfo)
+        public TypeScriptType BuildAndImportType(TypeScriptUnit targetUnit, IAttributeProvider? customAttributeProvider, ITypeInfo typeInfo)
         {
             var (isNullable, resultType) = TypeScriptGeneratorHelpers.ProcessNullable(customAttributeProvider, typeInfo, Options.NullabilityMode);
             var targetType = GetTypeScriptType(targetUnit, resultType, customAttributeProvider);
             return TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(targetType, isNullable, Options);
         }
 
-        [NotNull]
-        private TypeScriptType GetTypeScriptType([NotNull] TypeScriptUnit targetUnit, [NotNull] ITypeInfo typeInfo, [CanBeNull] IAttributeProvider customAttributeProvider)
+        private TypeScriptType GetTypeScriptType(TypeScriptUnit targetUnit, ITypeInfo typeInfo, IAttributeProvider? customAttributeProvider)
         {
             if (typeDeclarations.ContainsKey(typeInfo))
                 return typeDeclarations[typeInfo].ReferenceFrom(targetUnit, this, customAttributeProvider);
@@ -171,10 +165,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return ResolveType(typeInfo).ReferenceFrom(targetUnit, this, customAttributeProvider);
         }
 
-        [NotNull]
         public TypeScriptGenerationOptions Options { get; }
-
-        [NotNull]
         public ITypesProvider TypesProvider { get; }
 
         private readonly ITypeInfo[] rootTypes;

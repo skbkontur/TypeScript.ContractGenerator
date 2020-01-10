@@ -1,24 +1,19 @@
 using System.Collections.Generic;
 
-using JetBrains.Annotations;
-
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
 
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptFunctionCallExpression : TypeScriptExpression
     {
-        public TypeScriptFunctionCallExpression([NotNull] TypeScriptExpression methodName,
-                                                [NotNull, ItemNotNull] params TypeScriptExpression[] arguments)
+        public TypeScriptFunctionCallExpression(TypeScriptExpression methodName, params TypeScriptExpression[] arguments)
         {
             MethodName = methodName;
             TypeParameters = new List<TypeScriptType>();
             Arguments = new List<TypeScriptExpression>(arguments);
         }
 
-        public TypeScriptFunctionCallExpression([NotNull] TypeScriptExpression methodName,
-                                                [NotNull, ItemNotNull] TypeScriptType[] typeParameters,
-                                                [NotNull, ItemNotNull] params TypeScriptExpression[] arguments)
+        public TypeScriptFunctionCallExpression(TypeScriptExpression methodName, TypeScriptType[] typeParameters, params TypeScriptExpression[] arguments)
         {
             MethodName = methodName;
             TypeParameters = new List<TypeScriptType>(typeParameters);

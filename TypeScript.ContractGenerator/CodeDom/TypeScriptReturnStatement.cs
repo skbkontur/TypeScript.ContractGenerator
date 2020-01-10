@@ -1,10 +1,8 @@
-using JetBrains.Annotations;
-
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptReturnStatement : TypeScriptStatement
     {
-        public TypeScriptReturnStatement([NotNull] TypeScriptExpression expression)
+        public TypeScriptReturnStatement(TypeScriptExpression expression)
         {
             Expression = expression;
         }

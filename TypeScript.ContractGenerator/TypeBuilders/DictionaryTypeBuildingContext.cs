@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 
-using JetBrains.Annotations;
-
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
@@ -10,7 +8,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class DictionaryTypeBuildingContext : ITypeBuildingContext
     {
-        public DictionaryTypeBuildingContext([NotNull] ITypeInfo dictionaryType, [NotNull] TypeScriptGenerationOptions options)
+        public DictionaryTypeBuildingContext(ITypeInfo dictionaryType, TypeScriptGenerationOptions options)
         {
             keyType = dictionaryType.GetGenericArguments()[0];
             valueType = dictionaryType.GetGenericArguments()[1];
@@ -32,7 +30,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider attributeProvider)
+        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider? attributeProvider)
         {
             return new TypeScriptTypeDefintion
                 {

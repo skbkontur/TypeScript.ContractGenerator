@@ -1,10 +1,7 @@
 using System;
 
-using JetBrains.Annotations;
-
 namespace SkbKontur.TypeScript.ContractGenerator
 {
-    [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     public class TypeScriptGenerationOptions
     {
         public EnumGenerationMode EnumGenerationMode { get; set; } = EnumGenerationMode.TypeScriptEnum;
@@ -19,11 +16,9 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         public bool UseGlobalNullable { get; set; }
 
-        [NotNull]
         [Obsolete("Will be removed in 2.0")]
         public Func<string, string> Pluralize { get; set; } = x => x + "s";
 
-        [NotNull]
         public static TypeScriptGenerationOptions Default { get; } = new TypeScriptGenerationOptions();
     }
 }

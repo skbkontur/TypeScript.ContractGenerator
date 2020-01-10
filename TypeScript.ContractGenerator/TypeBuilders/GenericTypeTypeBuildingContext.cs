@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 
-using JetBrains.Annotations;
-
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
@@ -10,7 +8,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class GenericTypeTypeBuildingContext : ITypeBuildingContext
     {
-        public GenericTypeTypeBuildingContext(ITypeInfo type, [NotNull] TypeScriptGenerationOptions options)
+        public GenericTypeTypeBuildingContext(ITypeInfo type, TypeScriptGenerationOptions options)
         {
             this.type = type;
             this.options = options;
@@ -26,7 +24,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         {
         }
 
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider attributeProvider)
+        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider? attributeProvider)
         {
             var typeReference = typeGenerator.ResolveType(type.GetGenericTypeDefinition()).ReferenceFrom(targetUnit, typeGenerator, null);
             var arguments = new List<TypeScriptType>();

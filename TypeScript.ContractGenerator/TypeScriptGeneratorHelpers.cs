@@ -1,8 +1,6 @@
 using System;
 using System.Linq;
 
-using JetBrains.Annotations;
-
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
@@ -11,7 +9,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
 {
     public static class TypeScriptGeneratorHelpers
     {
-        public static (bool, ITypeInfo) ProcessNullable(IAttributeProvider attributeContainer, ITypeInfo type, NullabilityMode nullabilityMode)
+        public static (bool, ITypeInfo) ProcessNullable(IAttributeProvider? attributeContainer, ITypeInfo type, NullabilityMode nullabilityMode)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(Nullable<>))))
             {
@@ -33,7 +31,6 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return false;
         }
 
-        [NotNull]
         public static byte[] GetNullableFlags(IAttributeProvider attributeContainer)
         {
             byte contextFlag = 0;
@@ -44,7 +41,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return GetNullableFlagsInternal(attributeContainer) ?? new[] {contextFlag};
         }
 
-        private static byte[] GetNullableFlagsInternal(IAttributeProvider attributeContainer)
+        private static byte[]? GetNullableFlagsInternal(IAttributeProvider attributeContainer)
         {
             var nullableAttribute = attributeContainer?.GetCustomAttributes(true).SingleOrDefault(a => a.GetType().Name == AnnotationsNames.Nullable);
             return nullableAttribute?.GetType().GetField("NullableFlags").GetValue(nullableAttribute) as byte[];
@@ -57,7 +54,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return (byte?)flag;
         }
 
-        private static bool CanBeNull([NotNull] IAttributeProvider attributeContainer, NullabilityMode nullabilityMode)
+        private static bool CanBeNull(IAttributeProvider attributeContainer, NullabilityMode nullabilityMode)
         {
             if (nullabilityMode == NullabilityMode.NullableReference)
             {
@@ -71,8 +68,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
                     : attributeContainer.IsNameDefined(AnnotationsNames.CanBeNull);
         }
 
-        [NotNull]
-        public static TypeScriptType BuildTargetNullableTypeByOptions([NotNull] TypeScriptType innerType, bool isNullable, [NotNull] TypeScriptGenerationOptions options)
+        public static TypeScriptType BuildTargetNullableTypeByOptions(TypeScriptType innerType, bool isNullable, TypeScriptGenerationOptions options)
         {
             if (!(innerType is INullabilityWrapperType) && isNullable && options.EnableExplicitNullability)
             {

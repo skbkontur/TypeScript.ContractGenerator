@@ -1,10 +1,8 @@
-using JetBrains.Annotations;
-
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptArrayType : TypeScriptType
     {
-        public TypeScriptArrayType([NotNull] TypeScriptType itemType)
+        public TypeScriptArrayType(TypeScriptType itemType)
         {
             ItemType = itemType;
         }
