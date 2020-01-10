@@ -8,7 +8,7 @@ using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 using SkbKontur.TypeScript.ContractGenerator.Tests.Types;
 
-namespace SkbKontur.TypeScript.ContractGenerator.Tests.Roslyn
+namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
 {
     public class RoslynTests
     {

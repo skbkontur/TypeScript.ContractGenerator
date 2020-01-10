@@ -3,7 +3,7 @@ using System.IO;
 
 using Microsoft.CodeAnalysis;
 
-namespace SkbKontur.TypeScript.ContractGenerator.Tests.Roslyn
+namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
 {
     public static class AdhocProject
     {

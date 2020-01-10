@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 
-namespace SkbKontur.TypeScript.ContractGenerator.Tests.Roslyn
+namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
 {
     public class RoslynParameterInfo : IParameterInfo
     {
