@@ -43,7 +43,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
                     }
 
                     var (rootTypesProvider, rootTypesProviderError) = targetAssembly
-                        .GetImplementations<IRootTypesProvider>()
+                        .GetImplementations<ITypesProvider>()
                         .StartCollectionValidator()
                         .WithNoItemsError($"Implementations of `IRootTypesProvider` not found in assembly {targetAssembly.GetName()}")
                         .WithManyItemsError($"Found more than one implementation of `IRootTypesProvider` in assembly {targetAssembly.GetName()}")
@@ -55,23 +55,15 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
                         return;
                     }
 
-                    var options = new FlowTypeGenerationOptions
+                    var options = new TypeScriptGenerationOptions
                         {
                             EnumGenerationMode = o.EnumGenerationMode,
                             EnableExplicitNullability = o.EnableExplicitNullability,
                             EnableOptionalProperties = o.EnableOptionalProperties,
                         };
 
-                    var flowTypeGenerator = new FlowTypeGenerator(options, customTypeGenerator, rootTypesProvider);
-
-                    if (o.Language == Language.JavaScript)
-                    {
-                        flowTypeGenerator.GenerateFiles(o.OutputDirectory);
-                    }
-                    else
-                    {
-                        flowTypeGenerator.GenerateTypeScriptFiles(o.OutputDirectory);
-                    }
+                    var typeGenerator = new TypeScriptGenerator(options, customTypeGenerator, rootTypesProvider);
+                    typeGenerator.GenerateFiles(o.OutputDirectory, o.Language);
                 });
         }
 

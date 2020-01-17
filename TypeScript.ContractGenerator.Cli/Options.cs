@@ -1,5 +1,7 @@
 using CommandLine;
 
+using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+
 namespace SkbKontur.TypeScript.ContractGenerator.Cli
 {
     public class Options
@@ -19,7 +21,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
         [Option("explicitNull", Required = false, HelpText = "Enables explicit nullability", Default = true)]
         public bool EnableExplicitNullability { get; set; }
 
-        [Option('l', "language", Required = false, HelpText = "Generated files language: JavaScript or TypeScript.", Default = Language.TypeScript)]
-        public Language Language { get; set; }
+        [Option('l', "language", Required = false, HelpText = "Generated files language: JavaScript or TypeScript.", Default = JavaScriptTypeChecker.TypeScript)]
+        public JavaScriptTypeChecker Language { get; set; }
     }
 }
