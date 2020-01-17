@@ -5,7 +5,7 @@ using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Extensions
 {
-    public static class CustomAttributeProviderExtensions
+    public static class AttributeProviderExtensions
     {
         public static T[] GetCustomAttributes<T>(this IAttributeProvider attributeProvider)
             where T : Attribute

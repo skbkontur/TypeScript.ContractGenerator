@@ -37,7 +37,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         public bool IsGenericType => Type.IsGenericType;
         public bool IsGenericParameter => Type.IsGenericParameter;
         public bool IsGenericTypeDefinition => Type.IsGenericTypeDefinition;
-        public ITypeInfo BaseType => From(Type.BaseType);
+        public ITypeInfo? BaseType => From(Type.BaseType);
 
         public IMethodInfo[] GetMethods(BindingFlags bindingAttr)
         {

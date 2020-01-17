@@ -43,7 +43,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                     arguments.Add(targetType is INullabilityWrapperType nullabilityType ? nullabilityType.InnerType : targetType);
                 }
             }
-            return new TypeScriptGenericTypeReference(typeReference as TypeScriptTypeReference, arguments.ToArray());
+            return new TypeScriptGenericTypeReference((TypeScriptTypeReference)typeReference, arguments.ToArray());
         }
 
         private readonly ITypeInfo type;

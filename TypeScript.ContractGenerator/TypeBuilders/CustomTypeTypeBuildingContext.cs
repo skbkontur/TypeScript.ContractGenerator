@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -26,7 +27,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                 {
                     Name = type.IsGenericType ? new Regex("`.*$").Replace(type.GetGenericTypeDefinition().Name, "") : type.Name,
                     Definition = null,
-                    GenericTypeArguments = Type.IsGenericTypeDefinition ? Type.GetGenericArguments().Select(x => x.Name).ToArray() : null
+                    GenericTypeArguments = Type.IsGenericTypeDefinition ? Type.GetGenericArguments().Select(x => x.Name).ToArray() : new string[0]
                 };
             return result;
         }
@@ -38,7 +39,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
             var baseType = Type.BaseType;
             if (baseType != null && !baseType.Equals(TypeInfo.From<object>()) && !baseType.Equals(TypeInfo.From<ValueType>()) && !baseType.Equals(TypeInfo.From<MarshalByRefObject>()))
-                typeGenerator.ResolveType(Type.BaseType);
+                typeGenerator.ResolveType(baseType);
         }
 
         public override void BuildDefinition(ITypeGenerator typeGenerator)

@@ -20,7 +20,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         public ITypeInfo[] GetAssemblyTypes(ITypeInfo type)
         {
-            return type.Type.Assembly.GetTypes().Select(TypeInfo.From).ToArray();
+            return ((TypeInfo)type).Type.Assembly.GetTypes().Select(TypeInfo.From).ToArray();
         }
 
         public static readonly ITypesProvider Default = new TypesProvider();

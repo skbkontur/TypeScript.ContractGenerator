@@ -6,6 +6,7 @@
       <RootNamespace>SkbKontur.TypeScript.ContractGenerator</RootNamespace>
       <LangVersion>8</LangVersion>
       <Nullable>enable</Nullable>
+      <NoWarn>8618</NoWarn>
     </PropertyGroup>
 
 </Project>

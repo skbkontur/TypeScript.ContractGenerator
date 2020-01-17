@@ -4,7 +4,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Abstractions
 {
     public interface IMethodInfo : IAttributeProvider
     {
-        MethodInfo Method { get; }
+        MethodInfo? Method { get; }
 
         string Name { get; }
         ITypeInfo ReturnType { get; }

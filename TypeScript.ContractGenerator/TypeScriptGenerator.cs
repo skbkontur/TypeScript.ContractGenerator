@@ -149,20 +149,20 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return new CustomTypeTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), typeInfo);
         }
 
-        public TypeScriptType BuildAndImportType(TypeScriptUnit targetUnit, IAttributeProvider? customAttributeProvider, ITypeInfo typeInfo)
+        public TypeScriptType BuildAndImportType(TypeScriptUnit targetUnit, IAttributeProvider? attributeProvider, ITypeInfo typeInfo)
         {
-            var (isNullable, resultType) = TypeScriptGeneratorHelpers.ProcessNullable(customAttributeProvider, typeInfo, Options.NullabilityMode);
-            var targetType = GetTypeScriptType(targetUnit, resultType, customAttributeProvider);
+            var (isNullable, resultType) = TypeScriptGeneratorHelpers.ProcessNullable(attributeProvider, typeInfo, Options.NullabilityMode);
+            var targetType = GetTypeScriptType(targetUnit, resultType, attributeProvider);
             return TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(targetType, isNullable, Options);
         }
 
-        private TypeScriptType GetTypeScriptType(TypeScriptUnit targetUnit, ITypeInfo typeInfo, IAttributeProvider? customAttributeProvider)
+        private TypeScriptType GetTypeScriptType(TypeScriptUnit targetUnit, ITypeInfo typeInfo, IAttributeProvider? attributeProvider)
         {
             if (typeDeclarations.ContainsKey(typeInfo))
-                return typeDeclarations[typeInfo].ReferenceFrom(targetUnit, this, customAttributeProvider);
+                return typeDeclarations[typeInfo].ReferenceFrom(targetUnit, this, attributeProvider);
             if (typeInfo.IsGenericTypeDefinition && typeInfo.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(Nullable<>))))
                 return new TypeScriptNullableType(GetTypeScriptType(targetUnit, typeInfo.GetGenericArguments()[0], null));
-            return ResolveType(typeInfo).ReferenceFrom(targetUnit, this, customAttributeProvider);
+            return ResolveType(typeInfo).ReferenceFrom(targetUnit, this, attributeProvider);
         }
 
         public TypeScriptGenerationOptions Options { get; }
