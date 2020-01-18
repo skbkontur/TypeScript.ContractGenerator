@@ -76,7 +76,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         public bool IsAssignableFrom(ITypeInfo type)
         {
-            return Type.IsAssignableFrom(((TypeInfo)type).Type);
+            return TypeInfoHelpers.IsAssignableFrom(this, type);
         }
 
         public object[] GetCustomAttributes(bool inherit)

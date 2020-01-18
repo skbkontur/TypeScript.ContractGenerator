@@ -45,7 +45,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
         public bool IsGenericType => TypeSymbol is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.IsGenericType;
         public bool IsGenericParameter => TypeSymbol.TypeKind == TypeKind.TypeParameter;
         public bool IsGenericTypeDefinition => IsGenericType && TypeSymbol.IsDefinition;
-        public ITypeInfo BaseType => null;
+        public ITypeInfo BaseType => From(TypeSymbol.BaseType);
 
         public IMethodInfo[] GetMethods(BindingFlags bindingAttr)
         {
@@ -68,13 +68,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
         public ITypeInfo[] GetGenericArguments()
         {
             if (TypeSymbol is INamedTypeSymbol namedTypeSymbol)
-                return namedTypeSymbol.TypeArguments.Select(x => (ITypeInfo)new RoslynTypeInfo(x)).ToArray();
+                return namedTypeSymbol.TypeArguments.Select(From).ToArray();
             return new ITypeInfo[0];
         }
 
         public ITypeInfo[] GetInterfaces()
         {
-            throw new NotImplementedException();
+            return TypeSymbol.AllInterfaces.Select(From).ToArray();
         }
 
         public ITypeInfo GetGenericTypeDefinition()
@@ -100,7 +100,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
 
         public bool IsAssignableFrom(ITypeInfo type)
         {
-            throw new NotImplementedException();
+            return TypeInfoHelpers.IsAssignableFrom(this, type);
         }
 
         public bool Equals(ITypeInfo other)

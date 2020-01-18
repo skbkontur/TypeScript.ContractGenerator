@@ -1,9 +1,33 @@
-﻿using SkbKontur.TypeScript.ContractGenerator.Abstractions;
+﻿using System.Linq;
+
+using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Internals
 {
     public static class TypeInfoHelpers
     {
+        public static bool IsAssignableFrom(ITypeInfo self, ITypeInfo other)
+        {
+            if (self == null || other == null)
+                return false;
+
+            if (self.Equals(other))
+                return true;
+
+            if (self.IsInterface)
+                return other.GetInterfaces().Any(self.Equals);
+
+            var baseType = other.BaseType;
+            while (baseType != null)
+            {
+                if (self.Equals(baseType))
+                    return true;
+                baseType = baseType.BaseType;
+            }
+
+            return false;
+        }
+
         public static bool Equals(ITypeInfo self, ITypeInfo other)
         {
             if (self == null && other == null)
