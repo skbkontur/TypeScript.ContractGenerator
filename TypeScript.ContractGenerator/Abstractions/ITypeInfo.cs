@@ -5,8 +5,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Abstractions
 {
     public interface ITypeInfo : IAttributeProvider, IEquatable<ITypeInfo>
     {
-        Type? Type { get; }
-
         string Name { get; }
         string FullName { get; }
         string Namespace { get; }

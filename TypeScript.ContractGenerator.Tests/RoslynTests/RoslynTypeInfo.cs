@@ -11,14 +11,19 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
 {
     public class RoslynTypeInfo : ITypeInfo
     {
-        public RoslynTypeInfo(ITypeSymbol typeSymbol)
+        private RoslynTypeInfo(ITypeSymbol typeSymbol)
         {
-            this.typeSymbol = typeSymbol;
+            TypeSymbol = typeSymbol;
+        }
+
+        public static ITypeInfo From(ITypeSymbol typeSymbol)
+        {
+            return typeSymbol == null ? null : new RoslynTypeInfo(typeSymbol);
         }
 
         public bool IsNameDefined(string name)
         {
-            return typeSymbol.IsNameDefined(name);
+            return TypeSymbol.IsNameDefined(name);
         }
 
         public object[] GetCustomAttributes(bool inherit)
@@ -26,24 +31,25 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
             return new object[0];
         }
 
-        public Type Type { get; }
-        public string Name => typeSymbol.MetadataName;
-        public string FullName => typeSymbol.Name;
-        public string Namespace => typeSymbol.ContainingNamespace?.ToString();
-        public bool IsEnum => typeSymbol.TypeKind == TypeKind.Enum;
-        public bool IsValueType => typeSymbol.IsValueType;
-        public bool IsArray => typeSymbol.TypeKind == TypeKind.Array;
-        public bool IsClass => typeSymbol.TypeKind == TypeKind.Class || typeSymbol.TypeKind == TypeKind.Array || typeSymbol.TypeKind == TypeKind.TypeParameter;
-        public bool IsInterface => typeSymbol.TypeKind == TypeKind.Interface;
-        public bool IsAbstract => typeSymbol.IsAbstract;
-        public bool IsGenericType => typeSymbol is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.IsGenericType;
-        public bool IsGenericParameter => typeSymbol.TypeKind == TypeKind.TypeParameter;
-        public bool IsGenericTypeDefinition => IsGenericType && typeSymbol.IsDefinition;
+        public ITypeSymbol TypeSymbol { get; }
+
+        public string Name => TypeSymbol.MetadataName;
+        public string FullName => TypeSymbol.Name;
+        public string Namespace => TypeSymbol.ContainingNamespace?.ToString();
+        public bool IsEnum => TypeSymbol.TypeKind == TypeKind.Enum;
+        public bool IsValueType => TypeSymbol.IsValueType;
+        public bool IsArray => TypeSymbol.TypeKind == TypeKind.Array;
+        public bool IsClass => TypeSymbol.TypeKind == TypeKind.Class || TypeSymbol.TypeKind == TypeKind.Array || TypeSymbol.TypeKind == TypeKind.TypeParameter;
+        public bool IsInterface => TypeSymbol.TypeKind == TypeKind.Interface;
+        public bool IsAbstract => TypeSymbol.IsAbstract;
+        public bool IsGenericType => TypeSymbol is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.IsGenericType;
+        public bool IsGenericParameter => TypeSymbol.TypeKind == TypeKind.TypeParameter;
+        public bool IsGenericTypeDefinition => IsGenericType && TypeSymbol.IsDefinition;
         public ITypeInfo BaseType => null;
 
         public IMethodInfo[] GetMethods(BindingFlags bindingAttr)
         {
-            return typeSymbol.GetMembers()
+            return TypeSymbol.GetMembers()
                              .OfType<IMethodSymbol>()
                              .Where(x => !bindingAttr.HasFlag(BindingFlags.Public) || x.DeclaredAccessibility == Accessibility.Public)
                              .Select(x => (IMethodInfo)new RoslynMethodInfo(x))
@@ -52,7 +58,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
 
         public IPropertyInfo[] GetProperties(BindingFlags bindingAttr)
         {
-            return typeSymbol.GetMembers()
+            return TypeSymbol.GetMembers()
                              .OfType<IPropertySymbol>()
                              .Where(x => !bindingAttr.HasFlag(BindingFlags.Public) || x.DeclaredAccessibility == Accessibility.Public)
                              .Select(x => (IPropertyInfo)new RoslynPropertyInfo(x))
@@ -61,7 +67,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
 
         public ITypeInfo[] GetGenericArguments()
         {
-            if (typeSymbol is INamedTypeSymbol namedTypeSymbol)
+            if (TypeSymbol is INamedTypeSymbol namedTypeSymbol)
                 return namedTypeSymbol.TypeArguments.Select(x => (ITypeInfo)new RoslynTypeInfo(x)).ToArray();
             return new ITypeInfo[0];
         }
@@ -73,21 +79,21 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
 
         public ITypeInfo GetGenericTypeDefinition()
         {
-            if (typeSymbol is INamedTypeSymbol namedTypeSymbol)
+            if (TypeSymbol is INamedTypeSymbol namedTypeSymbol)
                 return new RoslynTypeInfo(namedTypeSymbol.OriginalDefinition);
             return null;
         }
 
         public ITypeInfo GetElementType()
         {
-            if (typeSymbol is IArrayTypeSymbol arrayTypeSymbol)
+            if (TypeSymbol is IArrayTypeSymbol arrayTypeSymbol)
                 return new RoslynTypeInfo(arrayTypeSymbol.ElementType);
             return null;
         }
 
         public string[] GetEnumNames()
         {
-            if (typeSymbol is INamedTypeSymbol namedTypeSymbol)
+            if (TypeSymbol is INamedTypeSymbol namedTypeSymbol)
                 return namedTypeSymbol.MemberNames.OrderBy(x => x).ToArray();
             return new string[0];
         }
@@ -120,9 +126,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
 
         public override string ToString()
         {
-            return typeSymbol.ToString();
+            return TypeSymbol.ToString();
         }
-
-        private readonly ITypeSymbol typeSymbol;
     }
 }

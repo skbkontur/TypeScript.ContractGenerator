@@ -76,7 +76,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             if (typeDeclarations.ContainsKey(typeInfo))
                 return typeDeclarations[typeInfo];
             var typeLocation = customTypeGenerator.GetTypeLocation(typeInfo);
-            var typeBuildingContext = customTypeGenerator.ResolveType(typeLocation, typeInfo, typeUnitFactory)
+            var typeBuildingContext = customTypeGenerator.ResolveType(typeLocation, this, typeInfo, typeUnitFactory)
                                       ?? GetTypeBuildingContext(typeLocation, typeInfo);
             typeDeclarations.Add(typeInfo, typeBuildingContext);
             typeBuildingContext.Initialize(this);

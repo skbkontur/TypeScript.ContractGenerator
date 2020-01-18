@@ -16,6 +16,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         public string Name => Property.Name;
         public ITypeInfo PropertyType => TypeInfo.From(Property.PropertyType);
+        public ITypeInfo? DeclaringType => TypeInfo.From(Property.DeclaringType);
 
         public object[] GetCustomAttributes(bool inherit)
         {

@@ -28,7 +28,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
         public ITypeInfo[] GetRootTypes()
         {
             var rootType = compilation.GetTypeByMetadataName(typeName);
-            return new ITypeInfo[] {new RoslynTypeInfo(rootType)};
+            return new[] {RoslynTypeInfo.From(rootType)};
         }
 
         public ITypeInfo[] GetAssemblyTypes(ITypeInfo type)

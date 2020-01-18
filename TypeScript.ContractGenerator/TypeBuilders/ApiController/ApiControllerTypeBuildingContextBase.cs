@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
+using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 
@@ -135,9 +136,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
 
         private TypeScriptType GetMethodResult(IMethodInfo methodInfo, Func<IAttributeProvider, ITypeInfo, TypeScriptType> buildAndImportType)
         {
-            if (methodResults.TryGetValue(methodInfo.Method, out var result))
+            var method = ((MethodWrapper)methodInfo).Method;
+            if (methodResults.TryGetValue(method, out var result))
                 return result;
-            return methodResults[methodInfo.Method] = ResolveReturnType(methodInfo, buildAndImportType) ?? new TypeScriptPromiseOfType(buildAndImportType(methodInfo, ResolveReturnType(methodInfo.ReturnType)));
+            return methodResults[method] = ResolveReturnType(methodInfo, buildAndImportType) ?? new TypeScriptPromiseOfType(buildAndImportType(methodInfo, ResolveReturnType(methodInfo.ReturnType)));
         }
 
         private TypeScriptReturnStatement CreateCall(IMethodInfo methodInfo, ITypeInfo controllerType)

@@ -25,7 +25,7 @@ namespace AspNetCoreExample.Generator
 
         public static bool Accept(ITypeInfo type)
         {
-            return typeof(ControllerBase).IsAssignableFrom(type.Type);
+            return TypeInfo.From<ControllerBase>().IsAssignableFrom(type);
         }
 
         protected override TypeLocation GetApiBase(ITypeInfo controllerType)
@@ -75,7 +75,7 @@ namespace AspNetCoreExample.Generator
             if (methodInfo.GetCustomAttributes<HttpDeleteAttribute>().Any())
                 return BaseApiMethod.Delete;
 
-            throw new NotSupportedException($"Unresolved http verb for method {methodInfo.Name} at controller {methodInfo.Method.DeclaringType?.Name}");
+            throw new NotSupportedException($"Unresolved http verb for method {methodInfo.Name} at controller {methodInfo.DeclaringType?.Name}");
         }
 
         protected override string BuildRoute(ITypeInfo controllerType, IMethodInfo methodInfo)
@@ -105,10 +105,9 @@ namespace AspNetCoreExample.Generator
 
         protected override IMethodInfo[] GetMethodsToImplement(ITypeInfo controllerType)
         {
-            return controllerType.Type.GetMethods(BindingFlags.Instance | BindingFlags.Public)
-                                 .Where(m => !m.IsSpecialName)
-                                 .Where(x => x.DeclaringType == controllerType.Type)
-                                 .Select(x => (IMethodInfo)new MethodWrapper(x))
+            return controllerType.GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                                 .Where(m => !((MethodWrapper)m).Method.IsSpecialName)
+                                 .Where(x => x.DeclaringType.Equals(controllerType))
                                  .ToArray();
         }
 

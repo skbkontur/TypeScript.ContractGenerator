@@ -5,6 +5,7 @@ using System.Reflection;
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
+using SkbKontur.TypeScript.ContractGenerator.Internals;
 using SkbKontur.TypeScript.ContractGenerator.Tests.Types;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
 
@@ -19,7 +20,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
             return "";
         }
 
-        public ITypeBuildingContext ResolveType(string initialUnitPath, ITypeInfo typeInfo, ITypeScriptUnitFactory unitFactory)
+        public ITypeBuildingContext ResolveType(string initialUnitPath, ITypeGenerator typeGenerator, ITypeInfo typeInfo, ITypeScriptUnitFactory unitFactory)
         {
             if (typeInfo.Equals(TypeInfo.From<MethodRootType>()))
                 return new MethodTypeBuildingContext(unitFactory.GetOrCreateTypeUnit(initialUnitPath), typeInfo);
@@ -66,8 +67,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 
         private static bool TryGetGetOnlyEnumPropertyValue(ITypeInfo typeInfo, IPropertyInfo propertyInfo, out string value)
         {
-            var property = propertyInfo.Property;
-            var type = typeInfo.Type;
+            var property = ((PropertyWrapper)propertyInfo).Property;
+            var type = ((TypeInfo)typeInfo).Type;
             var hasDefaultConstructor = type.GetConstructors().Any(x => x.GetParameters().Length == 0);
             var hasInferAttribute = property.GetCustomAttributes<InferValueAttribute>(true).Any();
             if (!property.PropertyType.IsEnum || property.CanWrite || !hasDefaultConstructor || !hasInferAttribute)

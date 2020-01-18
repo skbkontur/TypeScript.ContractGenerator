@@ -20,7 +20,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return string.Empty;
         }
 
-        public virtual ITypeBuildingContext? ResolveType(string initialUnitPath, ITypeInfo typeInfo, ITypeScriptUnitFactory unitFactory)
+        public virtual ITypeBuildingContext? ResolveType(string initialUnitPath, ITypeGenerator typeGenerator, ITypeInfo typeInfo, ITypeScriptUnitFactory unitFactory)
         {
             if (typeRedirects.TryGetValue(typeInfo, out var redirect))
                 return TypeBuilding.RedirectToType(redirect.Name, redirect.Location, typeInfo);

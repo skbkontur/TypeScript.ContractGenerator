@@ -18,8 +18,7 @@ export class NotesApi extends UserApiBase implements INotesApi {
         }, entries);
     }
 
-}
-
+};
 export interface INotesApi {
     addEntry(entry: BlogEntry): Promise<void>;
     addEntries(entries: BlogEntry[]): Promise<void>;

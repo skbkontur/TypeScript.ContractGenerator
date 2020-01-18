@@ -11,7 +11,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             return "";
         }
 
-        public ITypeBuildingContext? ResolveType(string initialUnitPath, ITypeInfo type, ITypeScriptUnitFactory unitFactory)
+        public ITypeBuildingContext? ResolveType(string initialUnitPath, ITypeGenerator typeGenerator, ITypeInfo type, ITypeScriptUnitFactory unitFactory)
         {
             return null;
         }

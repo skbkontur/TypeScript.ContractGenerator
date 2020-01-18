@@ -29,8 +29,7 @@ export class UserApi extends ApiBase implements IUserApi {
         });
     }
 
-}
-
+};
 export interface IUserApi {
     createUser(user: User): Promise<void>;
     deleteUser(userId: Guid): Promise<void>;
