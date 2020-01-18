@@ -1,7 +1,7 @@
-// @flow
+// eslint-disable
 // TypeScriptContractGenerator's generated content
-import type { CommonType } from './../CommonType/CommonType';
-import type { CommonUsingRootType } from './../CommonUsingRootType/CommonUsingRootType';
+import { CommonType } from './../CommonType/CommonType';
+import { CommonUsingRootType } from './../CommonUsingRootType/CommonUsingRootType';
 
 export type CommonUsingRootType3 = {
     anotherCommonType?: null | CommonType;

@@ -9,11 +9,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            if (context.TypeChecker == JavaScriptTypeChecker.TypeScript)
-            {
-                return $"Nullable<{InnerType.GenerateCode(context)}>";
-            }
-            return "?" + InnerType.GenerateCode(context);
+            return $"Nullable<{InnerType.GenerateCode(context)}>";
         }
 
         public TypeScriptType InnerType { get; }

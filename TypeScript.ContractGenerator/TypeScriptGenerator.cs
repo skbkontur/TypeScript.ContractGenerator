@@ -28,16 +28,14 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         public TypeScriptUnit[] Generate()
         {
-            ValidateOptions(Options);
             BuildAllDefinitions();
             return typeUnitFactory.Units;
         }
 
-        public void GenerateFiles(string targetPath, JavaScriptTypeChecker javaScriptTypeChecker)
+        public void GenerateFiles(string targetPath)
         {
-            ValidateOptions(Options, javaScriptTypeChecker);
             BuildAllDefinitions();
-            FilesGenerator.GenerateFiles(targetPath, typeUnitFactory, FilesGenerationContext.Create(javaScriptTypeChecker, Options.LinterDisableMode));
+            FilesGenerator.GenerateFiles(targetPath, typeUnitFactory, FilesGenerationContext.Create(Options.LinterDisableMode));
         }
 
         private void BuildAllDefinitions()
@@ -53,17 +51,6 @@ namespace SkbKontur.TypeScript.ContractGenerator
                         currentType.Value.BuildDefinition(this);
                 }
             }
-        }
-
-        [SuppressMessage("ReSharper", "ParameterOnlyUsedForPreconditionCheck.Local")]
-        private static void ValidateOptions(TypeScriptGenerationOptions options, JavaScriptTypeChecker? javaScriptTypeChecker = null)
-        {
-            if (javaScriptTypeChecker == JavaScriptTypeChecker.Flow && options.EnumGenerationMode == EnumGenerationMode.TypeScriptEnum)
-                throw new ArgumentException("Flow is not compatible with TypeScript enums");
-
-            const string enumName = "Enum";
-            if (options.Pluralize == null || string.IsNullOrEmpty(options.Pluralize(enumName)) || enumName == options.Pluralize(enumName))
-                throw new ArgumentException("Invalid Pluralize function: Pluralize cannot return null, empty string or unchanged argument");
         }
 
         private void RequestTypeBuild(ITypeInfo type)
@@ -122,12 +109,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
                 return new DictionaryTypeBuildingContext(typeInfo, Options);
 
             if (typeInfo.IsEnum)
-            {
-                var targetUnit = typeUnitFactory.GetOrCreateTypeUnit(typeLocation);
-                return Options.EnumGenerationMode == EnumGenerationMode.FixedStringsAndDictionary
-                           ? (ITypeBuildingContext)new FixedStringsAndDictionaryTypeBuildingContext(targetUnit, typeInfo)
-                           : new TypeScriptEnumTypeBuildingContext(targetUnit, typeInfo);
-            }
+                return new TypeScriptEnumTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), typeInfo);
 
             if (typeInfo.IsGenericType && !typeInfo.IsGenericTypeDefinition && typeInfo.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(Nullable<>))))
             {

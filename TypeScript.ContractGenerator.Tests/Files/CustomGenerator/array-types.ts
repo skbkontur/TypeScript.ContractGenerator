@@ -16,11 +16,10 @@ export type ArrayRootType = {
     notNullsArray?: null | AnotherCustomType[];
     notNullNotNullsArray: AnotherCustomType[];
 };
-export type AnotherEnum = 'B' | 'C';
-export const AnotherEnums = {
-    ['B']: ('B') as AnotherEnum,
-    ['C']: ('C') as AnotherEnum,
-};
+export enum AnotherEnum {
+    B = 'B',
+    C = 'C',
+}
 export type AnotherCustomType = {
     d: number;
 };

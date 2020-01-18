@@ -4,7 +4,6 @@ using System.IO;
 using Microsoft.AspNetCore.Mvc;
 
 using SkbKontur.TypeScript.ContractGenerator;
-using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace AspNetCoreExample.Generator
@@ -18,14 +17,13 @@ namespace AspNetCoreExample.Generator
                 {
                     EnableExplicitNullability = true,
                     EnableOptionalProperties = false,
-                    EnumGenerationMode = EnumGenerationMode.TypeScriptEnum,
                     LinterDisableMode = LinterDisableMode.TsLint,
                     UseGlobalNullable = true,
                     NullabilityMode = NullabilityMode.Optimistic,
                 };
 
             var typeScriptCodeGenerator = new TypeScriptGenerator(options, new AspNetCoreExampleCustomGenerator(), new TypesProvider());
-            typeScriptCodeGenerator.GenerateFiles(targetPath, JavaScriptTypeChecker.TypeScript);
+            typeScriptCodeGenerator.GenerateFiles(targetPath);
         }
     }
 }
