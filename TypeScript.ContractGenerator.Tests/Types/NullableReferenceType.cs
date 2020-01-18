@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 #nullable enable
 
+#pragma warning disable 8618, 8714
+
 namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
 {
     public class NullableReferenceType

@@ -1,10 +1,8 @@
-using JetBrains.Annotations;
-
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptVaribaleDefinition : TypeScriptStatement
     {
-        public TypeScriptVaribaleDefinition([NotNull] string name, [NotNull] TypeScriptExpression value)
+        public TypeScriptVaribaleDefinition(string name, TypeScriptExpression value)
         {
             Name = name;
             Value = value;

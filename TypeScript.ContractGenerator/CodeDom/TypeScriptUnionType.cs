@@ -1,12 +1,10 @@
 using System.Linq;
 
-using JetBrains.Annotations;
-
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptUnionType : TypeScriptType
     {
-        public TypeScriptUnionType([NotNull, ItemNotNull] TypeScriptType[] types)
+        public TypeScriptUnionType(TypeScriptType[] types)
         {
             this.types = types;
         }

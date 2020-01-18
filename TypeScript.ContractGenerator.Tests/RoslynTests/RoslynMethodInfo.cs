@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Reflection;
 
 using Microsoft.CodeAnalysis;
 
@@ -11,12 +10,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
     {
         public RoslynMethodInfo(IMethodSymbol methodSymbol)
         {
-            this.methodSymbol = methodSymbol;
+            MethodSymbol = methodSymbol;
         }
 
         public bool IsNameDefined(string name)
         {
-            return methodSymbol.IsNameDefined(name);
+            return MethodSymbol.IsNameDefined(name);
         }
 
         public object[] GetCustomAttributes(bool inherit)
@@ -24,15 +23,15 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
             return new object[0];
         }
 
-        public MethodInfo Method { get; }
-        public string Name => methodSymbol.Name;
-        public ITypeInfo ReturnType => new RoslynTypeInfo(methodSymbol.ReturnType);
+        public IMethodSymbol MethodSymbol { get; }
+
+        public string Name => MethodSymbol.Name;
+        public ITypeInfo ReturnType => RoslynTypeInfo.From(MethodSymbol.ReturnType);
+        public ITypeInfo DeclaringType => RoslynTypeInfo.From(MethodSymbol.ContainingType);
 
         public IParameterInfo[] GetParameters()
         {
-            return methodSymbol.Parameters.Select(x => (IParameterInfo)new RoslynParameterInfo(x)).ToArray();
+            return MethodSymbol.Parameters.Select(x => (IParameterInfo)new RoslynParameterInfo(x)).ToArray();
         }
-
-        private readonly IMethodSymbol methodSymbol;
     }
 }

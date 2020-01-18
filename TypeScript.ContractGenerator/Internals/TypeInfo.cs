@@ -37,7 +37,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         public bool IsGenericType => Type.IsGenericType;
         public bool IsGenericParameter => Type.IsGenericParameter;
         public bool IsGenericTypeDefinition => Type.IsGenericTypeDefinition;
-        public ITypeInfo BaseType => From(Type.BaseType);
+        public ITypeInfo? BaseType => From(Type.BaseType);
 
         public IMethodInfo[] GetMethods(BindingFlags bindingAttr)
         {
@@ -47,6 +47,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         public IPropertyInfo[] GetProperties(BindingFlags bindingAttr)
         {
             return Type.GetProperties(bindingAttr).Select(x => (IPropertyInfo)new PropertyWrapper(x)).ToArray();
+        }
+
+        public IFieldInfo[] GetFields(BindingFlags bindingAttr)
+        {
+            return Type.GetFields(bindingAttr).Select(x => (IFieldInfo)new FieldWrapper(x)).ToArray();
         }
 
         public ITypeInfo[] GetGenericArguments()
@@ -76,7 +81,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         public bool IsAssignableFrom(ITypeInfo type)
         {
-            return Type.IsAssignableFrom(type.Type);
+            return TypeInfoHelpers.IsAssignableFrom(this, type);
         }
 
         public object[] GetCustomAttributes(bool inherit)
@@ -113,50 +118,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         public override string ToString()
         {
             return Type.ToString();
-        }
-    }
-
-    public static class TypeInfoHelpers
-    {
-        public static bool Equals(ITypeInfo self, ITypeInfo other)
-        {
-            if (self == null && other == null)
-                return true;
-
-            if (self == null || other == null)
-                return false;
-
-            if (self.IsArray)
-                return other.IsArray && self.GetElementType().Equals(other.GetElementType());
-
-            if (self.IsGenericParameter)
-                return other.IsGenericParameter && self.Name == other.Name;
-
-            return self.Name == other.Name
-                   && self.Namespace == other.Namespace
-                   && self.IsGenericTypeDefinition == other.IsGenericTypeDefinition
-                   && GenericArgumentsEquals(self.GetGenericArguments(), other.GetGenericArguments());
-        }
-
-        public static int GetHashCode(ITypeInfo self)
-        {
-            if (self.IsArray)
-                return (self.IsArray, self.GetElementType()).GetHashCode();
-
-            if (self.IsGenericParameter)
-                return (self.IsGenericParameter, self.Name).GetHashCode();
-
-            return (self.Name, self.Namespace, self.IsGenericTypeDefinition).GetHashCode();
-        }
-
-        private static bool GenericArgumentsEquals(ITypeInfo[] thisArgs, ITypeInfo[] otherArgs)
-        {
-            if (thisArgs.Length != otherArgs.Length)
-                return false;
-            for (var i = 0; i < thisArgs.Length; i++)
-                if (!thisArgs[i].Equals(otherArgs[i]))
-                    return false;
-            return true;
         }
     }
 }

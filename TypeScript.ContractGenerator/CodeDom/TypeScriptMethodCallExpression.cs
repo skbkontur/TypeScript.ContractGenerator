@@ -1,15 +1,12 @@
 using System.Collections.Generic;
 
-using JetBrains.Annotations;
-
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
 
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptMethodCallExpression : TypeScriptExpression
     {
-        public TypeScriptMethodCallExpression([NotNull] TypeScriptExpression subject, [NotNull] string methodName,
-                                              [NotNull, ItemNotNull] params TypeScriptExpression[] arguments)
+        public TypeScriptMethodCallExpression(TypeScriptExpression subject, string methodName, params TypeScriptExpression[] arguments)
         {
             Subject = subject;
             MethodName = methodName;

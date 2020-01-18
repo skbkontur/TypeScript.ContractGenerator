@@ -18,8 +18,7 @@ export class UsersApi extends ApiBase implements IUsersApi {
         });
     }
 
-}
-
+};
 export interface IUsersApi {
     createUsers(users: User[]): Promise<void>;
     searchUsers(name: string): Promise<User[]>;

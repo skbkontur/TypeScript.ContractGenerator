@@ -9,11 +9,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             Path = path;
         }
 
-        public string SourceName { get; private set; }
-        public string LocalName { get; private set; }
-        public string Path { get; private set; }
+        public string SourceName { get; }
+        public string LocalName { get; }
+        public string Path { get; }
 
-        protected bool Equals(ImportedSymbol other)
+        private bool Equals(ImportedSymbol other)
         {
             return string.Equals(SourceName, other.SourceName) && string.Equals(LocalName, other.LocalName) && string.Equals(Path, other.Path);
         }
@@ -30,7 +30,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         {
             unchecked
             {
-                var hashCode = (SourceName != null ? SourceName.GetHashCode() : 0);
+                var hashCode = SourceName != null ? SourceName.GetHashCode() : 0;
                 hashCode = (hashCode * 397) ^ (LocalName != null ? LocalName.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (Path != null ? Path.GetHashCode() : 0);
                 return hashCode;

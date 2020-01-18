@@ -1,5 +1,3 @@
-using System.Reflection;
-
 using Microsoft.CodeAnalysis;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
@@ -10,12 +8,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
     {
         public RoslynPropertyInfo(IPropertySymbol propertySymbol)
         {
-            this.propertySymbol = propertySymbol;
+            PropertySymbol = propertySymbol;
         }
 
         public bool IsNameDefined(string name)
         {
-            return propertySymbol.IsNameDefined(name);
+            return PropertySymbol.IsNameDefined(name);
         }
 
         public object[] GetCustomAttributes(bool inherit)
@@ -23,10 +21,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
             return new object[0];
         }
 
-        public PropertyInfo Property { get; }
-        public string Name => propertySymbol.Name;
-        public ITypeInfo PropertyType => new RoslynTypeInfo(propertySymbol.Type);
+        public IPropertySymbol PropertySymbol { get; }
 
-        private readonly IPropertySymbol propertySymbol;
+        public string Name => PropertySymbol.Name;
+        public ITypeInfo PropertyType => RoslynTypeInfo.From(PropertySymbol.Type);
+        public ITypeInfo DeclaringType => RoslynTypeInfo.From(PropertySymbol.ContainingType);
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using SkbKontur.TypeScript.ContractGenerator;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace AspNetCoreExample.Generator
 {
@@ -16,7 +17,7 @@ namespace AspNetCoreExample.Generator
             var customTypeGenerator = new CustomTypeGenerator()
                 .WithTypeRedirect<Guid>("Guid", @"dataTypes\Guid")
                 .WithTypeLocationRule(
-                    x => typeof(ControllerBase).IsAssignableFrom(x.Type),
+                    x => TypeInfo.From<ControllerBase>().IsAssignableFrom(x),
                     x => $"api/{x.Name}".Replace("Controller", "Api")
                 )
                 .WithTypeLocationRule(
@@ -31,6 +32,7 @@ namespace AspNetCoreExample.Generator
                         EnableExplicitNullability = true,
                         EnableOptionalProperties = false,
                         EnumGenerationMode = EnumGenerationMode.TypeScriptEnum,
+                        LinterDisableMode = LinterDisableMode.TsLint,
                         UseGlobalNullable = true,
                         NullabilityMode = NullabilityMode.Optimistic,
                     },

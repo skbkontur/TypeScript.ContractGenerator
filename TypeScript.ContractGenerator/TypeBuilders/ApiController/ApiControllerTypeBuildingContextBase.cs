@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
+using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 
@@ -48,7 +49,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             return typeInfo;
         }
 
-        protected virtual TypeScriptType ResolveReturnType(IMethodInfo methodInfo, Func<IAttributeProvider, ITypeInfo, TypeScriptType> buildAndImportType)
+        protected virtual TypeScriptType? ResolveReturnType(IMethodInfo methodInfo, Func<IAttributeProvider, ITypeInfo, TypeScriptType> buildAndImportType)
         {
             return null;
         }
@@ -135,9 +136,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
 
         private TypeScriptType GetMethodResult(IMethodInfo methodInfo, Func<IAttributeProvider, ITypeInfo, TypeScriptType> buildAndImportType)
         {
-            if (methodResults.TryGetValue(methodInfo.Method, out var result))
+            var method = ((MethodWrapper)methodInfo).Method;
+            if (methodResults.TryGetValue(method, out var result))
                 return result;
-            return methodResults[methodInfo.Method] = ResolveReturnType(methodInfo, buildAndImportType) ?? new TypeScriptPromiseOfType(buildAndImportType(methodInfo, ResolveReturnType(methodInfo.ReturnType)));
+            return methodResults[method] = ResolveReturnType(methodInfo, buildAndImportType) ?? new TypeScriptPromiseOfType(buildAndImportType(methodInfo, ResolveReturnType(methodInfo.ReturnType)));
         }
 
         private TypeScriptReturnStatement CreateCall(IMethodInfo methodInfo, ITypeInfo controllerType)
@@ -197,7 +199,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                 );
         }
 
-        protected virtual TypeScriptExpression GenerateCustomBody(IMethodInfo methodInfo, string methodName, ITypeInfo controllerType)
+        protected virtual TypeScriptExpression? GenerateCustomBody(IMethodInfo methodInfo, string methodName, ITypeInfo controllerType)
         {
             return null;
         }
@@ -205,20 +207,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
         private static TypeScriptExpression GenerateConstructGetParams(IParameterInfo[] parameters, string routeTemplate)
         {
             var literalProperties = parameters
-                .Select<IParameterInfo, TypeScriptObjectLiteralInitializer>(
-                    parameter =>
-                        {
-                            if (routeTemplate.Contains("{" + parameter.Name + "}"))
-                            {
-                                return null;
-                            }
-
-                            return new TypeScriptObjectLiteralProperty(
-                                new TypeScriptStringLiteral(parameter.Name),
-                                new TypeScriptVariableReference(parameter.Name)
-                                );
-                        })
-                .Where(x => x != null)
+                .Where(x => !routeTemplate.Contains("{" + x.Name + "}"))
+                .Select(parameter => (TypeScriptObjectLiteralInitializer)new TypeScriptObjectLiteralProperty(
+                                                                             new TypeScriptStringLiteral(parameter.Name),
+                                                                             new TypeScriptVariableReference(parameter.Name)))
                 .ToArray();
             var result = new TypeScriptObjectLiteral(literalProperties);
             return result;

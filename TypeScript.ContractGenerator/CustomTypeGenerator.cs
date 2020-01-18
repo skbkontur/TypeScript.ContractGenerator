@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 
-using JetBrains.Annotations;
-
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
@@ -22,7 +20,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return string.Empty;
         }
 
-        public virtual ITypeBuildingContext ResolveType(string initialUnitPath, ITypeInfo typeInfo, ITypeScriptUnitFactory unitFactory)
+        public virtual ITypeBuildingContext? ResolveType(string initialUnitPath, ITypeGenerator typeGenerator, ITypeInfo typeInfo, ITypeScriptUnitFactory unitFactory)
         {
             if (typeRedirects.TryGetValue(typeInfo, out var redirect))
                 return TypeBuilding.RedirectToType(redirect.Name, redirect.Location, typeInfo);
@@ -34,7 +32,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return null;
         }
 
-        public virtual TypeScriptTypeMemberDeclaration ResolveProperty(TypeScriptUnit unit, ITypeGenerator typeGenerator, ITypeInfo typeInfo, IPropertyInfo propertyInfo)
+        public virtual TypeScriptTypeMemberDeclaration? ResolveProperty(TypeScriptUnit unit, ITypeGenerator typeGenerator, ITypeInfo typeInfo, IPropertyInfo propertyInfo)
         {
             foreach (var propertyResolver in propertyResolvers)
             {
@@ -81,7 +79,6 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return this;
         }
 
-        [NotNull]
         public static ICustomTypeGenerator Null => new NullCustomTypeGenerator();
 
         private readonly Dictionary<ITypeInfo, Func<ITypeInfo, string>> typeLocations = new Dictionary<ITypeInfo, Func<ITypeInfo, string>>();

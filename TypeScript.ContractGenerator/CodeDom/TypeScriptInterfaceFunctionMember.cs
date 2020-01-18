@@ -1,15 +1,12 @@
 using System.Collections.Generic;
 
-using JetBrains.Annotations;
-
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
 
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptInterfaceFunctionMember : TypeScriptInterfaceMember
     {
-        public TypeScriptInterfaceFunctionMember([NotNull] string name, [NotNull] TypeScriptType result,
-                                                 [NotNull, ItemNotNull] params TypeScriptArgumentDeclaration[] arguments)
+        public TypeScriptInterfaceFunctionMember(string name, TypeScriptType result, params TypeScriptArgumentDeclaration[] arguments)
         {
             Name = name;
             Result = result;

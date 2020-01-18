@@ -2,13 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using JetBrains.Annotations;
-
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptObjectLiteral : TypeScriptExpression
     {
-        public TypeScriptObjectLiteral([NotNull, ItemNotNull] params TypeScriptObjectLiteralInitializer[] properties)
+        public TypeScriptObjectLiteral(params TypeScriptObjectLiteralInitializer[] properties)
         {
             Properties = new List<TypeScriptObjectLiteralInitializer>(properties);
         }

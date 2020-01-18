@@ -1,10 +1,8 @@
-using JetBrains.Annotations;
-
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptPromiseOfType : TypeScriptType
     {
-        public TypeScriptPromiseOfType([NotNull] TypeScriptType targetType)
+        public TypeScriptPromiseOfType(TypeScriptType targetType)
         {
             TargetType = targetType;
         }

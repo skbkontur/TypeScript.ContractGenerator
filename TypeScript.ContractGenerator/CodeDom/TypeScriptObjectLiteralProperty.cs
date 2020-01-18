@@ -1,10 +1,8 @@
-using JetBrains.Annotations;
-
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptObjectLiteralProperty : TypeScriptObjectLiteralInitializer
     {
-        public TypeScriptObjectLiteralProperty([NotNull] TypeScriptExpression name, [NotNull] TypeScriptExpression value)
+        public TypeScriptObjectLiteralProperty(TypeScriptExpression name, TypeScriptExpression value)
         {
             Name = name;
             Value = value;

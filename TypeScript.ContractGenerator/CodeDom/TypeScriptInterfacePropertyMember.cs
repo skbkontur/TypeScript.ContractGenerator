@@ -1,10 +1,8 @@
-using JetBrains.Annotations;
-
 namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
 {
     public class TypeScriptInterfacePropertyMember : TypeScriptInterfaceMember
     {
-        public TypeScriptInterfacePropertyMember([NotNull] string name, [NotNull] TypeScriptType result)
+        public TypeScriptInterfacePropertyMember(string name, TypeScriptType result)
         {
             Name = name;
             Result = result;

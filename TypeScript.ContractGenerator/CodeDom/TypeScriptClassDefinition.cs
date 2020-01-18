@@ -8,7 +8,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
     {
         public List<TypeScriptClassMemberDefinition> Members { get; } = new List<TypeScriptClassMemberDefinition>();
 
-        public TypeScriptType BaseClass { get; set; }
+        public TypeScriptType? BaseClass { get; set; }
         public TypeScriptType[] ImplementedInterfaces { get; set; }
 
         public string GenerateBody(string name, ICodeGenerationContext context)

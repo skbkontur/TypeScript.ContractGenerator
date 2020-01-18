@@ -5,8 +5,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Abstractions
 {
     public interface ITypeInfo : IAttributeProvider, IEquatable<ITypeInfo>
     {
-        Type Type { get; }
-
         string Name { get; }
         string FullName { get; }
         string Namespace { get; }
@@ -19,10 +17,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Abstractions
         bool IsGenericType { get; }
         bool IsGenericParameter { get; }
         bool IsGenericTypeDefinition { get; }
-        ITypeInfo BaseType { get; }
+        ITypeInfo? BaseType { get; }
 
         IMethodInfo[] GetMethods(BindingFlags bindingAttr);
         IPropertyInfo[] GetProperties(BindingFlags bindingAttr);
+        IFieldInfo[] GetFields(BindingFlags bindingAttr);
         ITypeInfo[] GetGenericArguments();
         ITypeInfo[] GetInterfaces();
         ITypeInfo GetGenericTypeDefinition();
