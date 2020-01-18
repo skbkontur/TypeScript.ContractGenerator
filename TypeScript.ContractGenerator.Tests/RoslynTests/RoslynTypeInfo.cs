@@ -65,6 +65,15 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
                              .ToArray();
         }
 
+        public IFieldInfo[] GetFields(BindingFlags bindingAttr)
+        {
+            return TypeSymbol.GetMembers()
+                             .OfType<IFieldSymbol>()
+                             .Where(x => !bindingAttr.HasFlag(BindingFlags.Public) || x.DeclaredAccessibility == Accessibility.Public)
+                             .Select(x => (IFieldInfo)new RoslynFieldInfo(x))
+                             .ToArray();
+        }
+
         public ITypeInfo[] GetGenericArguments()
         {
             if (TypeSymbol is INamedTypeSymbol namedTypeSymbol)

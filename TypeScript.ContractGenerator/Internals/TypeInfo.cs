@@ -49,6 +49,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             return Type.GetProperties(bindingAttr).Select(x => (IPropertyInfo)new PropertyWrapper(x)).ToArray();
         }
 
+        public IFieldInfo[] GetFields(BindingFlags bindingAttr)
+        {
+            return Type.GetFields(bindingAttr).Select(x => (IFieldInfo)new FieldWrapper(x)).ToArray();
+        }
+
         public ITypeInfo[] GetGenericArguments()
         {
             return Type.GetGenericArguments().Select(From).ToArray();
