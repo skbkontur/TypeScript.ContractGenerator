@@ -16,7 +16,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
         public static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
-            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomainOnAssemblyResolve;
+            //AppDomain.CurrentDomain.AssemblyResolve += CurrentDomainOnAssemblyResolve;
             Parser.Default.ParseArguments<Options>(args).WithParsed(o =>
                 {
                     var (targetAssembly, targetAssemblyError) = AssemblyUtils
