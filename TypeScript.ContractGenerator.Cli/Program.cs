@@ -54,6 +54,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
                         WriteError(rootTypesProviderError);
                         return;
                     }
+                    /*
+                     gac
+                     custom
+                     CurrentDomainOnAssemblyResolve
+                     folder
+                     */
 
                     var options = new TypeScriptGenerationOptions
                         {
