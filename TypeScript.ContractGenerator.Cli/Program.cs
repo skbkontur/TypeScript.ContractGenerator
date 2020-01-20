@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -10,6 +11,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
 {
     public class Program
     {
+        private static string DirectoryWithAssembly { get; set; } // should delete this field
+
         public static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
@@ -28,6 +31,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
                         WriteError(targetAssemblyError);
                         return;
                     }
+
+                    DirectoryWithAssembly = Path.GetDirectoryName(o.Assembly);
 
                     var (customTypeGenerator, customTypeGeneratorError) = targetAssembly
                         .GetImplementations<ICustomTypeGenerator>()
@@ -54,12 +59,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
                         WriteError(rootTypesProviderError);
                         return;
                     }
-                    /*
-                     gac
-                     custom
-                     CurrentDomainOnAssemblyResolve
-                     folder
-                     */
 
                     var options = new TypeScriptGenerationOptions
                         {
@@ -75,7 +74,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
 
         private static Assembly CurrentDomainOnAssemblyResolve(object sender, ResolveEventArgs args)
         {
-            var foundAssemblies = AssemblyUtils.GetAssemblies(args.Name.Split(',')[0]);
+            var foundAssemblies = AssemblyUtils.GetAssemblies($"{DirectoryWithAssembly}/args.Name.Split(',')[0]");
             return foundAssemblies.Length != 1 ? null : foundAssemblies[0];
         }
 

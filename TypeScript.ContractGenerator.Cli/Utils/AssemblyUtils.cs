@@ -9,7 +9,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli.Utils
     {
         public static Assembly[] GetAssemblies(string assemblyName)
         {
-            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            var baseDirectory = Path.GetDirectoryName(assemblyName);
             if (string.IsNullOrEmpty(assemblyName) || string.IsNullOrEmpty(baseDirectory))
                 return null;
             var assemblyFileName = Path.GetFileName(assemblyName);
