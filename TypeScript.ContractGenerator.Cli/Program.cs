@@ -1,7 +1,4 @@
 using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 
 using CommandLine;
 
@@ -11,28 +8,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
 {
     public class Program
     {
-        private static string DirectoryWithAssembly { get; set; } // should delete this field
-
         public static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
-            //AppDomain.CurrentDomain.AssemblyResolve += CurrentDomainOnAssemblyResolve;
             Parser.Default.ParseArguments<Options>(args).WithParsed(o =>
                 {
-                    var (targetAssembly, targetAssemblyError) = AssemblyUtils
-                        .GetAssemblies(o.Assembly)
-                        .StartCollectionValidator()
-                        .WithNoItemsError($"Assembly with name {o.Assembly} not found")
-                        .WithManyItemsError(items => $"Found more than one assembly file matching name {o.Assembly}: [{string.Join(", ", items.Select(a => a.GetName()))}]")
-                        .Single();
-
-                    if (targetAssemblyError != null)
-                    {
-                        WriteError(targetAssemblyError);
-                        return;
-                    }
-
-                    DirectoryWithAssembly = Path.GetDirectoryName(o.Assembly);
+                    var targetAssembly  = AssemblyUtils.GetAssemblies(o.Assembly);
 
                     var (customTypeGenerator, customTypeGeneratorError) = targetAssembly
                         .GetImplementations<ICustomTypeGenerator>()
@@ -72,15 +53,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
                 });
         }
 
-        private static Assembly CurrentDomainOnAssemblyResolve(object sender, ResolveEventArgs args)
-        {
-            var foundAssemblies = AssemblyUtils.GetAssemblies($"{DirectoryWithAssembly}/args.Name.Split(',')[0]");
-            return foundAssemblies.Length != 1 ? null : foundAssemblies[0];
-        }
-
         private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            var exception = e.ExceptionObject as Exception;
+            var exception = e.ExceptionObject as Exception; // question: А мы хотим вообще все ошибки подменять на свои? 
             WriteError($"Unexpected error occured: \n {exception?.Message ?? "no additional info was provided"}");
         }
 

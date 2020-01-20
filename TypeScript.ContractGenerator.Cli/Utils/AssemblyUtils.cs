@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -7,26 +6,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli.Utils
 {
     internal static class AssemblyUtils
     {
-        public static Assembly[] GetAssemblies(string assemblyName)
+        public static Assembly GetAssemblies(string assemblyName)
         {
-            var baseDirectory = Path.GetDirectoryName(assemblyName);
-            if (string.IsNullOrEmpty(assemblyName) || string.IsNullOrEmpty(baseDirectory))
-                return null;
-            var assemblyFileName = Path.GetFileName(assemblyName);
-            var allFoundAssemblies = Directory.EnumerateFiles(baseDirectory, "*", SearchOption.TopDirectoryOnly)
-                                              .Where(IsAssemblyFile);
-
-            return allFoundAssemblies.Where(f => Path.GetFileNameWithoutExtension(f).Equals(assemblyFileName, StringComparison.InvariantCultureIgnoreCase) 
-                                                 || Path.GetFileName(f).Equals(assemblyFileName, StringComparison.InvariantCultureIgnoreCase))
-                                     .Select(Assembly.LoadFrom)
-                                     .ToArray();
-        }
-
-        private static bool IsAssemblyFile(string fileName)
-        {
-            var extension = Path.GetExtension(fileName) ?? "";
-            return extension.Equals(".dll", StringComparison.InvariantCultureIgnoreCase)
-                   || extension.Equals(".exe", StringComparison.InvariantCultureIgnoreCase);
+            return Assembly.LoadFrom(assemblyName);
         }
 
         public static T[] GetImplementations<T>(this Assembly assembly) where T : class
