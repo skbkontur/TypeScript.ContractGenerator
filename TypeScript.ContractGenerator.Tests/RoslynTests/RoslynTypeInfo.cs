@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Reflection;
 
@@ -21,14 +20,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
             return typeSymbol == null ? null : new RoslynTypeInfo(typeSymbol);
         }
 
-        public bool IsNameDefined(string name)
+        public IAttributeInfo[] GetAttributes(bool inherit)
         {
-            return TypeSymbol.IsNameDefined(name);
-        }
-
-        public object[] GetCustomAttributes(bool inherit)
-        {
-            return new object[0];
+            return TypeSymbol.GetAttributesInfo();
         }
 
         public ITypeSymbol TypeSymbol { get; }

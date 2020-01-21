@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Reflection;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 
@@ -6,6 +7,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 {
     public static class TypeInfoHelpers
     {
+        public static IAttributeInfo[] GetAttributes(this ICustomAttributeProvider attributeProvider, bool inherit)
+        {
+            return attributeProvider.GetCustomAttributes(inherit).Select(x => (IAttributeInfo)new AttributeWrapper(x)).ToArray();
+        }
+
         public static bool IsAssignableFrom(ITypeInfo self, ITypeInfo other)
         {
             if (self == null || other == null)

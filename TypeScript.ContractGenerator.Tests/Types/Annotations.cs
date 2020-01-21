@@ -1,6 +1,6 @@
 using System;
 
-namespace SkbKontur.TypeScript.ContractGenerator.Tests
+namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
 {
     internal class NotNullAttribute : Attribute
     {

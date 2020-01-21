@@ -11,14 +11,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
             FieldSymbol = fieldSymbol;
         }
 
-        public bool IsNameDefined(string name)
+        public IAttributeInfo[] GetAttributes(bool inherit)
         {
-            return FieldSymbol.IsNameDefined(name);
-        }
-
-        public object[] GetCustomAttributes(bool inherit)
-        {
-            return new object[0];
+            return FieldSymbol.GetAttributesInfo();
         }
 
         public IFieldSymbol FieldSymbol { get; }

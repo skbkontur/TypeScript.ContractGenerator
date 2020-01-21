@@ -84,14 +84,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             return TypeInfoHelpers.IsAssignableFrom(this, type);
         }
 
-        public object[] GetCustomAttributes(bool inherit)
+        public IAttributeInfo[] GetAttributes(bool inherit)
         {
-            return Type.GetCustomAttributes(inherit);
-        }
-
-        public bool IsNameDefined(string name)
-        {
-            return Type.GetCustomAttributes(true).Any(x => x.GetType().Name == name);
+            return Type.GetAttributes(inherit);
         }
 
         public bool Equals(ITypeInfo other)

@@ -23,14 +23,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             return Method.GetParameters().Select(x => (IParameterInfo)new ParameterWrapper(x)).ToArray();
         }
 
-        public object[] GetCustomAttributes(bool inherit)
+        public IAttributeInfo[] GetAttributes(bool inherit)
         {
-            return Method.GetCustomAttributes(inherit);
-        }
-
-        public bool IsNameDefined(string name)
-        {
-            return Method.GetCustomAttributes(true).Any(x => x.GetType().Name == name);
+            return Method.GetAttributes(inherit);
         }
     }
 }

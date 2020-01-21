@@ -3,6 +3,7 @@ using System.Linq;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+using SkbKontur.TypeScript.ContractGenerator.Extensions;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace SkbKontur.TypeScript.ContractGenerator
@@ -43,15 +44,14 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         private static byte[]? GetNullableFlagsInternal(IAttributeProvider? attributeProvider)
         {
-            var nullableAttribute = attributeProvider?.GetCustomAttributes(true).SingleOrDefault(a => a.GetType().Name == AnnotationsNames.Nullable);
-            return nullableAttribute?.GetType().GetField("NullableFlags").GetValue(nullableAttribute) as byte[];
+            var nullableAttribute = attributeProvider?.GetAttributes(true).SingleOrDefault(a => a.AttributeType.Name == AnnotationsNames.Nullable);
+            return nullableAttribute?.AttributeData["NullableFlags"] as byte[];
         }
 
         private static byte? GetNullableContextFlag(IAttributeProvider? attributeProvider)
         {
-            var nullableAttribute = attributeProvider?.GetCustomAttributes(true).SingleOrDefault(a => a.GetType().Name == AnnotationsNames.NullableContext);
-            var flag = nullableAttribute?.GetType().GetField("Flag").GetValue(nullableAttribute);
-            return (byte?)flag;
+            var nullableAttribute = attributeProvider?.GetAttributes(true).SingleOrDefault(a => a.AttributeType.Name == AnnotationsNames.NullableContext);
+            return (byte?)nullableAttribute?.AttributeData["Flag"];
         }
 
         private static bool CanBeNull(IAttributeProvider attributeProvider, NullabilityMode nullabilityMode)

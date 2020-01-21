@@ -11,14 +11,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
             ParameterSymbol = parameterSymbol;
         }
 
-        public bool IsNameDefined(string name)
+        public IAttributeInfo[] GetAttributes(bool inherit)
         {
-            return ParameterSymbol.IsNameDefined(name);
-        }
-
-        public object[] GetCustomAttributes(bool inherit)
-        {
-            return new object[0];
+            return ParameterSymbol.GetAttributesInfo();
         }
 
         public IParameterSymbol ParameterSymbol { get; }
