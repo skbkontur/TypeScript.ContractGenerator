@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 
 using FluentAssertions;
 
@@ -21,12 +20,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         }
 
         [Test]
-        public void AssemblyDirectoryExistTest()
-        {
-            DirectoryAssert.Exists($"{pathToAspNetCoreExampleGeneratorAssemblyDirectory}");
-        }
-
-        [Test]
         public void DotnetToolExist()
         {
             const string command = "dotnet --version"; // думаю если расчитывать на netcore 3.1, то стоит версию dotnet какую-то определенную проверять > 3 например
@@ -37,60 +30,36 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
 
         private static Process RunCmdCommand(string command)
         {
-            return Process.Start("cmd.exe", "/C " + command);
-        }  
-        
-        private static Process RunCmdCommand2(string command)
-        {
-            var process = new Process
-                {
-                    StartInfo =
-                        {
-                            FileName = "cmd.exe",
-                            Arguments = $"/c {command}",
-                            UseShellExecute = false,
-                            RedirectStandardOutput = true,
-                            RedirectStandardError = true
-                        }
-                };
-            process.Start();
-            var output = process.StandardOutput.ReadToEnd();
-            Console.WriteLine(output);
-            var err = process.StandardError.ReadToEnd();
-            Console.WriteLine(err);
-            process.WaitForExit();
+            var process = Process.Start("cmd.exe", "/C " + command);
+            process?.WaitForExit();
             return process;
-        }
+        }  
 
         [Test]
         public void CliGenerated()
         {
-            var cmdletForBuildAspNetCoreExampleGenerator = $"dotnet build {pathToSlnDirectory}\\AspNetCoreExample.Generator\\AspNetCoreExample.Generator.csproj";
-            var buildProcess = RunCmdCommand(cmdletForBuildAspNetCoreExampleGenerator);
-            buildProcess.WaitForExit();
-            buildProcess.ExitCode.Should().Be(0);
+            AspNetCoreExampleGeneratorBuild();
 
             var cmdletForRunCli = $"dotnet {pathToCliDirectory}\\SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
                                   $"-a {pathToAspNetCoreExampleGeneratorAssemblyDirectory}\\AspNetCoreExample.Generator.dll -o cliOutput";
             var generateProcess = RunCmdCommand(cmdletForRunCli);
-            generateProcess.WaitForExit();
-            
             generateProcess.ExitCode.Should().Be(0);
-
-            var allGeneratedFiles = Directory.EnumerateFiles("cliOutput\\api", "*", SearchOption.TopDirectoryOnly).ToArray();
-            var allExpectedFiles = Directory.EnumerateFiles($"{pathToSlnDirectory}\\AspNetCoreExample.Generator\\output\\api").ToArray();
-
-            allExpectedFiles.Length.Should().Be(allGeneratedFiles.Length);
-
-            for (var i = 0; i < allGeneratedFiles.Length; i++)
-            {
-                GetFileText(allGeneratedFiles[i]).Diff(GetFileText(allExpectedFiles[i])).ShouldBeEmpty();
-            }
+            
+            var expectedDirectory = $"{pathToSlnDirectory}\\AspNetCoreExample.Generator\\output\\api";
+            TestBase.CheckDirectoriesEquivalenceInner(expectedDirectory, "cliOutput\\api");
         }
 
-        private static string GetFileText(string filePath)
+        private static bool AspNetCoreExampleGeneratorBuild()
         {
-            return File.ReadAllText(filePath).Replace("\r\n", "\n");
+            if (AspNetCoreExampleGeneratorAssemblyDirectoryExist()) return true;
+            var cmdletForBuildAspNetCoreExampleGenerator = $"dotnet build {pathToSlnDirectory}\\AspNetCoreExample.Generator\\AspNetCoreExample.Generator.csproj";
+            var buildProcess = RunCmdCommand(cmdletForBuildAspNetCoreExampleGenerator);
+            return buildProcess.ExitCode == 0;
+        }
+        
+        private static bool AspNetCoreExampleGeneratorAssemblyDirectoryExist()
+        {
+            return Directory.Exists(pathToAspNetCoreExampleGeneratorAssemblyDirectory);
         }
 
         private static readonly string pathToSlnDirectory;
