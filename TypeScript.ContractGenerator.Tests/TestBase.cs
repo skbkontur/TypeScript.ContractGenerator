@@ -57,7 +57,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             CheckDirectoriesEquivalenceInner(expectedDirectory, actualDirectory);
         }
 
-        private static void CheckDirectoriesEquivalenceInner(string expectedDirectory, string actualDirectory)
+        public static void CheckDirectoriesEquivalenceInner(string expectedDirectory, string actualDirectory)
         {
             if (!Directory.Exists(expectedDirectory) || !Directory.Exists(actualDirectory))
                 Assert.Fail("Both directories should exist");
