@@ -33,7 +33,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             case PropertyInfo property:
                 return property.GetValue(attribute);
             default:
-                throw new InvalidOperationException();
+                throw new InvalidOperationException($"Expected memberInfo to be FieldInfo or PropertyInfo, but got: {memberInfo.GetType().Name}");
             }
         }
 
