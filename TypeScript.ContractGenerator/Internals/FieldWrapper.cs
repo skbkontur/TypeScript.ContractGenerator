@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 
@@ -18,14 +17,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         public ITypeInfo FieldType => TypeInfo.From(Field.FieldType);
         public ITypeInfo? DeclaringType => TypeInfo.From(Field.DeclaringType);
 
-        public object[] GetCustomAttributes(bool inherit)
+        public IAttributeInfo[] GetAttributes(bool inherit)
         {
-            return Field.GetCustomAttributes(inherit);
-        }
-
-        public bool IsNameDefined(string name)
-        {
-            return Field.GetCustomAttributes(true).Any(x => x.GetType().Name == name);
+            return Field.GetAttributes(inherit);
         }
     }
 }

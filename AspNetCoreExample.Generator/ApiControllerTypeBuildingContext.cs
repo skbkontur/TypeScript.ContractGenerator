@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
 
 using SkbKontur.TypeScript.ContractGenerator;
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
@@ -63,16 +62,16 @@ namespace AspNetCoreExample.Generator
 
         protected override BaseApiMethod ResolveBaseApiMethod(IMethodInfo methodInfo)
         {
-            if (methodInfo.GetCustomAttributes<HttpGetAttribute>().Any())
+            if (methodInfo.GetAttributes(TypeInfo.From<HttpGetAttribute>()).Any())
                 return BaseApiMethod.Get;
 
-            if (methodInfo.GetCustomAttributes<HttpPostAttribute>().Any())
+            if (methodInfo.GetAttributes(TypeInfo.From<HttpPostAttribute>()).Any())
                 return BaseApiMethod.Post;
 
-            if (methodInfo.GetCustomAttributes<HttpPutAttribute>().Any())
+            if (methodInfo.GetAttributes(TypeInfo.From<HttpPutAttribute>()).Any())
                 return BaseApiMethod.Put;
 
-            if (methodInfo.GetCustomAttributes<HttpDeleteAttribute>().Any())
+            if (methodInfo.GetAttributes(TypeInfo.From<HttpDeleteAttribute>()).Any())
                 return BaseApiMethod.Delete;
 
             throw new NotSupportedException($"Unresolved http verb for method {methodInfo.Name} at controller {methodInfo.DeclaringType?.Name}");
@@ -80,8 +79,8 @@ namespace AspNetCoreExample.Generator
 
         protected override string BuildRoute(ITypeInfo controllerType, IMethodInfo methodInfo)
         {
-            var routeTemplate = methodInfo.GetCustomAttributes(false)
-                                          .Select(x => x is IRouteTemplateProvider routeTemplateProvider ? routeTemplateProvider.Template : null)
+            var routeTemplate = methodInfo.GetAttributes(false)
+                                          .Select(x => x.AttributeData.TryGetValue("Template", out var value) ? (string)value : null)
                                           .SingleOrDefault(x => !string.IsNullOrEmpty(x));
             return AppendRoutePrefix(routeTemplate, controllerType);
         }
@@ -95,12 +94,12 @@ namespace AspNetCoreExample.Generator
 
         protected override IParameterInfo[] GetQueryParameters(IParameterInfo[] parameters, ITypeInfo controllerType)
         {
-            return parameters.Where(x => PassParameterToCall(x, controllerType) && !x.GetCustomAttributes<FromBodyAttribute>().Any()).ToArray();
+            return parameters.Where(x => PassParameterToCall(x, controllerType) && !x.GetAttributes(TypeInfo.From<FromBodyAttribute>()).Any()).ToArray();
         }
 
         protected override IParameterInfo GetBody(IParameterInfo[] parameters, ITypeInfo controllerType)
         {
-            return parameters.SingleOrDefault(x => PassParameterToCall(x, controllerType) && x.GetCustomAttributes<FromBodyAttribute>().Any());
+            return parameters.SingleOrDefault(x => PassParameterToCall(x, controllerType) && x.GetAttributes(TypeInfo.From<FromBodyAttribute>()).Any());
         }
 
         protected override IMethodInfo[] GetMethodsToImplement(ITypeInfo controllerType)
@@ -113,8 +112,8 @@ namespace AspNetCoreExample.Generator
 
         private string AppendRoutePrefix(string routeTemplate, ITypeInfo controllerType)
         {
-            var routeAttribute = controllerType.GetCustomAttributes<RouteAttribute>().SingleOrDefault();
-            var fullRoute = (routeAttribute == null ? "" : routeAttribute.Template + "/") + routeTemplate;
+            var routeAttribute = controllerType.GetAttributes(TypeInfo.From<RouteAttribute>()).SingleOrDefault();
+            var fullRoute = (routeAttribute == null ? "" : routeAttribute.AttributeData["Template"] + "/") + routeTemplate;
             if (IsUserScopedApi(controllerType))
                 return fullRoute.Substring("v1/user/{userId}/".Length);
             return fullRoute.Substring("v1/".Length);
@@ -122,8 +121,9 @@ namespace AspNetCoreExample.Generator
 
         private bool IsUserScopedApi(ITypeInfo controller)
         {
-            var route = controller.GetCustomAttributes<RouteAttribute>().SingleOrDefault();
-            return route?.Template.StartsWith("v1/user/{userId}") ?? false;
+            var route = controller.GetAttributes(TypeInfo.From<RouteAttribute>()).SingleOrDefault();
+            var template = (string)route?.AttributeData["Template"];
+            return template?.StartsWith("v1/user/{userId}") ?? false;
         }
     }
 }

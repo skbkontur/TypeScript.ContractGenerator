@@ -8,6 +8,8 @@ using DiffPlex.DiffBuilder.Model;
 
 using NUnit.Framework;
 
+using SkbKontur.TypeScript.ContractGenerator.Tests.Types;
+
 namespace SkbKontur.TypeScript.ContractGenerator.Tests
 {
     public static class DiffAssertionExtensions

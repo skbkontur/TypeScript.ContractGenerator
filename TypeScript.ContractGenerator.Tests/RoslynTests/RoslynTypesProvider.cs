@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis;
 using NUnit.Framework;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
+using SkbKontur.TypeScript.ContractGenerator.Attributes;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
 {
@@ -18,7 +19,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
             this.typeName = typeName;
             project = AdhocProject.FromDirectory(TestContext.CurrentContext.TestDirectory + "/../../../Types");
             compilation = project.GetCompilationAsync().GetAwaiter().GetResult();
-            var coreTypes = new[] {typeof(object), typeof(HashSet<>)};
+            var coreTypes = new[] {typeof(object), typeof(HashSet<>), typeof(ContractGeneratorIgnoreAttribute)};
             var assemblies = coreTypes.Select(x => x.Assembly.Location).ToArray();
             compilation = compilation.AddReferences(assemblies.Select(x => MetadataReference.CreateFromFile(x)));
             foreach (var diagnostic in compilation.GetDiagnostics())
