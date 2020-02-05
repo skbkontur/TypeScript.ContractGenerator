@@ -3,6 +3,7 @@ using System;
 using CommandLine;
 
 using SkbKontur.TypeScript.ContractGenerator.Cli.Utils;
+using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Cli
 {
@@ -43,19 +44,21 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
 
                     var options = new TypeScriptGenerationOptions
                         {
-                            EnumGenerationMode = o.EnumGenerationMode,
                             EnableExplicitNullability = o.EnableExplicitNullability,
                             EnableOptionalProperties = o.EnableOptionalProperties,
+                            EnumGenerationMode = o.EnumGenerationMode,
+                            UseGlobalNullable = o.UseGlobalNullable,
+                            NullabilityMode = o.NullabilityMode,
                         };
-
                     var typeGenerator = new TypeScriptGenerator(options, customTypeGenerator, rootTypesProvider);
-                    typeGenerator.GenerateFiles(o.OutputDirectory, o.Language);
+                    
+                    typeGenerator.GenerateFiles(o.OutputDirectory, JavaScriptTypeChecker.TypeScript);
                 });
         }
 
         private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            var exception = e.ExceptionObject as Exception; // question: А мы хотим вообще все ошибки подменять на свои? 
+            var exception = e.ExceptionObject as Exception; 
             WriteError($"Unexpected error occured: \n {exception?.Message ?? "no additional info was provided"}");
         }
 

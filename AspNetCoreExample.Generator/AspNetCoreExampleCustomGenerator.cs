@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using SkbKontur.TypeScript.ContractGenerator;
+using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace AspNetCoreExample.Generator
 {
@@ -13,7 +14,7 @@ namespace AspNetCoreExample.Generator
             const string modelsNamespace = "AspNetCoreExample.Api.Models";
             WithTypeRedirect<Guid>("Guid", @"dataTypes\Guid")
                 .WithTypeLocationRule(
-                    x => typeof(ControllerBase).IsAssignableFrom(x.Type),
+                    x => TypeInfo.From<ControllerBase>().IsAssignableFrom(x),
                     x => $"api/{x.Name}".Replace("Controller", "Api")
                 )
                 .WithTypeLocationRule(
