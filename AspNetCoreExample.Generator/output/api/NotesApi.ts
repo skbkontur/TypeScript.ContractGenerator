@@ -1,4 +1,4 @@
-// tslint:disable
+// eslint-disable
 // TypeScriptContractGenerator's generated content
 import { BlogEntry } from './../dto/BlogEntry';
 import { UserApiBase } from './../apiBase/UserApiBase';

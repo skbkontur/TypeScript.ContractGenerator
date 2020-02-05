@@ -1,4 +1,4 @@
-// tslint:disable
+// eslint-disable
 // TypeScriptContractGenerator's generated content
 
 export type BlogEntry = {

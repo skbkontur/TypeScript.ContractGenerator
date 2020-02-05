@@ -1,4 +1,4 @@
-// tslint:disable
+// eslint-disable
 // TypeScriptContractGenerator's generated content
 import { User } from './../dto/User';
 import { Guid } from './../dataTypes/Guid';

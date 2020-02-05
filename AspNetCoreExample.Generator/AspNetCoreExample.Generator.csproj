@@ -10,10 +10,4 @@
       <ProjectReference Include="..\TypeScript.ContractGenerator\TypeScript.ContractGenerator.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <TypeScriptCompile Include="output\apiBase\ApiBase.ts" />
-      <TypeScriptCompile Include="output\apiBase\UserApiBase.ts" />
-      <TypeScriptCompile Include="output\dataTypes\Guid.ts" />
-    </ItemGroup>
-
 </Project>
