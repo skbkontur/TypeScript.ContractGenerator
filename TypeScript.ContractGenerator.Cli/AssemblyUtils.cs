@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace SkbKontur.TypeScript.ContractGenerator.Cli.Utils
+namespace SkbKontur.TypeScript.ContractGenerator.Cli
 {
     internal static class AssemblyUtils
     {

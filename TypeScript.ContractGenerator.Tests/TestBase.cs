@@ -57,13 +57,21 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             CheckDirectoriesEquivalenceInner(expectedDirectory, actualDirectory);
         }
 
-        public static void CheckDirectoriesEquivalenceInner(string expectedDirectory, string actualDirectory)
+        public static void CheckDirectoriesEquivalenceInner(string expectedDirectory, string actualDirectory, bool generatedOnly = false)
         {
-            if (!Directory.Exists(expectedDirectory) || !Directory.Exists(actualDirectory))
+            if (!generatedOnly && (!Directory.Exists(expectedDirectory) || !Directory.Exists(actualDirectory)))
                 Assert.Fail("Both directories should exist");
 
-            var expectedFiles = Directory.EnumerateFiles(expectedDirectory).Select(Path.GetFileName).ToArray();
-            var actualFiles = Directory.EnumerateFiles(actualDirectory).Select(Path.GetFileName).ToArray();
+            const string marker = "// TypeScriptContractGenerator's generated content";
+            var expectedDirectoryFiles = new string[0];
+            var actualDirectoryFiles = new string[0];
+            if (Directory.Exists(expectedDirectory))
+                expectedDirectoryFiles = Directory.EnumerateFiles(expectedDirectory).Where(x => !generatedOnly || File.ReadAllText(x).Contains(marker)).ToArray();
+            if (Directory.Exists(actualDirectory))
+                actualDirectoryFiles = Directory.EnumerateFiles(actualDirectory).Where(x => !generatedOnly || File.ReadAllText(x).Contains(marker)).ToArray();
+
+            var expectedFiles = expectedDirectoryFiles.Select(Path.GetFileName).ToArray();
+            var actualFiles = actualDirectoryFiles.Select(Path.GetFileName).ToArray();
 
             actualFiles.Should().BeEquivalentTo(expectedFiles);
 
@@ -74,13 +82,18 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
                 actual.Diff(expected).ShouldBeEmpty();
             }
 
-            var expectedDirectories = Directory.EnumerateDirectories(expectedDirectory).Select(Path.GetFileName).ToArray();
-            var actualDirectories = Directory.EnumerateDirectories(actualDirectory).Select(Path.GetFileName).ToArray();
+            var expectedDirectories = new string[0];
+            var actualDirectories = new string[0];
+            if (Directory.Exists(expectedDirectory))
+                expectedDirectories = Directory.EnumerateDirectories(expectedDirectory).Select(Path.GetFileName).ToArray();
+            if (Directory.Exists(actualDirectory))
+                actualDirectories = Directory.EnumerateDirectories(actualDirectory).Select(Path.GetFileName).ToArray();
 
-            actualDirectories.Should().BeEquivalentTo(expectedDirectories);
+            if (!generatedOnly)
+                actualDirectories.Should().BeEquivalentTo(expectedDirectories);
 
             foreach (var directory in expectedDirectories)
-                CheckDirectoriesEquivalenceInner($"{expectedDirectory}/{directory}", $"{actualDirectory}/{directory}");
+                CheckDirectoriesEquivalenceInner($"{expectedDirectory}/{directory}", $"{actualDirectory}/{directory}", generatedOnly);
         }
 
         protected string GetExpectedCode(string expectedCodeFilePath)

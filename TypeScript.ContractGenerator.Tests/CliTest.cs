@@ -15,32 +15,40 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [Test]
         public void CliGenerated()
         {
-            BuildProjectByPath($"{pathToSlnDirectory}/AspNetCoreExample.Generator/AspNetCoreExample.Generator.csproj")
-                .Should().BeTrue();
-            BuildProjectByPath($"{pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/TypeScript.ContractGenerator.Cli.csproj")
-                .Should().BeTrue();
-                
-            var cmdletForRunCli = $"dotnet {pathToCliDirectory}/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
-                                  $"-a {pathToAspNetCoreExampleGeneratorAssemblyDirectory}/AspNetCoreExample.Generator.dll -o cliOutput";
-            var generateProcess = RunCmdCommand(cmdletForRunCli);
-            generateProcess.ExitCode.Should().Be(0);
+            BuildProjectByPath($"{pathToSlnDirectory}/AspNetCoreExample.Generator/AspNetCoreExample.Generator.csproj");
+            BuildProjectByPath($"{pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/TypeScript.ContractGenerator.Cli.csproj");
 
-            var expectedDirectory = $"{pathToSlnDirectory}/AspNetCoreExample.Generator/output/api";
-            TestBase.CheckDirectoriesEquivalenceInner(expectedDirectory, "cliOutput/api");
+            RunCmdCommand($"dotnet {pathToCliDirectory}/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
+                          $"-a {pathToAspNetCoreExampleGeneratorAssemblyDirectory}/AspNetCoreExample.Generator.dll " +
+                          $"-o {TestContext.CurrentContext.TestDirectory}/cliOutput " +
+                          "--nullabilityMode Optimistic " +
+                          "--lintMode TsLint " +
+                          "--globalNullable true");
+
+            var expectedDirectory = $"{pathToSlnDirectory}/AspNetCoreExample.Generator/output";
+            var actualDirectory = $"{TestContext.CurrentContext.TestDirectory}/cliOutput";
+            TestBase.CheckDirectoriesEquivalenceInner(expectedDirectory, actualDirectory, generatedOnly : true);
         }
 
-        private static Process RunCmdCommand(string command)
+        private static void RunCmdCommand(string command)
         {
-            var process = Process.Start("cmd.exe", "/C " + command);
-            process?.WaitForExit();
-            return process;
+            var process = new Process
+                {
+                    StartInfo =
+                        {
+                            FileName = "cmd.exe",
+                            WindowStyle = ProcessWindowStyle.Hidden,
+                            Arguments = "/C " + command,
+                        }
+                };
+            process.Start();
+            process.WaitForExit();
+            process.ExitCode.Should().Be(0);
         }
 
-        private static bool BuildProjectByPath(string pathToCsproj)
+        private static void BuildProjectByPath(string pathToCsproj)
         {
-            var cmdletForBuildAspNetCoreExampleGenerator = $"dotnet build {pathToCsproj}";
-            var buildProcess = RunCmdCommand(cmdletForBuildAspNetCoreExampleGenerator);
-            return buildProcess.ExitCode == 0;
+            RunCmdCommand($"dotnet build {pathToCsproj}");
         }
     }
 }
