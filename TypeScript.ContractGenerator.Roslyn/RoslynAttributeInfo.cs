@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 
-namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
+namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
 {
     public class RoslynAttributeInfo : IAttributeInfo
     {
@@ -14,10 +14,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
             Attribute = attributeData;
             AttributeType = RoslynTypeInfo.From(attributeData.AttributeClass);
             AttributeData = attributeData.NamedArguments
-                                         .Concat(attributeData.AttributeConstructor
-                                                              .Parameters
-                                                              .Select(x => x.Name)
-                                                              .Zip(attributeData.ConstructorArguments, (name, value) => new KeyValuePair<string, TypedConstant>(name, value)))
+                                         .Concat((attributeData.AttributeConstructor?.Parameters ?? (IEnumerable<IParameterSymbol>)new IParameterSymbol[0])
+                                                     .Select(x => x.Name)
+                                                     .Zip(attributeData.ConstructorArguments, (name, value) => new KeyValuePair<string, TypedConstant>(name, value)))
                                          .ToDictionary(x => x.Key, x => GetValue(x.Value));
         }
 

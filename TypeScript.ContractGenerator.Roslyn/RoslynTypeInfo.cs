@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Reflection;
 
@@ -6,7 +7,9 @@ using Microsoft.CodeAnalysis;
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 
-namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
+using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
+
+namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
 {
     public class RoslynTypeInfo : ITypeInfo
     {
@@ -30,10 +33,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
         public string Name => TypeSymbol.MetadataName;
         public string FullName => TypeSymbol.Name;
         public string Namespace => TypeSymbol.ContainingNamespace?.ToString();
-        public bool IsEnum => TypeSymbol.TypeKind == TypeKind.Enum;
-        public bool IsValueType => TypeSymbol.IsValueType;
+        public bool IsEnum => BaseType != null && BaseType.Equals(TypeInfo.From<Enum>());
+        public bool IsValueType => IsEnum || TypeSymbol.IsValueType;
         public bool IsArray => TypeSymbol.TypeKind == TypeKind.Array;
-        public bool IsClass => TypeSymbol.TypeKind == TypeKind.Class || TypeSymbol.TypeKind == TypeKind.Array || TypeSymbol.TypeKind == TypeKind.TypeParameter;
+        public bool IsClass => !IsEnum && (TypeSymbol.TypeKind == TypeKind.Class || TypeSymbol.TypeKind == TypeKind.Array || TypeSymbol.TypeKind == TypeKind.TypeParameter);
         public bool IsInterface => TypeSymbol.TypeKind == TypeKind.Interface;
         public bool IsAbstract => TypeSymbol.IsAbstract;
         public bool IsGenericType => TypeSymbol is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.IsGenericType;
@@ -43,29 +46,48 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
 
         public IMethodInfo[] GetMethods(BindingFlags bindingAttr)
         {
-            return TypeSymbol.GetMembers()
-                             .OfType<IMethodSymbol>()
-                             .Where(x => !bindingAttr.HasFlag(BindingFlags.Public) || x.DeclaredAccessibility == Accessibility.Public)
-                             .Select(x => (IMethodInfo)new RoslynMethodInfo(x))
-                             .ToArray();
+            var methods = TypeSymbol.GetMembers()
+                                    .OfType<IMethodSymbol>()
+                                    .Where(x => x.Name != ".ctor")
+                                    .Where(x => !bindingAttr.HasFlag(BindingFlags.Public) || x.DeclaredAccessibility == Accessibility.Public)
+                                    .Where(x => !bindingAttr.HasFlag(BindingFlags.Instance) || !x.IsStatic)
+                                    .Select(x => (IMethodInfo)new RoslynMethodInfo(x))
+                                    .ToArray();
+
+            if (BaseType != null)
+                methods = methods.Concat(BaseType.GetMethods(bindingAttr).Where(x => methods.All(t => t.Name != x.Name))).ToArray();
+
+            return methods;
         }
 
         public IPropertyInfo[] GetProperties(BindingFlags bindingAttr)
         {
-            return TypeSymbol.GetMembers()
-                             .OfType<IPropertySymbol>()
-                             .Where(x => !bindingAttr.HasFlag(BindingFlags.Public) || x.DeclaredAccessibility == Accessibility.Public)
-                             .Select(x => (IPropertyInfo)new RoslynPropertyInfo(x))
-                             .ToArray();
+            var types = TypeSymbol.GetMembers()
+                                  .OfType<IPropertySymbol>()
+                                  .Where(x => !bindingAttr.HasFlag(BindingFlags.Public) || x.DeclaredAccessibility == Accessibility.Public)
+                                  .Where(x => !bindingAttr.HasFlag(BindingFlags.Instance) || !x.IsStatic)
+                                  .Select(x => (IPropertyInfo)new RoslynPropertyInfo(x))
+                                  .ToArray();
+
+            if (BaseType != null)
+                types = types.Concat(BaseType.GetProperties(bindingAttr).Where(x => types.All(t => t.Name != x.Name))).ToArray();
+
+            return types;
         }
 
         public IFieldInfo[] GetFields(BindingFlags bindingAttr)
         {
-            return TypeSymbol.GetMembers()
-                             .OfType<IFieldSymbol>()
-                             .Where(x => !bindingAttr.HasFlag(BindingFlags.Public) || x.DeclaredAccessibility == Accessibility.Public)
-                             .Select(x => (IFieldInfo)new RoslynFieldInfo(x))
-                             .ToArray();
+            var fields = TypeSymbol.GetMembers()
+                                   .OfType<IFieldSymbol>()
+                                   .Where(x => !bindingAttr.HasFlag(BindingFlags.Public) || x.DeclaredAccessibility == Accessibility.Public)
+                                   .Where(x => !bindingAttr.HasFlag(BindingFlags.Instance) || !x.IsStatic)
+                                   .Select(x => (IFieldInfo)new RoslynFieldInfo(x))
+                                   .ToArray();
+
+            if (BaseType != null)
+                fields = fields.Concat(BaseType.GetFields(bindingAttr).Where(x => fields.All(t => t.Name != x.Name))).ToArray();
+
+            return fields;
         }
 
         public ITypeInfo[] GetGenericArguments()
@@ -97,7 +119,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
         public string[] GetEnumNames()
         {
             if (TypeSymbol is INamedTypeSymbol namedTypeSymbol)
-                return namedTypeSymbol.MemberNames.OrderBy(x => x).ToArray();
+                return namedTypeSymbol.GetMembers().Select(x => x.Name).Where(x => x != ".ctor" && x != "value__").ToArray();
             return new string[0];
         }
 

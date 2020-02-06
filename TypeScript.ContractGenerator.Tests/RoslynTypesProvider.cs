@@ -9,8 +9,9 @@ using NUnit.Framework;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.Attributes;
+using SkbKontur.TypeScript.ContractGenerator.Roslyn;
 
-namespace SkbKontur.TypeScript.ContractGenerator.Tests.RoslynTests
+namespace SkbKontur.TypeScript.ContractGenerator.Tests
 {
     public class RoslynTypesProvider : ITypesProvider
     {
