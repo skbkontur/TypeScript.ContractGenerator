@@ -7,10 +7,10 @@ namespace ProjectRefsFixer
     public class Parameters
     {
         public string WorkingDirectory { get; }
-        public string SolutionConfiguration { get; }
         public string[] SourceUrls { get; }
         public bool FailOnNotFoundPackage { get; }
         public bool AllowPrereleasePackages { get; }
+        public string[] Projects { get; }
 
         public Parameters(string[] args)
         {
@@ -18,8 +18,8 @@ namespace ProjectRefsFixer
             WorkingDirectory = positionalArgs.Length > 0 ? positionalArgs[0] : Environment.CurrentDirectory;
             SourceUrls = new[] {"https://api.nuget.org/v3/index.json"}.Concat(GetArgsByKey(args, "--source:")).ToArray();
             FailOnNotFoundPackage = !args.Contains("--ignoreMissingPackages");
-            SolutionConfiguration = GetArgsByKey(args, "--solutionConfiguration:").FirstOrDefault() ?? "Release";
             AllowPrereleasePackages = args.Contains("--allowPrereleasePackages");
+            Projects = GetArgsByKey(args, "--project:").ToArray();
         }
 
         private static IEnumerable<string> GetArgsByKey(string[] args, string key)

@@ -40,12 +40,8 @@ namespace ProjectRefsFixer
 
         private static void HandleSolution(string solutionFile, Parameters parameters)
         {
-            var solution = SolutionFile.Parse(solutionFile);
             var solutionName = Path.GetFileName(solutionFile);
-
-            Console.WriteLine($"Working with '{parameters.SolutionConfiguration}' solution configuration.");
-
-            var projects = solution.ProjectsInOrder;
+            var projects = SolutionFile.Parse(solutionFile).ProjectsInOrder;
             if (!projects.Any())
             {
                 Console.WriteLine($"No projects found in solution {solutionName}.");
@@ -55,6 +51,15 @@ namespace ProjectRefsFixer
             Console.WriteLine($"Found projects in solution {solutionName}:");
             Console.WriteLine($"\t{string.Join(Environment.NewLine + "\t", projects.Select(project => project.AbsolutePath))}");
             Console.WriteLine();
+
+            if (parameters.Projects.Any())
+            {
+                projects = projects.Where(x => parameters.Projects.Contains(x.ProjectName)).ToArray();
+
+                Console.WriteLine($"Filtered projects in solution {solutionName}:");
+                Console.WriteLine($"\t{string.Join(Environment.NewLine + "\t", projects.Select(project => project.AbsolutePath))}");
+                Console.WriteLine();
+            }
 
             var allProjectsInSolution = projects.Select(p => p.ProjectName).ToHashSet(StringComparer.OrdinalIgnoreCase);
             foreach (var solutionProject in projects)
