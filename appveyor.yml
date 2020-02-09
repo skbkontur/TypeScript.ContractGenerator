@@ -48,20 +48,21 @@ build_script:
 test_script:
   - cmd: dotnet test --no-build --configuration Release ./TypeScript.ContractGenerator.Tests/TypeScript.ContractGenerator.Tests.csproj
 
-after_test:
-  - ps: |
-      if ($env:SHOULD_PUBLISH_NUGET_PACKAGE -eq "true")
-      {
-        Write-Host "Will fix refs and rebuild solution" -ForegroundColor "Green"
-        dotnet ./ProjectRefsFixer/bin/Release/netcoreapp3.1/ProjectRefsFixer.dll $env:ALLOW_PRERELEASE --project:$env:PROJECT_PATH
-        Remove-Item **/bin/* -recurse
-        Remove-Item **/obj/* -recurse
-        dotnet build --configuration Release ./TypeScript.ContractGenerator.sln
-        dotnet pack --no-build --configuration Release ./TypeScript.ContractGenerator.sln
-      }
+# after_test:
+#   - ps: |
+#       if ($env:SHOULD_PUBLISH_NUGET_PACKAGE -eq "true")
+#       {
+#         Write-Host "Will fix refs and rebuild solution" -ForegroundColor "Green"
+#         dotnet ./ProjectRefsFixer/bin/Release/netcoreapp3.1/ProjectRefsFixer.dll $env:ALLOW_PRERELEASE --project:$env:PROJECT_PATH
+#         Remove-Item **/bin/* -recurse
+#         Remove-Item **/obj/* -recurse
+#         dotnet build --configuration Release ./TypeScript.ContractGenerator.sln
+#         dotnet pack --no-build --configuration Release ./TypeScript.ContractGenerator.sln
+#       }
 
 artifacts:
-  - path: './$(PROJECT_PATH)/bin/Release/*.nupkg'
+  # - path: './$(PROJECT_PATH)/bin/Release/*.nupkg'
+  - path: '**/*.nupkg'
 
 deploy:
   - provider: NuGet
