@@ -4,7 +4,6 @@
       <TargetFramework>netcoreapp3.1</TargetFramework>
       <OutputType>Exe</OutputType>
       <IsPackable>false</IsPackable>
-      <ProjectRefsFixerExclude>true</ProjectRefsFixerExclude>
     </PropertyGroup>
 
     <ItemGroup>

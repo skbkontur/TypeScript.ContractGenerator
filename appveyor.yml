@@ -11,25 +11,13 @@ init:
   - ps: |
       $ErrorActionPreference = "Stop"
       $tagName = $env:APPVEYOR_REPO_TAG_NAME
-      $env:PROJECT_PATH = "TypeScript.ContractGenerator"
-      $env:ALLOW_PRERELEASE = "--allowPrereleasePackages"
       if ($tagName -match '^v\d+\.\d+') # tag name starts with 'vX.Y'
       {
-        if ($tagName -match '^v\d+\.\d+-roslyn') # tag name starts with 'vX.Y-roslyn'
-        {
-          $env:PROJECT_PATH = "TypeScript.ContractGenerator.Roslyn"
-        }
-        if ($tagName -match '^v\d+\.\d+-cli') # tag name starts with 'vX.Y-cli'
-        {
-          $env:PROJECT_PATH = "TypeScript.ContractGenerator.Cli"
-        }
-
         $env:SHOULD_PUBLISH_NUGET_PACKAGE = "true"
-        Write-Host "Will publish nuget package $env:PROJECT_PATH for $tagName tag" -ForegroundColor "Green"
-        if ($tagName -match '^v\d+\.\d+(|-roslyn|-cli)-release') # tag name starts with 'vX.Y-release' (e.g. use 'v4.2-release.1' tag for the first patch for release v4.2)
+        Write-Host "Will publish nuget package for $tagName tag" -ForegroundColor "Green"
+        if ($tagName -match '^v\d+\.\d+-release') # tag name starts with 'vX.Y-release' (e.g. use 'v4.2-release.1' tag for the first patch for release v4.2)
         {
           $env:SHOULD_CREATE_RELEASE = "true"
-          $env:ALLOW_PRERELEASE = ""
           Write-Host "Will create release for $tagName tag" -ForegroundColor "Green"
         }
       }
@@ -48,20 +36,8 @@ build_script:
 test_script:
   - cmd: dotnet test --no-build --configuration Release ./TypeScript.ContractGenerator.Tests/TypeScript.ContractGenerator.Tests.csproj
 
-after_test:
-  - ps: |
-      if ($env:SHOULD_PUBLISH_NUGET_PACKAGE -eq "true")
-      {
-        Write-Host "Will fix refs and rebuild solution" -ForegroundColor "Green"
-        dotnet ./ProjectRefsFixer/bin/Release/netcoreapp3.1/ProjectRefsFixer.dll $env:ALLOW_PRERELEASE --project:$env:PROJECT_PATH
-        Remove-Item **/bin/* -recurse
-        Remove-Item **/obj/* -recurse
-        dotnet build --configuration Release ./TypeScript.ContractGenerator.sln
-        dotnet pack --no-build --configuration Release ./TypeScript.ContractGenerator.sln
-      }
-
 artifacts:
-  - path: './$(PROJECT_PATH)/bin/Release/*.nupkg'
+  - path: './TypeScript.ContractGenerator*/bin/Release/*.nupkg'
 
 deploy:
   - provider: NuGet

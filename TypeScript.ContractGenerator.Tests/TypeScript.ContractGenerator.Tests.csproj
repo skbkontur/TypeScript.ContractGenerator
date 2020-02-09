@@ -6,7 +6,6 @@
       <RootNamespace>SkbKontur.TypeScript.ContractGenerator.Tests</RootNamespace>
       <LangVersion>8</LangVersion>
       <IsPackable>false</IsPackable>
-      <ProjectRefsFixerExclude>true</ProjectRefsFixerExclude>
     </PropertyGroup>
 
     <ItemGroup>

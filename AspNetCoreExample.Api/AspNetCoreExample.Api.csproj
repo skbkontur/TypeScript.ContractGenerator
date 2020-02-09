@@ -3,7 +3,6 @@
     <PropertyGroup>
       <TargetFramework>netstandard2.0</TargetFramework>
       <IsPackable>false</IsPackable>
-      <ProjectRefsFixerExclude>true</ProjectRefsFixerExclude>
     </PropertyGroup>
 
     <ItemGroup>

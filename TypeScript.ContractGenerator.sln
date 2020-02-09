@@ -14,8 +14,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCoreExample.Generator
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeScript.ContractGenerator.Roslyn", "TypeScript.ContractGenerator.Roslyn\TypeScript.ContractGenerator.Roslyn.csproj", "{7D402F90-039B-4D2A-8E8B-D9E6B719EFDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectRefsFixer", "ProjectRefsFixer\ProjectRefsFixer.csproj", "{59BDD667-7D60-4E71-A5C8-8BEB8D83D654}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,10 +44,6 @@ Global
 		{7D402F90-039B-4D2A-8E8B-D9E6B719EFDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D402F90-039B-4D2A-8E8B-D9E6B719EFDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D402F90-039B-4D2A-8E8B-D9E6B719EFDB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{59BDD667-7D60-4E71-A5C8-8BEB8D83D654}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{59BDD667-7D60-4E71-A5C8-8BEB8D83D654}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{59BDD667-7D60-4E71-A5C8-8BEB8D83D654}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{59BDD667-7D60-4E71-A5C8-8BEB8D83D654}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F1418220-9738-4269-81AD-A9E1408B9F05} = {747DF63F-BABE-4ADA-A42E-FD5B1E37206F}
