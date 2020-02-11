@@ -1,7 +1,11 @@
 # TypeScript.ContractGenerator
 
-[![NuGet Status](https://img.shields.io/nuget/v/SkbKontur.TypeScript.ContractGenerator.svg)](https://www.nuget.org/packages/SkbKontur.TypeScript.ContractGenerator/)
-[![Build status](https://ci.appveyor.com/api/projects/status/1x5x9gw0a7h12g38/branch/master?svg=true)](https://ci.appveyor.com/project/skbkontur/typescript-contractgenerator/branch/master)
+|              | Build Status
+|--------------|:--------------:
+| TypeScript.ContractGenerator | [![NuGet Status](https://img.shields.io/nuget/v/SkbKontur.TypeScript.ContractGenerator.svg)](https://www.nuget.org/packages/SkbKontur.TypeScript.ContractGenerator/)
+| TypeScript.ContractGenerator.Roslyn | [![NuGet Status](https://img.shields.io/nuget/v/SkbKontur.TypeScript.ContractGenerator.Roslyn.svg)](https://www.nuget.org/packages/SkbKontur.TypeScript.ContractGenerator.Roslyn/)
+| TypeScript.ContractGenerator.Cli | [![NuGet Status](https://img.shields.io/nuget/v/SkbKontur.TypeScript.ContractGenerator.Cli.svg)](https://www.nuget.org/packages/SkbKontur.TypeScript.ContractGenerator.Cli/)
+| Build | [![Build status](https://ci.appveyor.com/api/projects/status/1x5x9gw0a7h12g38/branch/master?svg=true)](https://ci.appveyor.com/project/skbkontur/typescript-contractgenerator/branch/master)
 
 A tool that can generate TypeScript or Flow types from C# classes
 
