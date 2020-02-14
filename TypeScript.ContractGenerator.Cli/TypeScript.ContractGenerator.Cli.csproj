@@ -6,7 +6,7 @@
     <AssemblyName>SkbKontur.TypeScript.ContractGenerator.Cli</AssemblyName>
     <RootNamespace>SkbKontur.TypeScript.ContractGenerator.Cli</RootNamespace>
     <PackAsTool>true</PackAsTool>
-    <ToolCommandName>dotnet-ts-generate-contracts</ToolCommandName>
+    <ToolCommandName>dotnet-ts-gen</ToolCommandName>
   </PropertyGroup>
 
   <ItemGroup>

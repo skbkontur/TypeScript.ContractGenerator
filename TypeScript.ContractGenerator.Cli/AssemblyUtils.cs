@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Cli
 {
-    internal static class AssemblyUtils
+    public static class AssemblyUtils
     {
         public static T[] GetImplementations<T>(this Assembly assembly) where T : class
         {

@@ -27,5 +27,24 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
 
         [Option("globalNullable", Required = false, HelpText = "Enables global nullable", Default = false)]
         public bool UseGlobalNullable { get; set; }
+
+        [Option("watch", Required = false, HelpText = "Watch assembly files and regenerate TypeScript on changes", Default = false)]
+        public bool Watch { get; set; }
+    }
+
+    public static class OptionsExtensions
+    {
+        public static TypeScriptGenerationOptions ToTypeScriptGenerationOptions(this Options o)
+        {
+            return new TypeScriptGenerationOptions
+                {
+                    EnableExplicitNullability = o.EnableExplicitNullability,
+                    EnableOptionalProperties = o.EnableOptionalProperties,
+                    EnumGenerationMode = o.EnumGenerationMode,
+                    UseGlobalNullable = o.UseGlobalNullable,
+                    NullabilityMode = o.NullabilityMode,
+                    LinterDisableMode = o.LinterDisableMode
+                };
+        }
     }
 }

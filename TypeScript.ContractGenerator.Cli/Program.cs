@@ -12,26 +12,27 @@ using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Cli
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
-            Parser.Default.ParseArguments<Options>(args).WithParsed(o =>
-                {
-                    GenerateByOptions(o);
+            Parser.Default.ParseArguments<Options>(args).WithParsed(Process);
+        }
 
-                    AddFileChangedHandler(o.Assembly, Debounce((source, e) => GenerateByOptions(o), 1000));
+        private static void Process(Options options)
+        {
+            GenerateByOptions(options);
 
-                    Console.WriteLine("Press 'q' to quit the sample.");
-                    while (Console.Read() != 'q') ;
-                });
+            if (!options.Watch)
+                return;
+
+            WatchDirectory(Path.GetDirectoryName(options.Assembly), Debounce((source, e) => GenerateByOptions(options), 1000));
         }
 
         private static FileSystemEventHandler Debounce(FileSystemEventHandler func, int milliseconds = 1000)
         {
-            CancellationTokenSource? cancelTokenSource = null;
-
+            CancellationTokenSource cancelTokenSource = null;
             return (arg1, arg2) =>
                 {
                     cancelTokenSource?.Cancel();
@@ -41,18 +42,16 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
                         .ContinueWith(t =>
                             {
                                 if (t.IsCompletedSuccessfully)
-                                {
                                     func(arg1, arg2);
-                                }
                             }, TaskScheduler.Default);
                 };
         }
 
-        private static void AddFileChangedHandler(string pathToAssembly, FileSystemEventHandler handler)
+        private static void WatchDirectory(string directory, FileSystemEventHandler handler)
         {
             using var watcher = new FileSystemWatcher
                 {
-                    Path = Path.GetDirectoryName(pathToAssembly),
+                    Path = directory,
                     NotifyFilter = NotifyFilters.LastAccess
                                    | NotifyFilters.LastWrite
                                    | NotifyFilters.FileName
@@ -66,16 +65,15 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
 
             watcher.EnableRaisingEvents = true;
 
-            Console.WriteLine("Press 'q' to quit the sample.");
+            Console.WriteLine("Press 'q' to quit");
             while (Console.Read() != 'q') ;
         }
 
         private static void GenerateByOptions(Options o)
         {
-            Console.WriteLine("ReGenerate");
+            Console.WriteLine("Generating TypeScript");
 
-            WeakReference testAlcWeakRef;
-            ExecuteAndUnload(o.Assembly, out testAlcWeakRef, o);
+            ExecuteAndUnload(o.Assembly, out var testAlcWeakRef, o);
 
             // это нужно для того чтобы сборка из AssemblyLoadContext была выгруженна
             // https://docs.microsoft.com/en-us/dotnet/standard/assembly/unloadability?view=netcore-3.1
@@ -89,22 +87,20 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void ExecuteAndUnload(string assemblyPath, out WeakReference alcWeakRef, Options o)
+        private static void ExecuteAndUnload(string assemblyPath, out WeakReference alcWeakRef, Options options)
         {
             var alc = new DirectoryAssemblyLoadContext(assemblyPath);
             var targetAssembly = alc.LoadFromAssemblyPath(assemblyPath);
 
-            alcWeakRef = new WeakReference(alc, true);
+            alcWeakRef = new WeakReference(alc, trackResurrection : true);
 
             var customTypeGenerator = GetSingleImplementation<ICustomTypeGenerator>(targetAssembly);
             var typesProvider = GetSingleImplementation<ITypesProvider>(targetAssembly);
             if (customTypeGenerator == null || typesProvider == null)
                 return;
 
-            var options = BuildTypeScriptGenerationOptionsByOption(o);
-
-            var typeGenerator = new TypeScriptGenerator(options, customTypeGenerator, typesProvider);
-            typeGenerator.GenerateFiles(o.OutputDirectory, JavaScriptTypeChecker.TypeScript);
+            var typeGenerator = new TypeScriptGenerator(options.ToTypeScriptGenerationOptions(), customTypeGenerator, typesProvider);
+            typeGenerator.GenerateFiles(options.OutputDirectory, JavaScriptTypeChecker.TypeScript);
 
             alc.Unload();
         }
@@ -118,19 +114,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
             if (implementations.Length != 1)
                 WriteError($"Found more than one implementation of `{typeof(T).Name}` in assembly {assembly.GetName()}");
             return implementations.Length == 1 ? implementations[0] : null;
-        }
-
-        private static TypeScriptGenerationOptions BuildTypeScriptGenerationOptionsByOption(Options o)
-        {
-            return new TypeScriptGenerationOptions
-                { 
-                    EnableExplicitNullability = o.EnableExplicitNullability,
-                    EnableOptionalProperties = o.EnableOptionalProperties,
-                    EnumGenerationMode = o.EnumGenerationMode,
-                    UseGlobalNullable = o.UseGlobalNullable,
-                    NullabilityMode = o.NullabilityMode,
-                    LinterDisableMode = o.LinterDisableMode
-                };
         }
 
         private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)
