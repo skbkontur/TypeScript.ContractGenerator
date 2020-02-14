@@ -37,7 +37,7 @@ test_script:
   - cmd: dotnet test --no-build --configuration Release ./TypeScript.ContractGenerator.Tests/TypeScript.ContractGenerator.Tests.csproj
 
 artifacts:
-  - path: './TypeScript.ContractGenerator/bin/Release/*.nupkg'
+  - path: './TypeScript.ContractGenerator*/bin/Release/*.nupkg'
 
 deploy:
   - provider: NuGet
