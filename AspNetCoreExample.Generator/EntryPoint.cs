@@ -13,34 +13,18 @@ namespace AspNetCoreExample.Generator
     {
         public static void Main(params string[] args)
         {
-            const string modelsNamespace = "AspNetCoreExample.Api.Models";
-            var customTypeGenerator = new CustomTypeGenerator()
-                .WithTypeRedirect<Guid>("Guid", @"dataTypes\Guid")
-                .WithTypeLocationRule(
-                    x => TypeInfo.From<ControllerBase>().IsAssignableFrom(x),
-                    x => $"api/{x.Name}".Replace("Controller", "Api")
-                )
-                .WithTypeLocationRule(
-                    x => x.FullName.StartsWith(modelsNamespace),
-                    x => "dto/" + x.FullName.Substring(modelsNamespace.Length + 1).Replace(".", "/")
-                )
-                .WithTypeBuildingContext(ApiControllerTypeBuildingContext.Accept, (unit, type) => new ApiControllerTypeBuildingContext(unit, type));
-
-            var typeScriptCodeGenerator = new TypeScriptGenerator(
-                new TypeScriptGenerationOptions
-                    {
-                        EnableExplicitNullability = true,
-                        EnableOptionalProperties = false,
-                        EnumGenerationMode = EnumGenerationMode.TypeScriptEnum,
-                        LinterDisableMode = LinterDisableMode.TsLint,
-                        UseGlobalNullable = true,
-                        NullabilityMode = NullabilityMode.Optimistic,
-                    },
-                customTypeGenerator,
-                new TypesProvider()
-                );
             var targetPath = Path.Combine(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).FullName, "../../../output");
+            var options = new TypeScriptGenerationOptions
+                {
+                    EnableExplicitNullability = true,
+                    EnableOptionalProperties = false,
+                    EnumGenerationMode = EnumGenerationMode.TypeScriptEnum,
+                    LinterDisableMode = LinterDisableMode.TsLint,
+                    UseGlobalNullable = true,
+                    NullabilityMode = NullabilityMode.Optimistic,
+                };
 
+            var typeScriptCodeGenerator = new TypeScriptGenerator(options, new AspNetCoreExampleCustomGenerator(), new TypesProvider());
             typeScriptCodeGenerator.GenerateFiles(targetPath, JavaScriptTypeChecker.TypeScript);
         }
     }

@@ -12,15 +12,9 @@ namespace AspNetCoreExample.Generator
         public AspNetCoreExampleCustomGenerator()
         {
             const string modelsNamespace = "AspNetCoreExample.Api.Models";
-            WithTypeRedirect<Guid>("Guid", @"dataTypes\Guid")
-                .WithTypeLocationRule(
-                    x => TypeInfo.From<ControllerBase>().IsAssignableFrom(x),
-                    x => $"api/{x.Name}".Replace("Controller", "Api")
-                )
-                .WithTypeLocationRule(
-                    x => x.FullName.StartsWith(modelsNamespace),
-                    x => "dto/" + x.FullName.Substring(modelsNamespace.Length + 1).Replace(".", "/")
-                )
+            WithTypeRedirect(TypeInfo.From<Guid>(), "Guid", @"dataTypes\Guid")
+                .WithTypeLocationRule(x => x.FullName.StartsWith(modelsNamespace), x => "dto/" + x.FullName.Substring(modelsNamespace.Length + 1).Replace(".", "/"))
+                .WithTypeLocationRule(ApiControllerTypeBuildingContext.Accept, x => $"api/{x.Name}".Replace("Controller", "Api"))
                 .WithTypeBuildingContext(ApiControllerTypeBuildingContext.Accept, (unit, type) => new ApiControllerTypeBuildingContext(unit, type));
         }
     }

@@ -74,9 +74,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         public void CustomGeneratorBuilderTest()
         {
             var customGenerator = new CustomTypeGenerator()
-                .WithTypeLocation<AnotherCustomType>(x => "a/b/c")
-                .WithTypeRedirect<byte[]>("ByteArray", @"DataTypes\ByteArray")
-                .WithTypeBuildingContext<HashSet<string>>(x => new CollectionTypeBuildingContext(x));
+                .WithTypeLocation(TypeInfo.From<AnotherCustomType>(), x => "a/b/c")
+                .WithTypeRedirect(TypeInfo.From<byte[]>(), "ByteArray", @"DataTypes\ByteArray")
+                .WithTypeLocation(TypeInfo.From<HashSet<string>>(), x => "a/b")
+                .WithTypeBuildingContext(TypeInfo.From<HashSet<string>>(), x => new CollectionTypeBuildingContext(x));
 
             var generator = new TypeScriptGenerator(TestOptions, customGenerator, new TypesProvider(typeof(ArrayRootType)));
             var units = generator.Generate();
