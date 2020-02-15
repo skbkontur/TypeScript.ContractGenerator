@@ -9,9 +9,8 @@
 
   <Target Name="SetNuSpecProperties" BeforeTargets="GenerateNuspec" DependsOnTargets="GetBuildVersion">
     <PropertyGroup>
-      <PackageId>$(AssemblyName)</PackageId>
       <Authors>Eugene Tihonov</Authors>
-      <PackageDescription>A tool that can generate TypeScript or Flow types from C# classes</PackageDescription>
+      <PackageDescription>A tool that can generate TypeScript types from C# classes</PackageDescription>
       <PackageTags>TypeScript CodeGenerator</PackageTags>
       <RepositoryType>git</RepositoryType>
       <RepositoryUrl>https://github.com/skbkontur/TypeScript.ContractGenerator</RepositoryUrl>

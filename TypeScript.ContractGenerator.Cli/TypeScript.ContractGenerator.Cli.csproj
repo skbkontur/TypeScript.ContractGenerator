@@ -5,6 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>SkbKontur.TypeScript.ContractGenerator.Cli</AssemblyName>
     <RootNamespace>SkbKontur.TypeScript.ContractGenerator.Cli</RootNamespace>
+    <PackageId>SkbKontur.TypeScript.ContractGenerator.Cli</PackageId>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>dotnet-ts-gen</ToolCommandName>
   </PropertyGroup>
