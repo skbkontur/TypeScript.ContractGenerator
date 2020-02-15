@@ -32,7 +32,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
 
         public string Name => TypeSymbol.MetadataName;
         public string FullName => TypeSymbol.Name;
-        public string Namespace => TypeSymbol.ContainingNamespace?.ToString();
+        public string Namespace => IsArray ? "System" : TypeSymbol.ContainingNamespace?.ToString();
         public bool IsEnum => BaseType != null && BaseType.Equals(TypeInfo.From<Enum>());
         public bool IsValueType => IsEnum || TypeSymbol.IsValueType;
         public bool IsArray => TypeSymbol.TypeKind == TypeKind.Array;
