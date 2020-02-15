@@ -9,19 +9,19 @@ export type NullableReferenceType = {
     list: string[];
     nullableList?: null | Array<null | string>;
     dictionary: {
-        [key in string]?: string;
+        [key: string]: string;
     };
     dictionaryWithNullableKey: {
         [key in null | string]?: string;
     };
     dictionaryWithNullableValue: {
-        [key in string]?: null | string;
+        [key: string]: null | string;
     };
     nullableDictionary?: null | {
         [key in null | string]?: null | string;
     };
     valueTypeKeyDictionary: {
-        [key in number]?: null | string;
+        [key: number]: null | string;
     };
     complexDictionary: {
         [key in string[]]?: null | string;

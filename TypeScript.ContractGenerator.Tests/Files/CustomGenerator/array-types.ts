@@ -9,8 +9,14 @@ export type ArrayRootType = {
     strings?: null | Array<null | string>;
     customTypes?: null | Array<null | AnotherCustomType>;
     stringsList?: null | string[];
+    intKeyDict?: null | {
+        [key: number]: AnotherEnum;
+    };
+    enumKeyDict?: null | {
+        [key in AnotherEnum]?: AnotherEnum;
+    };
     customTypesDict?: null | {
-        [key in string]?: AnotherCustomType;
+        [key: string]: AnotherCustomType;
     };
     set?: null | string[];
     notNullsArray?: null | AnotherCustomType[];

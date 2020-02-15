@@ -13,6 +13,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
         public string[] Strings { get; set; }
         public AnotherCustomType[] CustomTypes { get; set; }
         public List<string> StringsList { get; set; }
+        public Dictionary<int, AnotherEnum> IntKeyDict { get; set; }
+        public Dictionary<AnotherEnum, AnotherEnum> EnumKeyDict { get; set; }
         public Dictionary<string, AnotherCustomType> CustomTypesDict { get; set; }
         public HashSet<string> Set { get; set; }
 

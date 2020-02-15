@@ -9,7 +9,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
         public override string GenerateCode(ICodeGenerationContext context)
         {
             var argument = Argument.Type.GenerateCode(context);
-            if (argument != "stirng" || argument != "number")
+            if (argument != "string" && argument != "number")
                 return $"[key in {Argument.Type.GenerateCode(context)}]{(Optional ? "?" : "")}: {ResultType.GenerateCode(context)};";
             return $"[{Argument.GenerateCode(context)}]: {ResultType.GenerateCode(context)};";
         }
