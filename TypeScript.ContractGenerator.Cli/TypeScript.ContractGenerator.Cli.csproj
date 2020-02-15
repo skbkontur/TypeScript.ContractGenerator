@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TypeScript.ContractGenerator\TypeScript.ContractGenerator.csproj" />
+    <ProjectReference Include="..\TypeScript.ContractGenerator.Roslyn\TypeScript.ContractGenerator.Roslyn.csproj" />
   </ItemGroup>
 
 </Project>
