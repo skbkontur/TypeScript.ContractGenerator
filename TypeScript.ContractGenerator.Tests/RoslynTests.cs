@@ -4,7 +4,6 @@ using System.Linq;
 
 using NUnit.Framework;
 
-using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 using SkbKontur.TypeScript.ContractGenerator.Tests.Types;
 
@@ -32,9 +31,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
 
         private static string[] GenerateCode(Type rootType)
         {
-            var generator = new TypeScriptGenerator(new TypeScriptGenerationOptions {EnumGenerationMode = EnumGenerationMode.FixedStringsAndDictionary},
-                                                    CustomTypeGenerator.Null, new RoslynTypesProvider(rootType.FullName));
-            return generator.Generate().Select(x => x.GenerateCode(new DefaultCodeGenerationContext(JavaScriptTypeChecker.TypeScript)).Replace("\r\n", "\n")).ToArray();
+            var generator = new TypeScriptGenerator(TypeScriptGenerationOptions.Default, CustomTypeGenerator.Null, new RoslynTypesProvider(rootType.FullName));
+            return generator.Generate().Select(x => x.GenerateCode(new DefaultCodeGenerationContext()).Replace("\r\n", "\n")).ToArray();
         }
 
         private static string GetExpectedCode(string expectedCodeFilePath)

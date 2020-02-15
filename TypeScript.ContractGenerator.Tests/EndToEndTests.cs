@@ -6,20 +6,14 @@ using FluentAssertions;
 
 using NUnit.Framework;
 
-using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 using SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators;
 using SkbKontur.TypeScript.ContractGenerator.Tests.Types;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests
 {
-    public class EndToEndTests : AllTypeCheckersTestBase
+    public class EndToEndTests : TestBase
     {
-        public EndToEndTests(JavaScriptTypeChecker javaScriptTypeChecker)
-            : base(javaScriptTypeChecker)
-        {
-        }
-
         [TestCase(typeof(NamingRootType), "type-names")]
         [TestCase(typeof(SimpleRootType), "simple-types")]
         [TestCase(typeof(SimpleNullableRootType), "nullable-types")]
@@ -38,11 +32,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
 
-        [TestCase(typeof(EnumWithConstGetterContainingRootType), EnumGenerationMode.FixedStringsAndDictionary, "not-annotated-const-getter-fixed-strings")]
-        [TestCase(typeof(AnnotatedEnumWithConstGetterContainingRootType), EnumGenerationMode.FixedStringsAndDictionary, "annotated-const-getter-fixed-strings")]
-        public void GenerateEnumWithConstGetterTest(Type type, EnumGenerationMode enumGenerationMode, string expectedFileName)
+        [TestCase(typeof(EnumWithConstGetterContainingRootType), "not-annotated-const-getter-typescript-enum")]
+        [TestCase(typeof(AnnotatedEnumWithConstGetterContainingRootType), "annotated-const-getter-typescript-enum")]
+        public void GenerateEnumWithConstGetterTest(Type type, string expectedFileName)
         {
-            var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnumGenerationMode = enumGenerationMode}, new TestCustomTypeGenerator(), type).Single();
+            var generatedCode = GenerateCode(TypeScriptGenerationOptions.Default, new TestCustomTypeGenerator(), type).Single();
             var expectedCode = GetExpectedCode($"Enums/{expectedFileName}");
             generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
@@ -79,9 +73,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
                 .WithTypeLocation(TypeInfo.From<HashSet<string>>(), x => "a/b")
                 .WithTypeBuildingContext(TypeInfo.From<HashSet<string>>(), x => new CollectionTypeBuildingContext(x));
 
-            var generator = new TypeScriptGenerator(TestOptions, customGenerator, new TypesProvider(typeof(ArrayRootType)));
+            var generator = new TypeScriptGenerator(TypeScriptGenerationOptions.Default, customGenerator, new TypesProvider(typeof(ArrayRootType)));
             var units = generator.Generate();
-            var code = units.Select(x => x.GenerateCode(new DefaultCodeGenerationContext(JavaScriptTypeChecker)).Replace("\r\n", "\n")).ToArray();
+            var code = units.Select(x => x.GenerateCode(new DefaultCodeGenerationContext()).Replace("\r\n", "\n")).ToArray();
 
             units.Select(x => x.Path).Should().Equal("", "a/b/c");
             var expectedCodeRoot = GetExpectedCode("CustomGenerator/custom-generator-builder");

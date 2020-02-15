@@ -6,13 +6,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 {
     public class DefaultCodeGenerationContext : ICodeGenerationContext
     {
-        public DefaultCodeGenerationContext(JavaScriptTypeChecker typeChecker)
-        {
-            TypeChecker = typeChecker;
-        }
-
-        public JavaScriptTypeChecker TypeChecker { get; }
-
         public string Tab => "    ";
         public string NewLine => "\n";
 

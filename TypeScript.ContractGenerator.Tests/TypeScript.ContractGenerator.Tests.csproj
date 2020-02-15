@@ -21,7 +21,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Files\**\*.js" CopyToOutputDirectory="Always" />
       <None Update="Files\**\*.ts" CopyToOutputDirectory="Always" />
     </ItemGroup>
 

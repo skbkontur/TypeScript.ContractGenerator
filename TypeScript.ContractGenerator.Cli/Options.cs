@@ -10,9 +10,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
         [Option('o', "outputDir", Required = false, HelpText = "Generated files output directory.", Default = "src")]
         public string OutputDirectory { get; set; }
 
-        [Option("enumMode", Required = false, HelpText = "Enum's generation mode: TypeScript enums or Fixed strings with dictionary ", Default = EnumGenerationMode.TypeScriptEnum)]
-        public EnumGenerationMode EnumGenerationMode { get; set; }
-
         [Option("nullabilityMode", Required = false, HelpText = "Use correct linter disable comment", Default = NullabilityMode.Pessimistic)]
         public NullabilityMode NullabilityMode { get; set; }
 
@@ -40,7 +37,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
                 {
                     EnableExplicitNullability = o.EnableExplicitNullability,
                     EnableOptionalProperties = o.EnableOptionalProperties,
-                    EnumGenerationMode = o.EnumGenerationMode,
                     UseGlobalNullable = o.UseGlobalNullable,
                     NullabilityMode = o.NullabilityMode,
                     LinterDisableMode = o.LinterDisableMode

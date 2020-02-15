@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 
 using CommandLine;
 
-using SkbKontur.TypeScript.ContractGenerator.CodeDom;
-
 namespace SkbKontur.TypeScript.ContractGenerator.Cli
 {
     public static class Program
@@ -100,7 +98,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
                 return;
 
             var typeGenerator = new TypeScriptGenerator(options.ToTypeScriptGenerationOptions(), customTypeGenerator, typesProvider);
-            typeGenerator.GenerateFiles(options.OutputDirectory, JavaScriptTypeChecker.TypeScript);
+            typeGenerator.GenerateFiles(options.OutputDirectory);
 
             alc.Unload();
         }

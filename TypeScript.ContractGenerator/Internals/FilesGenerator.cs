@@ -15,7 +15,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
                 EnsureDirectoryExists(targetFileName);
 
                 File.WriteAllText(targetFileName, filesGenerationContext.HeaderGenerationFunc(generatedContentMarkerString));
-                File.AppendAllText(targetFileName, unit.GenerateCode(new DefaultCodeGenerationContext(filesGenerationContext.JavaScriptTypeChecker)));
+                File.AppendAllText(targetFileName, unit.GenerateCode(new DefaultCodeGenerationContext()));
             }
         }
 

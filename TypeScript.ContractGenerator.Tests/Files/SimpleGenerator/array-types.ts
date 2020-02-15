@@ -9,18 +9,23 @@ export type ArrayRootType = {
     strings?: null | Array<null | string>;
     customTypes?: null | Array<null | AnotherCustomType>;
     stringsList?: null | Array<null | string>;
+    intKeyDict?: null | {
+        [key: number]: AnotherEnum;
+    };
+    enumKeyDict?: null | {
+        [key in AnotherEnum]?: AnotherEnum;
+    };
     customTypesDict?: null | {
-        [key in string]?: AnotherCustomType;
+        [key: string]: AnotherCustomType;
     };
     set?: null | HashSet<string>;
     notNullsArray?: null | AnotherCustomType[];
     notNullNotNullsArray: AnotherCustomType[];
 };
-export type AnotherEnum = 'B' | 'C';
-export const AnotherEnums = {
-    ['B']: ('B') as AnotherEnum,
-    ['C']: ('C') as AnotherEnum,
-};
+export enum AnotherEnum {
+    B = 'B',
+    C = 'C',
+}
 export type AnotherCustomType = {
     d: number;
 };

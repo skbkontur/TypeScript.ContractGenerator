@@ -54,15 +54,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 
         private static TypeScriptType GetConstEnumType(ITypeGenerator typeGenerator, TypeScriptUnit unit, IPropertyInfo property, string value)
         {
-            switch (typeGenerator.Options.EnumGenerationMode)
-            {
-            case EnumGenerationMode.FixedStringsAndDictionary:
-                return new TypeScriptStringLiteralType(value);
-            case EnumGenerationMode.TypeScriptEnum:
-                return new TypeScriptEnumValueType(typeGenerator.BuildAndImportType(unit, property, property.PropertyType), value);
-            default:
-                throw new ArgumentOutOfRangeException();
-            }
+            return new TypeScriptEnumValueType(typeGenerator.BuildAndImportType(unit, property, property.PropertyType), value);
         }
 
         private static bool TryGetGetOnlyEnumPropertyValue(ITypeInfo typeInfo, IPropertyInfo propertyInfo, out string value)

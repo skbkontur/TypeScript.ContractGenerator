@@ -6,18 +6,15 @@ using FluentAssertions;
 
 using NUnit.Framework;
 
-using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests
 {
-    [TestFixture(JavaScriptTypeChecker.Flow)]
-    [TestFixture(JavaScriptTypeChecker.TypeScript)]
     public abstract class TestBase
     {
-        protected TestBase(JavaScriptTypeChecker javaScriptTypeChecker)
+        protected TestBase()
         {
-            filesGenerationContext = FilesGenerationContext.Create(javaScriptTypeChecker, LinterDisableMode.TsLint);
+            filesGenerationContext = FilesGenerationContext.Create(LinterDisableMode.TsLint);
         }
 
         protected string[] GenerateCode(Type rootType)
@@ -27,32 +24,30 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
 
         protected string[] GenerateCode(ICustomTypeGenerator customTypeGenerator, Type rootType)
         {
-            return GenerateCode(TestOptions, customTypeGenerator, rootType);
+            return GenerateCode(TypeScriptGenerationOptions.Default, customTypeGenerator, rootType);
         }
 
         protected string[] GenerateCode(TypeScriptGenerationOptions options, ICustomTypeGenerator customTypeGenerator, Type rootType)
         {
             var generator = new TypeScriptGenerator(options, customTypeGenerator, new TypesProvider(rootType));
-            if (JavaScriptTypeChecker == JavaScriptTypeChecker.Flow && options.EnumGenerationMode == EnumGenerationMode.TypeScriptEnum)
-                throw new ArgumentException("Invalid EnumGenerationMode for JavaScriptTypeChecker.Flow");
-            return generator.Generate().Select(x => x.GenerateCode(new DefaultCodeGenerationContext(JavaScriptTypeChecker)).Replace("\r\n", "\n")).ToArray();
+            return generator.Generate().Select(x => x.GenerateCode(new DefaultCodeGenerationContext()).Replace("\r\n", "\n")).ToArray();
         }
 
         protected void GenerateFiles(ICustomTypeGenerator customTypeGenerator, string folderName, params Type[] rootTypes)
         {
-            var path = $"{TestContext.CurrentContext.TestDirectory}/{folderName}/{JavaScriptTypeChecker}";
+            var path = $"{TestContext.CurrentContext.TestDirectory}/{folderName}";
             if (Directory.Exists(path))
                 Directory.Delete(path, recursive : true);
             Directory.CreateDirectory(path);
 
-            var generator = new TypeScriptGenerator(TestOptions, customTypeGenerator, new TypesProvider(rootTypes));
-            generator.GenerateFiles(path, JavaScriptTypeChecker);
+            var generator = new TypeScriptGenerator(TypeScriptGenerationOptions.Default, customTypeGenerator, new TypesProvider(rootTypes));
+            generator.GenerateFiles(path);
         }
 
         protected void CheckDirectoriesEquivalence(string expectedDirectory, string actualDirectory)
         {
-            expectedDirectory = $"{TestContext.CurrentContext.TestDirectory}/{expectedDirectory}/{JavaScriptTypeChecker}";
-            actualDirectory = $"{TestContext.CurrentContext.TestDirectory}/{actualDirectory}/{JavaScriptTypeChecker}";
+            expectedDirectory = $"{TestContext.CurrentContext.TestDirectory}/{expectedDirectory}";
+            actualDirectory = $"{TestContext.CurrentContext.TestDirectory}/{actualDirectory}";
 
             CheckDirectoriesEquivalenceInner(expectedDirectory, actualDirectory);
         }
@@ -105,14 +100,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         {
             return $"{TestContext.CurrentContext.TestDirectory}/Files/{filename}.{filesGenerationContext.FileExtension}";
         }
-
-        protected JavaScriptTypeChecker JavaScriptTypeChecker => filesGenerationContext.JavaScriptTypeChecker;
-
-        protected TypeScriptGenerationOptions TestOptions => new TypeScriptGenerationOptions
-            {
-                EnumGenerationMode = EnumGenerationMode.FixedStringsAndDictionary,
-                LinterDisableMode = LinterDisableMode.TsLint,
-            };
 
         private readonly FilesGenerationContext filesGenerationContext;
     }
