@@ -1,11 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-      <OutputType>Exe</OutputType>
-      <TargetFramework>netcoreapp3.1</TargetFramework>
+      <TargetFramework>netstandard2.0</TargetFramework>
       <AssemblyName>SkbKontur.TypeScript.ContractGenerator.Roslyn</AssemblyName>
       <RootNamespace>SkbKontur.TypeScript.ContractGenerator.Roslyn</RootNamespace>
       <PackageId>SkbKontur.TypeScript.ContractGenerator.Roslyn</PackageId>
+      <LangVersion>8</LangVersion>
+      <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>

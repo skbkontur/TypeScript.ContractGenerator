@@ -12,6 +12,7 @@ using SkbKontur.TypeScript.ContractGenerator.Internals;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController;
 
 using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
+using AnotherTypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 
 namespace AspNetCoreExample.Generator
 {
@@ -24,6 +25,11 @@ namespace AspNetCoreExample.Generator
 
         public static bool Accept(ITypeInfo type)
         {
+            var test1 = TypeInfo.From<ControllerBase>();
+            var test2 = TypeInfo.From(typeof(void));
+            var test3 = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo.From<string>();
+            var test4 = AnotherTypeInfo.From(typeof(Task<>));
+
             return TypeInfo.From<ControllerBase>().IsAssignableFrom(type);
         }
 
