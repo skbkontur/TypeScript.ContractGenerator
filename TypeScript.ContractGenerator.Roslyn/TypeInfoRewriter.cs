@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Microsoft.CodeAnalysis;
@@ -6,6 +7,8 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
+
+using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
 {
@@ -27,34 +30,31 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
 
         public override SyntaxNode? VisitInvocationExpression(InvocationExpressionSyntax node)
         {
-            
             if (node.Expression is MemberAccessExpressionSyntax memberAccess)
             {
                 var typeInfo = semanticModel.GetTypeInfo(memberAccess.Expression);
-                
-                if (typeInfo.Type.ToString() == "SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo")
-                {
-                    var foundType = GetSingleTypeName(memberAccess, node.ArgumentList).ToString();
-                   
-                    return ObjectCreationExpression(foundType);
 
-                    Types.Add(RoslynTypeInfo.From(typeInfo.Type));
+                if (typeInfo.Type.ToString() == typeInfoName)
+                {
+                    var foundType = GetSingleTypeName(memberAccess, node.ArgumentList);
+
+                    Types.Add(RoslynTypeInfo.From(semanticModel.GetTypeInfo(foundType).Type));
+                    return ArrayElement(Types.Count - 1);
                 }
             }
 
             return base.VisitInvocationExpression(node);
         }
 
-        private static SyntaxNode ObjectCreationExpression(string foundType)
+        private static SyntaxNode ArrayElement(int index)
         {
-            var identifier = SyntaxFactory.IdentifierName(typeInfoClassName);
+            var identifier = SyntaxFactory.IdentifierName(thisName);
+            var field = SyntaxFactory.IdentifierName(nameof(Types));
 
-            var argument = SyntaxFactory.Argument(SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(foundType)));
-            var argumentList = SyntaxFactory.SeparatedList(new[] {argument});
+            var memberAccess = SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, identifier, field);
 
-            var objectCreationExpression = SyntaxFactory.ObjectCreationExpression(identifier, SyntaxFactory.ArgumentList(argumentList), null);
-
-            return objectCreationExpression;
+            var argument = SyntaxFactory.Argument(SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(index)));
+            return SyntaxFactory.ElementAccessExpression(memberAccess, SyntaxFactory.BracketedArgumentList(SyntaxFactory.SeparatedList(new[] {argument})));
         }
 
         private static TypeSyntax GetSingleGenericTypeNameFromGenericNameSyntax(SyntaxNode genericNameSyntax)
@@ -79,7 +79,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
 
         private readonly SemanticModel semanticModel;
 
-        private static List<ITypeInfo> Types = new List<ITypeInfo>();
-        private const string typeInfoClassName ="MyClass";
+        private static readonly string typeInfoName = typeof(TypeInfo).FullName;
+        private static readonly string thisName = typeof(TypeInfoRewriter).FullName;
+
+        public static List<ITypeInfo> Types = new List<ITypeInfo>();
     }
 }

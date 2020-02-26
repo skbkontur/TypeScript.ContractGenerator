@@ -35,6 +35,7 @@ namespace AspNetCoreExample.Generator
 
         protected override TypeLocation GetApiBase(ITypeInfo controllerType)
         {
+            var e = GetBody(null, null).Equals(null);
             var apiBaseName = GetApiBaseName(controllerType);
             return new TypeLocation
                 {
@@ -129,6 +130,7 @@ namespace AspNetCoreExample.Generator
         {
             var route = controller.GetAttributes(TypeInfo.From<RouteAttribute>()).SingleOrDefault();
             var template = (string)route?.AttributeData["Template"];
+
             return template?.StartsWith("v1/user/{userId}") ?? false;
         }
     }
