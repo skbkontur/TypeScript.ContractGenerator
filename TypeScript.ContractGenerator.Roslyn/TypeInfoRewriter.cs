@@ -30,13 +30,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
 
         public override SyntaxNode? VisitInvocationExpression(InvocationExpressionSyntax node)
         {
-            if (node.Expression is MemberAccessExpressionSyntax memberAccess)
+            if (node.Expression is MemberAccessExpressionSyntax memberAccess && GetName(memberAccess.Name) == "From")
             {
                 var typeInfo = semanticModel.GetTypeInfo(memberAccess.Expression);
-
                 if (typeInfo.Type.ToString() == typeInfoName)
                 {
-                    var foundType = GetSingleTypeName(memberAccess, node.ArgumentList);
+                    var foundType = GetSingleType(memberAccess, node.ArgumentList);
 
                     Types.Add(RoslynTypeInfo.From(semanticModel.GetTypeInfo(foundType).Type));
                     return ArrayElement(Types.Count - 1);
@@ -52,29 +51,31 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
             var field = SyntaxFactory.IdentifierName(nameof(Types));
 
             var memberAccess = SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, identifier, field);
-
             var argument = SyntaxFactory.Argument(SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(index)));
             return SyntaxFactory.ElementAccessExpression(memberAccess, SyntaxFactory.BracketedArgumentList(SyntaxFactory.SeparatedList(new[] {argument})));
         }
 
-        private static TypeSyntax GetSingleGenericTypeNameFromGenericNameSyntax(SyntaxNode genericNameSyntax)
+        private static string GetName(SimpleNameSyntax name)
         {
-            return genericNameSyntax.ChildNodes().OfType<TypeArgumentListSyntax>().Single().Arguments.Single();
+            if (name is GenericNameSyntax genericNameSyntax)
+                return genericNameSyntax.Identifier.ToString();
+
+            if (name is IdentifierNameSyntax identifierNameSyntax)
+                return identifierNameSyntax.ToString();
+
+            throw new InvalidOperationException($"Expected either TypeInfo.From<T>() or TypeInfo.From(typeof(T)), but found: {name.Parent}");
         }
 
-        private static TypeSyntax GetSingleTypeName(MemberAccessExpressionSyntax memberAccessExpressionSyntax, BaseArgumentListSyntax argumentListSyntax)
+        private static TypeSyntax GetSingleType(MemberAccessExpressionSyntax memberAccessExpressionSyntax, BaseArgumentListSyntax argumentListSyntax)
         {
             if (memberAccessExpressionSyntax.Name is GenericNameSyntax genericNameSyntax)
-            {
-                return GetSingleGenericTypeNameFromGenericNameSyntax(genericNameSyntax);
-            }
+                return genericNameSyntax.TypeArgumentList.Arguments.Single();
 
-            return GetSingleTypeNameFromArgumentListSyntax(argumentListSyntax);
-        }
+            var argument = argumentListSyntax.Arguments.Single().Expression;
+            if (argument is TypeOfExpressionSyntax typeofExpression)
+                return typeofExpression.Type;
 
-        private static TypeSyntax GetSingleTypeNameFromArgumentListSyntax(BaseArgumentListSyntax argumentListSyntax)
-        {
-            return argumentListSyntax.Arguments.Single().ChildNodes().OfType<TypeOfExpressionSyntax>().Single().ChildNodes().OfType<TypeSyntax>().Single();
+            throw new InvalidOperationException($"Expected either TypeInfo.From<T>() or TypeInfo.From(typeof(T)), but found: {argumentListSyntax.Parent}");
         }
 
         private readonly SemanticModel semanticModel;
