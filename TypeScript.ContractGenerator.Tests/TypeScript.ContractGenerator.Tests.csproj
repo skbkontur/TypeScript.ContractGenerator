@@ -23,5 +23,9 @@
     <ItemGroup>
       <None Update="Files\**\*.ts" CopyToOutputDirectory="Always" />
     </ItemGroup>
+  
+    <ItemGroup>
+      <None Update="Files\ApiControllerTypeBuildingContext.txt" CopyToOutputDirectory="Always" />
+    </ItemGroup>
 
 </Project>

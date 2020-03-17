@@ -30,9 +30,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
 
         public override SyntaxNode? VisitInvocationExpression(InvocationExpressionSyntax node)
         {
-            if (node.Expression is MemberAccessExpressionSyntax memberAccess && GetName(memberAccess.Name) == "From")
+            if (node.Expression is MemberAccessExpressionSyntax memberAccess)
             {
                 var typeInfo = semanticModel.GetTypeInfo(memberAccess.Expression);
+
                 if (typeInfo.Type.ToString() == typeInfoName)
                 {
                     var foundType = GetSingleType(memberAccess, node.ArgumentList);
@@ -53,17 +54,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
             var memberAccess = SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, identifier, field);
             var argument = SyntaxFactory.Argument(SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(index)));
             return SyntaxFactory.ElementAccessExpression(memberAccess, SyntaxFactory.BracketedArgumentList(SyntaxFactory.SeparatedList(new[] {argument})));
-        }
-
-        private static string GetName(SimpleNameSyntax name)
-        {
-            if (name is GenericNameSyntax genericNameSyntax)
-                return genericNameSyntax.Identifier.ToString();
-
-            if (name is IdentifierNameSyntax identifierNameSyntax)
-                return identifierNameSyntax.ToString();
-
-            throw new InvalidOperationException($"Expected either TypeInfo.From<T>() or TypeInfo.From(typeof(T)), but found: {name.Parent}");
         }
 
         private static TypeSyntax GetSingleType(MemberAccessExpressionSyntax memberAccessExpressionSyntax, BaseArgumentListSyntax argumentListSyntax)
