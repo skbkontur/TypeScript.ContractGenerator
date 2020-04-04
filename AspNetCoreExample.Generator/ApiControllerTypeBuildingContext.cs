@@ -11,6 +11,8 @@ using SkbKontur.TypeScript.ContractGenerator.Extensions;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController;
 
+using static SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
+
 using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 using AnotherTypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 
@@ -25,17 +27,18 @@ namespace AspNetCoreExample.Generator
 
         public static bool Accept(ITypeInfo type)
         {
-            var test1 = TypeInfo.From<ControllerBase>();
-            var test2 = TypeInfo.From(typeof(void));
-            var test3 = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo.From<string>();
-            var test4 = AnotherTypeInfo.From(typeof(Task<>));
+            var test0 = From(typeof(int));
+            var test1 = From<Type>();
+            var test2 = TypeInfo.From<ControllerBase>();
+            var test3 = TypeInfo.From(typeof(void));
+            var test4 = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo.From<string>();
+            var test5 = AnotherTypeInfo.From(typeof(Task<>));
 
             return TypeInfo.From<ControllerBase>().IsAssignableFrom(type);
         }
 
         protected override TypeLocation GetApiBase(ITypeInfo controllerType)
         {
-            var e = GetBody(null, null).Equals(null);
             var apiBaseName = GetApiBaseName(controllerType);
             return new TypeLocation
                 {
@@ -130,7 +133,6 @@ namespace AspNetCoreExample.Generator
         {
             var route = controller.GetAttributes(TypeInfo.From<RouteAttribute>()).SingleOrDefault();
             var template = (string)route?.AttributeData["Template"];
-
             return template?.StartsWith("v1/user/{userId}") ?? false;
         }
     }

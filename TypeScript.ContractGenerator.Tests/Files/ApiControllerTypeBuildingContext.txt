@@ -9,6 +9,8 @@ using SkbKontur.TypeScript.ContractGenerator.Extensions;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController;
 
+using static SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
+
 using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 using AnotherTypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 
@@ -23,17 +25,18 @@ namespace AspNetCoreExample.Generator
 
         public static bool Accept(ITypeInfo type)
         {
-            var test1 = SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[0];
-            var test2 = SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[1];
-            var test3 = SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[2];
-            var test4 = SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[3];
+            var test0 = SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[0];
+            var test1 = SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[1];
+            var test2 = SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[2];
+            var test3 = SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[3];
+            var test4 = SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[4];
+            var test5 = SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[5];
 
-            return SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[4].IsAssignableFrom(type);
+            return SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[6].IsAssignableFrom(type);
         }
 
         protected override TypeLocation GetApiBase(ITypeInfo controllerType)
         {
-            var e = GetBody(null, null).Equals(null);
             var apiBaseName = GetApiBaseName(controllerType);
             return new TypeLocation
                 {
@@ -54,29 +57,29 @@ namespace AspNetCoreExample.Generator
             if (typeInfo.IsGenericType)
             {
                 var genericTypeDefinition = typeInfo.GetGenericTypeDefinition();
-                if (genericTypeDefinition.Equals(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[5]) || genericTypeDefinition.Equals(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[6]))
+                if (genericTypeDefinition.Equals(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[7]) || genericTypeDefinition.Equals(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[8]))
                     return ResolveReturnType(typeInfo.GetGenericArguments()[0]);
             }
 
-            if (typeInfo.Equals(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[7]))
-                return SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[8];
             if (typeInfo.Equals(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[9]))
                 return SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[10];
+            if (typeInfo.Equals(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[11]))
+                return SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[12];
             return typeInfo;
         }
 
         protected override BaseApiMethod ResolveBaseApiMethod(IMethodInfo methodInfo)
         {
-            if (methodInfo.GetAttributes(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[11]).Any())
+            if (methodInfo.GetAttributes(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[13]).Any())
                 return BaseApiMethod.Get;
 
-            if (methodInfo.GetAttributes(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[12]).Any())
+            if (methodInfo.GetAttributes(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[14]).Any())
                 return BaseApiMethod.Post;
 
-            if (methodInfo.GetAttributes(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[13]).Any())
+            if (methodInfo.GetAttributes(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[15]).Any())
                 return BaseApiMethod.Put;
 
-            if (methodInfo.GetAttributes(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[14]).Any())
+            if (methodInfo.GetAttributes(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[16]).Any())
                 return BaseApiMethod.Delete;
 
             throw new NotSupportedException($"Unresolved http verb for method {methodInfo.Name} at controller {methodInfo.DeclaringType?.Name}");
@@ -99,12 +102,12 @@ namespace AspNetCoreExample.Generator
 
         protected override IParameterInfo[] GetQueryParameters(IParameterInfo[] parameters, ITypeInfo controllerType)
         {
-            return parameters.Where(x => PassParameterToCall(x, controllerType) && !x.GetAttributes(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[15]).Any()).ToArray();
+            return parameters.Where(x => PassParameterToCall(x, controllerType) && !x.GetAttributes(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[17]).Any()).ToArray();
         }
 
         protected override IParameterInfo GetBody(IParameterInfo[] parameters, ITypeInfo controllerType)
         {
-            return parameters.SingleOrDefault(x => PassParameterToCall(x, controllerType) && x.GetAttributes(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[16]).Any());
+            return parameters.SingleOrDefault(x => PassParameterToCall(x, controllerType) && x.GetAttributes(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[18]).Any());
         }
 
         protected override IMethodInfo[] GetMethodsToImplement(ITypeInfo controllerType)
@@ -117,7 +120,7 @@ namespace AspNetCoreExample.Generator
 
         private string AppendRoutePrefix(string routeTemplate, ITypeInfo controllerType)
         {
-            var routeAttribute = controllerType.GetAttributes(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[17]).SingleOrDefault();
+            var routeAttribute = controllerType.GetAttributes(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[19]).SingleOrDefault();
             var fullRoute = (routeAttribute == null ? "" : routeAttribute.AttributeData["Template"] + "/") + routeTemplate;
             if (IsUserScopedApi(controllerType))
                 return fullRoute.Substring("v1/user/{userId}/".Length);
@@ -126,9 +129,8 @@ namespace AspNetCoreExample.Generator
 
         private bool IsUserScopedApi(ITypeInfo controller)
         {
-            var route = controller.GetAttributes(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[18]).SingleOrDefault();
+            var route = controller.GetAttributes(SkbKontur.TypeScript.ContractGenerator.Roslyn.TypeInfoRewriter.Types[20]).SingleOrDefault();
             var template = (string)route?.AttributeData["Template"];
-
             return template?.StartsWith("v1/user/{userId}") ?? false;
         }
     }

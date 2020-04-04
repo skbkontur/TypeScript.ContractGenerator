@@ -1,18 +1,22 @@
 using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+
+using AspNetCoreExample.Api.Controllers;
 
 using FluentAssertions;
 
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
-// тут явно что-то не так. Как я понял Microsoft.CSharp ссылается на System.CodeDom, но я такого не нашел, оказалось что это nuget пакет (мне кажется что это странно)
-using Microsoft.CSharp;
+using Microsoft.CodeAnalysis.CSharp;
 
 using NUnit.Framework;
 
 using SkbKontur.TypeScript.ContractGenerator.Roslyn;
+
+using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests
 {
@@ -21,88 +25,52 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [Test]
         public void Rewrite()
         {
-            GetGeneratedCode();
-        }
-
-        private static string GetGeneratedCode()
-        {
             var project = AdhocProject.FromDirectory($"{TestContext.CurrentContext.TestDirectory}/../../../../AspNetCoreExample.Generator");
-            var types = new[] {typeof(object), typeof(HashSet<>), typeof(Internals.TypeInfo)};
-            var compilation = project.GetCompilationAsync().GetAwaiter().GetResult().AddReferences(types.Select(x => MetadataReference.CreateFromFile(x.Assembly.Location)));
+            var compilation = project.GetCompilationAsync().GetAwaiter().GetResult()
+                                     .AddReferences(GetMetadataReferences())
+                                     .AddReferences(MetadataReference.CreateFromFile(typeof(ControllerBase).Assembly.Location));
             var tree = compilation.SyntaxTrees.Single(x => x.FilePath.Contains("ApiControllerTypeBuildingContext.cs"));
 
             var root = tree.GetRoot();
 
             var result = new TypeInfoRewriter(compilation.GetSemanticModel(tree)).Visit(root);
             var str = result.ToFullString();
-            return str;
-        }
 
-        private static string GetFakeGeneratedCode()
-        {
-            return File.ReadAllText($"{TestContext.CurrentContext.TestDirectory}/Files/FakeApiControllerTypeBuildingContext.txt").Replace("\r\n", "\n");
-        }
-
-        [Test]
-        public void ApiControllerTypeBuildingContextRewrite()
-        {
             var expectedCode = File.ReadAllText($"{TestContext.CurrentContext.TestDirectory}/Files/ApiControllerTypeBuildingContext.txt").Replace("\r\n", "\n");
 
-            var str = GetGeneratedCode();
-
             str.Diff(expectedCode).ShouldBeEmpty();
+
+            var assembly = CompileAssembly(result.SyntaxTree);
+            var buildingContext = assembly.GetType("AspNetCoreExample.Generator.ApiControllerTypeBuildingContext");
+            var acceptMethod = buildingContext.GetMethod("Accept", BindingFlags.Public | BindingFlags.Static);
+
+            acceptMethod.Invoke(null, new object[] {TypeInfo.From<bool>()}).Should().Be(false);
+            acceptMethod.Invoke(null, new object[] {TypeInfo.From<UsersController>()}).Should().Be(true);
         }
 
-        [Test]
-        public void ApiControllerTypeBuildingContextBeRewritedBuild()
+        private static Assembly CompileAssembly(SyntaxTree tree)
         {
-            var assemblies = AppDomain.CurrentDomain
-                                      .GetAssemblies()
-                                      .Where(a => !a.IsDynamic)
-                                      .Select(a => a.Location)
-                                      .ToArray();
+            var options = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
+            var compilation = CSharpCompilation.Create("TypeScript.CustomGenerator.Customization", new[] {tree}, GetMetadataReferences(), options);
+            var peStream = new MemoryStream();
+            var pdbStream = new MemoryStream();
+            var emitResult = compilation.Emit(peStream, pdbStream);
+            if (!emitResult.Success)
+            {
+                foreach (var diagnostic in emitResult.Diagnostics)
+                    Console.WriteLine(diagnostic);
+                Assert.Fail("Failed to compile");
+            }
 
-            var types = new[] {typeof(RoslynTypeInfo)};
-            var assemblies2 = types.Select(x => x.Assembly.Location).ToArray();
+            return Assembly.Load(peStream.ToArray(), pdbStream.ToArray());
+        }
 
-            var codeProvider = new CSharpCodeProvider();
-           
-            //var codeProvider = CodeDomProvider.CreateProvider("CSharp");
-            
-            // wtf? https://stackoverflow.com/questions/21078298/c-sharp-codedom-errors
-
-            // походу мне надо новый фраймворк??
-            var compilerParameters = new CompilerParameters();
-            //compilerParameters.ReferencedAssemblies.Add("System.dll"); // System, System.Net, etc namespaces
-            //var ttt = "C:/Projects/mentorskaya/TypeScript.ContractGenerator/TypeScript.ContractGenerator.Tests/bin/Debug/net472/SkbKontur.TypeScript.ContractGenerator.Roslyn";
-            // compilerParameters.ReferencedAssemblies.Add(ttt); // System, System.Net, etc namespaces
-            //compilerParameters.ReferencedAssemblies.Add("System.Data.dll"); // System.Data namespace
-            //compilerParameters.ReferencedAssemblies.Add("System.Data.SQLite.dll"); // System.Data.SqlLite namespace
-            //compilerParameters.ReferencedAssemblies.Add("System.Xml.dll"); // System.Xml namespace
-            //compilerParameters.ReferencedAssemblies.Add("System.Windows.Forms.dll"); // System.Windows.Forms namespace
-
-            compilerParameters.ReferencedAssemblies.AddRange(assemblies);
-            //compilerParameters.ReferencedAssemblies.AddRange(assemblies2);
-            // compilerParameters.CompilerOptions = "/t:library";
-            compilerParameters.GenerateInMemory = true;
-
-            var code = GetFakeGeneratedCode();
-
-            var compilerResults = codeProvider.CompileAssemblyFromSource(compilerParameters, code);
-            // тут ошибка
-            // error CS0006: Metadata file 'System.Data.SQLite.dll' could not be found
-            compilerResults.Errors.Count.Should().Be(0);
-
-            /*if (compilerResults.Errors.Count > 0)
-                throw new Exception($"Error ({compilerResults.Errors[0].ErrorText}) evaluating: {code}");
-
-            var builderEvaluator = compilerResults.CompiledAssembly.CreateInstance("Eval.BuilderEvaluator");
-            if (builderEvaluator == null)
-                throw new Exception("Unable to create message builder evaluator: buildEvaluator instance is null");
-
-            var getMessageMethodInfo = builderEvaluator.GetType().GetMethod("GetMessage");
-            if (getMessageMethodInfo == null)
-                throw new Exception("Unable to create message builder evaluator: getMessageMethodInfo is null");*/
+        private static MetadataReference[] GetMetadataReferences()
+        {
+            var types = new[] {typeof(object), typeof(Enumerable), typeof(ISet<>), typeof(HashSet<>), typeof(TypeInfo), typeof(RoslynTypeInfo)};
+            var netstandardLocation = Path.Combine(Path.GetDirectoryName(typeof(object).Assembly.Location), "netstandard.dll");
+            var locations = types.Select(x => x.Assembly.Location).Concat(new[] {netstandardLocation}).Distinct();
+            return locations.Select(x => (MetadataReference)MetadataReference.CreateFromFile(x)).ToArray();
         }
     }
 }

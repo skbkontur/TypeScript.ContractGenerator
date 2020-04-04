@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\AspNetCoreExample.Api\AspNetCoreExample.Api.csproj" />
       <ProjectReference Include="..\TypeScript.ContractGenerator.Roslyn\TypeScript.ContractGenerator.Roslyn.csproj" />
     </ItemGroup>
 
@@ -18,14 +19,10 @@
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
       <PackageReference Include="NUnit" Version="3.12.0" />
       <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
-      <PackageReference Include="System.CodeDom" Version="4.7.0" />
     </ItemGroup>
 
     <ItemGroup>
       <None Update="Files\**\*.ts" CopyToOutputDirectory="Always" />
-    </ItemGroup>
-  
-    <ItemGroup>
       <None Update="Files\*.txt" CopyToOutputDirectory="Always" />
     </ItemGroup>
 

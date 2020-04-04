@@ -4,7 +4,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 {
     public class FilesGenerationContext
     {
-        protected FilesGenerationContext(string fileExtension, Func<string, string> headerGenerationFunc)
+        private FilesGenerationContext(string fileExtension, Func<string, string> headerGenerationFunc)
         {
             FileExtension = fileExtension;
             HeaderGenerationFunc = headerGenerationFunc;
