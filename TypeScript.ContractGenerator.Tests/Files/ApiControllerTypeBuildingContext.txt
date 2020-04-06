@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 using SkbKontur.TypeScript.ContractGenerator;
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController;
-
-using static SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
-
-using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
-using AnotherTypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 
 namespace AspNetCoreExample.Generator
 {

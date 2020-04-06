@@ -34,6 +34,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             var root = tree.GetRoot();
 
             var result = new TypeInfoRewriter(compilation.GetSemanticModel(tree)).Visit(root);
+            compilation = compilation.ReplaceSyntaxTree(tree, result.SyntaxTree);
+            result = new RemoveUsingsRewriter(compilation.GetSemanticModel(result.SyntaxTree)).Visit(result);
             var str = result.ToFullString();
 
             var expectedCode = File.ReadAllText($"{TestContext.CurrentContext.TestDirectory}/Files/ApiControllerTypeBuildingContext.txt").Replace("\r\n", "\n");

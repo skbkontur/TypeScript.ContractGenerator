@@ -19,18 +19,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
             this.semanticModel = semanticModel;
         }
 
-        public override SyntaxNode? VisitUsingDirective(UsingDirectiveSyntax node)
-        {
-            var @namespace = node.Name.ToString();
-            if (@namespace != "System" && !@namespace.StartsWith("System.") && !@namespace.StartsWith("SkbKontur.TypeScript.ContractGenerator"))
-                return null;
-
-            return base.VisitUsingDirective(node);
-        }
-
         public override SyntaxNode? VisitInvocationExpression(InvocationExpressionSyntax node)
         {
-            var symbol = semanticModel.GetSymbolInfo(node.Expression).Symbol;
+            var symbol = semanticModel.GetSymbolInfo(node).Symbol;
             if (symbol == null || !(symbol is IMethodSymbol methodSymbol))
                 return base.VisitInvocationExpression(node);
 
