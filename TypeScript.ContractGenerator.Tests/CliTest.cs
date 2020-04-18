@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 using FluentAssertions;
 
@@ -8,18 +9,17 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
 {
     public class CliTest
     {
-        private static readonly string pathToSlnDirectory = $"{TestContext.CurrentContext.TestDirectory}/../../../../";
-        private static readonly string pathToAspNetCoreExampleGeneratorAssemblyDirectory = $"{pathToSlnDirectory}/AspNetCoreExample.Generator/bin/Debug/netcoreapp3.1";
-        private static readonly string pathToCliDirectory = $"{pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/Debug/netcoreapp3.1";
-
         [Test]
         public void CliGenerated()
         {
-            BuildProjectByPath($"{pathToSlnDirectory}/AspNetCoreExample.Generator/AspNetCoreExample.Generator.csproj");
-            BuildProjectByPath($"{pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/TypeScript.ContractGenerator.Cli.csproj");
+#if RELEASE
+            const string configuration = "Release";
+#elif DEBUG
+            const string configuration = "Debug";
+#endif
 
-            RunCmdCommand($"dotnet {pathToCliDirectory}/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
-                          $"-a {pathToAspNetCoreExampleGeneratorAssemblyDirectory}/AspNetCoreExample.Generator.dll " +
+            RunCmdCommand($"dotnet {pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/netcoreapp3.1/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
+                          $"-a {pathToSlnDirectory}/AspNetCoreExample.Generator/bin/{configuration}/netcoreapp3.1/AspNetCoreExample.Generator.dll " +
                           $"-o {TestContext.CurrentContext.TestDirectory}/cliOutput " +
                           "--nullabilityMode Optimistic " +
                           "--lintMode TsLint " +
@@ -46,9 +46,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             process.ExitCode.Should().Be(0);
         }
 
-        private static void BuildProjectByPath(string pathToCsproj)
-        {
-            RunCmdCommand($"dotnet build {pathToCsproj}");
-        }
+        private static readonly string pathToSlnDirectory = $"{TestContext.CurrentContext.TestDirectory}/../../../../";
     }
 }

@@ -71,7 +71,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
         {
             Console.WriteLine("Generating TypeScript");
 
-            ExecuteAndUnload(o.Assembly, out var testAlcWeakRef, o);
+            ExecuteAndUnload(Path.GetFullPath(o.Assembly), out var testAlcWeakRef, o);
 
             // это нужно для того чтобы сборка из AssemblyLoadContext была выгруженна
             // https://docs.microsoft.com/en-us/dotnet/standard/assembly/unloadability?view=netcore-3.1
@@ -103,7 +103,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
             alc.Unload();
         }
 
-        private static T GetSingleImplementation<T>(Assembly assembly)
+        private static T? GetSingleImplementation<T>(Assembly assembly)
             where T : class
         {
             var implementations = assembly.GetImplementations<T>();

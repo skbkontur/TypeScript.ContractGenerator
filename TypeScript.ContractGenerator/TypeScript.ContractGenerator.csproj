@@ -5,9 +5,6 @@
       <AssemblyName>SkbKontur.TypeScript.ContractGenerator</AssemblyName>
       <RootNamespace>SkbKontur.TypeScript.ContractGenerator</RootNamespace>
       <PackageId>SkbKontur.TypeScript.ContractGenerator</PackageId>
-      <LangVersion>8</LangVersion>
-      <Nullable>enable</Nullable>
-      <NoWarn>8618</NoWarn>
     </PropertyGroup>
 
 </Project>

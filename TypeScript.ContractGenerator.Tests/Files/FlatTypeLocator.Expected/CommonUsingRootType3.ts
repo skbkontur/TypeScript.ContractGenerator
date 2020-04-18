@@ -1,4 +1,4 @@
-// eslint-disable
+/* eslint-disable */
 // TypeScriptContractGenerator's generated content
 import { CommonType } from './CommonType';
 import { CommonUsingRootType } from './CommonUsingRootType';

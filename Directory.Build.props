@@ -1,5 +1,11 @@
 <Project>
 
+  <PropertyGroup>
+    <LangVersion>8</LangVersion>
+    <Nullable>enable</Nullable>
+    <NoWarn>8618</NoWarn>
+  </PropertyGroup>
+
   <!-- source line mappings are not supported in portable pdb format yet (https://github.com/dotnet/core/blob/master/Documentation/diagnostics/portable_pdb.md) -->
   <PropertyGroup>
     <DebugType>full</DebugType>
@@ -13,7 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nerdbank.GitVersioning" Version="3.0.50" PrivateAssets="All" />
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.1.74" PrivateAssets="All" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 

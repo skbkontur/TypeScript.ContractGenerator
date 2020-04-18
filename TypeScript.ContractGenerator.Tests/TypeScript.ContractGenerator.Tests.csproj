@@ -4,8 +4,6 @@
       <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
       <AssemblyName>SkbKontur.TypeScript.ContractGenerator.Tests</AssemblyName>
       <RootNamespace>SkbKontur.TypeScript.ContractGenerator.Tests</RootNamespace>
-      <LangVersion>8</LangVersion>
-      <IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
@@ -14,8 +12,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="DiffPlex" Version="1.5.0" />
-      <PackageReference Include="FluentAssertions" Version="5.10.0" />
+      <PackageReference Include="DiffPlex" Version="1.6.1" />
+      <PackageReference Include="FluentAssertions" Version="5.10.3" />
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
       <PackageReference Include="NUnit" Version="3.12.0" />
       <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />

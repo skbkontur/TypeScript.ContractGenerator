@@ -1,4 +1,4 @@
-// eslint-disable
+/* eslint-disable */
 // TypeScriptContractGenerator's generated content
 
 export type CommonType = {

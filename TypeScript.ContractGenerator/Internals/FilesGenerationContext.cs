@@ -12,8 +12,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         public static FilesGenerationContext Create(LinterDisableMode linterDisableMode)
         {
-            var linterDisable = linterDisableMode == LinterDisableMode.TsLint ? "tslint:disable" : "eslint-disable";
-            return new FilesGenerationContext("ts", marker => $"// {linterDisable}\n{marker}\n");
+            var linterDisable = linterDisableMode == LinterDisableMode.TsLint ? "// tslint:disable" : "/* eslint-disable */";
+            return new FilesGenerationContext("ts", marker => $"{linterDisable}\n{marker}\n");
         }
 
         public string FileExtension { get; }
