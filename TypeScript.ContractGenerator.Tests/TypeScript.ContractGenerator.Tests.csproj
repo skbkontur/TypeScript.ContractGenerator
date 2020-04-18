@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\AspNetCoreExample.Api\AspNetCoreExample.Api.csproj" />
       <ProjectReference Include="..\TypeScript.ContractGenerator.Roslyn\TypeScript.ContractGenerator.Roslyn.csproj" />
     </ItemGroup>
 
@@ -22,6 +23,7 @@
 
     <ItemGroup>
       <None Update="Files\**\*.ts" CopyToOutputDirectory="Always" />
+      <None Update="Files\*.txt" CopyToOutputDirectory="Always" />
     </ItemGroup>
 
 </Project>
