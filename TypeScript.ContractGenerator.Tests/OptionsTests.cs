@@ -17,11 +17,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
 
-        [TestCase(true, "explicit-nullability-enabled")]
-        [TestCase(false, "explicit-nullability-disabled")]
-        public void ExplicitNullabilityTest(bool explicitNullabilityEnabled, string expectedFileName)
+        [TestCase(NullabilityMode.Pessimistic, "explicit-nullability-enabled")]
+        [TestCase(NullabilityMode.None, "explicit-nullability-disabled")]
+        public void ExplicitNullabilityTest(NullabilityMode nullabilityMode, string expectedFileName)
         {
-            var generatedCode = GenerateCode(new TypeScriptGenerationOptions {EnableExplicitNullability = explicitNullabilityEnabled}, CustomTypeGenerator.Null, typeof(ExplicitNullabilityRootType)).Single();
+            var generatedCode = GenerateCode(new TypeScriptGenerationOptions {NullabilityMode = nullabilityMode}, CustomTypeGenerator.Null, typeof(ExplicitNullabilityRootType)).Single();
             var expectedCode = GetExpectedCode($"Options/{expectedFileName}");
             generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }

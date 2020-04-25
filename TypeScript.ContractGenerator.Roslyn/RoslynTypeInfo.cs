@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis;
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 
+using NullabilityInfo = SkbKontur.TypeScript.ContractGenerator.Internals.NullabilityInfo;
 using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
@@ -16,6 +17,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         private RoslynTypeInfo(ITypeSymbol typeSymbol)
         {
             TypeSymbol = typeSymbol;
+        }
+
+        private RoslynTypeInfo(ITypeSymbol typeSymbol, NullabilityInfo? nullabilityInfo)
+        {
+            TypeSymbol = typeSymbol;
+            NullabilityInfo = nullabilityInfo;
         }
 
         public static ITypeInfo From(ITypeSymbol typeSymbol)
@@ -29,6 +36,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         }
 
         public ITypeSymbol TypeSymbol { get; }
+        private NullabilityInfo? NullabilityInfo { get; }
 
         public string Name => TypeSymbol.MetadataName;
         public string FullName => TypeSymbol.Name;
@@ -116,11 +124,21 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
             return null;
         }
 
+        public ITypeInfo WithNullabilityInfo(NullabilityInfo? info)
+        {
+            return new RoslynTypeInfo(TypeSymbol, info);
+        }
+
         public string[] GetEnumNames()
         {
             if (TypeSymbol is INamedTypeSymbol namedTypeSymbol)
                 return namedTypeSymbol.GetMembers().Select(x => x.Name).Where(x => x != ".ctor" && x != "value__").ToArray();
             return new string[0];
+        }
+
+        public bool CanBeNull(NullabilityMode nullabilityMode)
+        {
+            return TypeSymbol.NullableAnnotation == NullableAnnotation.Annotated;
         }
 
         public bool IsAssignableFrom(ITypeInfo type)

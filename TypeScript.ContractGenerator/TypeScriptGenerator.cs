@@ -108,13 +108,16 @@ namespace SkbKontur.TypeScript.ContractGenerator
             if (DictionaryTypeBuildingContext.Accept(typeInfo))
                 return new DictionaryTypeBuildingContext(typeInfo, Options);
 
+            if (TaskTypeBuildingContext.Accept(typeInfo))
+                return new TaskTypeBuildingContext(typeInfo, Options);
+
             if (typeInfo.IsEnum)
                 return new TypeScriptEnumTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), typeInfo);
 
             if (typeInfo.IsGenericType && !typeInfo.IsGenericTypeDefinition && typeInfo.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(Nullable<>))))
             {
                 var underlyingType = typeInfo.GetGenericArguments().Single();
-                if (Options.EnableExplicitNullability)
+                if (Options.NullabilityMode != NullabilityMode.None)
                     return new NullableTypeBuildingContext(underlyingType, Options.UseGlobalNullable);
                 return GetTypeBuildingContext(typeLocation, underlyingType);
             }

@@ -19,7 +19,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
         {
             var types = typeGenerator.TypesProvider
                                      .GetAssemblyTypes(type)
-                                     .Where(x => x.BaseType.Equals(type))
+                                     .Where(x => x.BaseType != null && x.BaseType.Equals(type))
                                      .ToArray();
 
             Declaration = new TypeScriptTypeDeclaration

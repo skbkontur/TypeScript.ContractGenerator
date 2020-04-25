@@ -42,13 +42,13 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return GetNullableFlagsInternal(attributeProvider) ?? new[] {contextFlag};
         }
 
-        private static byte[]? GetNullableFlagsInternal(IAttributeProvider? attributeProvider)
+        public static byte[]? GetNullableFlagsInternal(this IAttributeProvider? attributeProvider)
         {
             var nullableAttribute = attributeProvider?.GetAttributes(true).SingleOrDefault(a => a.AttributeType.Name == AnnotationsNames.Nullable);
             return nullableAttribute?.AttributeData["NullableFlags"] as byte[];
         }
 
-        private static byte? GetNullableContextFlag(IAttributeProvider? attributeProvider)
+        public static byte? GetNullableContextFlag(this IAttributeProvider? attributeProvider)
         {
             var nullableAttribute = attributeProvider?.GetAttributes(true).SingleOrDefault(a => a.AttributeType.Name == AnnotationsNames.NullableContext);
             return (byte?)nullableAttribute?.AttributeData["Flag"];
@@ -70,7 +70,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         public static TypeScriptType BuildTargetNullableTypeByOptions(TypeScriptType innerType, bool isNullable, TypeScriptGenerationOptions options)
         {
-            if (!(innerType is INullabilityWrapperType) && isNullable && options.EnableExplicitNullability)
+            if (!(innerType is INullabilityWrapperType) && isNullable && options.NullabilityMode != NullabilityMode.None)
             {
                 if (!options.UseGlobalNullable)
                     return new TypeScriptOrNullType(innerType);

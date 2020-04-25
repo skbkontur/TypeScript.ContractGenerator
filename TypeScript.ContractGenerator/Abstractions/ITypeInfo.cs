@@ -1,6 +1,8 @@
 using System;
 using System.Reflection;
 
+using SkbKontur.TypeScript.ContractGenerator.Internals;
+
 namespace SkbKontur.TypeScript.ContractGenerator.Abstractions
 {
     public interface ITypeInfo : IAttributeProvider, IEquatable<ITypeInfo>
@@ -26,7 +28,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Abstractions
         ITypeInfo[] GetInterfaces();
         ITypeInfo GetGenericTypeDefinition();
         ITypeInfo GetElementType();
+        ITypeInfo WithNullabilityInfo(NullabilityInfo? info);
         string[] GetEnumNames();
+        bool CanBeNull(NullabilityMode nullabilityMode);
         bool IsAssignableFrom(ITypeInfo type);
     }
 }

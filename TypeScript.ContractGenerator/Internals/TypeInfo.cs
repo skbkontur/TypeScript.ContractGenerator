@@ -13,6 +13,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             Type = type;
         }
 
+        private TypeInfo(Type type, NullabilityInfo? nullabilityInfo)
+        {
+            Type = type;
+            NullabilityInfo = nullabilityInfo;
+        }
+
         public static ITypeInfo From<T>()
         {
             return new TypeInfo(typeof(T));
@@ -24,6 +30,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         }
 
         public Type Type { get; }
+        private NullabilityInfo? NullabilityInfo { get; }
 
         public string Name => Type.Name;
         public string FullName => Type.FullName;
@@ -71,12 +78,22 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         public ITypeInfo GetElementType()
         {
-            return From(Type.GetElementType());
+            return From(Type.GetElementType()).WithNullabilityInfo(NullabilityInfo?.ForItem());
+        }
+
+        public ITypeInfo WithNullabilityInfo(NullabilityInfo? info)
+        {
+            return new TypeInfo(Type, info);
         }
 
         public string[] GetEnumNames()
         {
             return Type.GetEnumNames();
+        }
+
+        public bool CanBeNull(NullabilityMode nullabilityMode)
+        {
+            return NullabilityInfo.CanBeNull(nullabilityMode);
         }
 
         public bool IsAssignableFrom(ITypeInfo type)

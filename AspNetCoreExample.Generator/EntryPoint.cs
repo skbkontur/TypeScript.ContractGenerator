@@ -15,7 +15,6 @@ namespace AspNetCoreExample.Generator
             var targetPath = Path.Combine(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).FullName, "../../../output");
             var options = new TypeScriptGenerationOptions
                 {
-                    EnableExplicitNullability = true,
                     EnableOptionalProperties = false,
                     LinterDisableMode = LinterDisableMode.TsLint,
                     UseGlobalNullable = true,
