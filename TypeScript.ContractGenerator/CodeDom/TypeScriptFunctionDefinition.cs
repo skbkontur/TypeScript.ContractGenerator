@@ -14,10 +14,15 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
         public TypeScriptType Result { get; set; }
         public bool IsAsync { get; set; }
         public bool IsStatic { get; set; }
+        public bool IsPublic { get; set; }
 
         public override string GenerateCode(string name, ICodeGenerationContext context)
         {
             var result = new StringBuilder();
+            if (IsPublic)
+            {
+                result.Append("public ");
+            }
             if (IsStatic)
             {
                 result.Append("static ");
