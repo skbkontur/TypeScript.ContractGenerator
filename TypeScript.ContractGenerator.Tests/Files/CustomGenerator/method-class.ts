@@ -1,9 +1,9 @@
 
-export type CommonType = {
-    count: number;
-    string?: null | string;
-};
 export interface MethodRootType {
-    Get(): null | CommonType;
-    GetNotNull(): CommonType;
+    get(s: null | string): null | object;
+    getNotNull(s: string): object;
+    getAsync(s: string): Promise<object>;
+    postAsync(s: null | string): null | Promise<void>;
+    string: string;
+    nullableString: null | string;
 }

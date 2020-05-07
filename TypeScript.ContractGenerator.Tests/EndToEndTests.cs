@@ -67,6 +67,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         public void CustomGeneratorWithMethodsTest(Type rootType, Type type, string expectedFileName)
         {
             var options = TypeScriptGenerationOptions.Default;
+            var rootTypes = new[] {typeof(MethodRootType), typeof(NullableReferenceMethodType)};
+            var customGenerator = new TestCustomTypeGenerator();
 
             options.NullabilityMode = NullabilityMode.Pessimistic;
             var generatedCode = GenerateCode(options, (ICustomTypeGenerator)Activator.CreateInstance(type), rootType).Single();

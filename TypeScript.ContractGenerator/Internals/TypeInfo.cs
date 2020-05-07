@@ -13,10 +13,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             Type = type;
         }
 
-        private TypeInfo(Type type, NullabilityInfo? nullabilityInfo)
+        private TypeInfo(Type type, IAttributeProvider memberInfo)
         {
             Type = type;
-            NullabilityInfo = nullabilityInfo;
+            Member = memberInfo;
+            NullabilityInfo = NullabilityInfo.From(memberInfo);
         }
 
         public static ITypeInfo From<T>()
@@ -30,7 +31,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         }
 
         public Type Type { get; }
-        private NullabilityInfo? NullabilityInfo { get; }
+        public NullabilityInfo? NullabilityInfo { get; }
 
         public string Name => Type.Name;
         public string FullName => Type.FullName;
@@ -45,6 +46,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         public bool IsGenericParameter => Type.IsGenericParameter;
         public bool IsGenericTypeDefinition => Type.IsGenericTypeDefinition;
         public ITypeInfo? BaseType => From(Type.BaseType);
+        public IAttributeProvider? Member { get; }
 
         public IMethodInfo[] GetMethods(BindingFlags bindingAttr)
         {
@@ -78,12 +80,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         public ITypeInfo GetElementType()
         {
-            return From(Type.GetElementType()).WithNullabilityInfo(NullabilityInfo?.ForItem());
+            return From(Type.GetElementType());
         }
 
-        public ITypeInfo WithNullabilityInfo(NullabilityInfo? info)
+        public ITypeInfo WithMemberInfo(IAttributeProvider? memberInfo)
         {
-            return new TypeInfo(Type, info);
+            return new TypeInfo(Type, memberInfo);
         }
 
         public string[] GetEnumNames()
@@ -93,7 +95,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         public bool CanBeNull(NullabilityMode nullabilityMode)
         {
-            return NullabilityInfo.CanBeNull(nullabilityMode);
+            return NullabilityInfo?.CanBeNull(nullabilityMode) ?? false;
         }
 
         public bool IsAssignableFrom(ITypeInfo type)

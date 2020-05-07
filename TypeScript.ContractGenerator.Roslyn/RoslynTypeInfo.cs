@@ -19,10 +19,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
             TypeSymbol = typeSymbol;
         }
 
-        private RoslynTypeInfo(ITypeSymbol typeSymbol, NullabilityInfo? nullabilityInfo)
+        private RoslynTypeInfo(ITypeSymbol typeSymbol, IAttributeProvider memberInfo)
         {
             TypeSymbol = typeSymbol;
-            NullabilityInfo = nullabilityInfo;
+            Member = memberInfo;
+            NullabilityInfo = NullabilityInfo.FromRoslyn(memberInfo);
         }
 
         public static ITypeInfo From(ITypeSymbol typeSymbol)
@@ -36,7 +37,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         }
 
         public ITypeSymbol TypeSymbol { get; }
-        private NullabilityInfo? NullabilityInfo { get; }
+        public NullabilityInfo? NullabilityInfo { get; }
 
         public string Name => TypeSymbol.MetadataName;
         public string FullName => TypeSymbol.Name;
@@ -51,6 +52,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         public bool IsGenericParameter => TypeSymbol.TypeKind == TypeKind.TypeParameter;
         public bool IsGenericTypeDefinition => IsGenericType && TypeSymbol.IsDefinition;
         public ITypeInfo BaseType => From(TypeSymbol.BaseType);
+        public IAttributeProvider? Member { get; }
 
         public IMethodInfo[] GetMethods(BindingFlags bindingAttr)
         {
@@ -124,9 +126,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
             return null;
         }
 
-        public ITypeInfo WithNullabilityInfo(NullabilityInfo? info)
+        public ITypeInfo WithMemberInfo(IAttributeProvider memberInfo)
         {
-            return new RoslynTypeInfo(TypeSymbol, info);
+            return new RoslynTypeInfo(TypeSymbol, memberInfo);
         }
 
         public string[] GetEnumNames()

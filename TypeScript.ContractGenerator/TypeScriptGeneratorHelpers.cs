@@ -10,6 +10,11 @@ namespace SkbKontur.TypeScript.ContractGenerator
 {
     public static class TypeScriptGeneratorHelpers
     {
+        public static TypeScriptType ReferenceFrom(this ITypeGenerator typeGenerator, ITypeInfo type, TypeScriptUnit typeScriptUnit)
+        {
+            return typeGenerator.ResolveType(type).ReferenceFrom(type, typeScriptUnit, typeGenerator);
+        }
+
         public static (bool, ITypeInfo) ProcessNullable(IAttributeProvider? attributeProvider, ITypeInfo type, NullabilityMode nullabilityMode)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(Nullable<>))))

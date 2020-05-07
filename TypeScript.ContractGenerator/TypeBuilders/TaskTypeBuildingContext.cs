@@ -6,11 +6,11 @@ using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
-    public class TaskTypeBuildingContext : ITypeBuildingContext
+    public class TaskTypeBuildingContext : TypeBuildingContextBase
     {
         public TaskTypeBuildingContext(ITypeInfo taskType, TypeScriptGenerationOptions options)
+            : base(taskType)
         {
-            this.taskType = taskType;
             this.options = options;
         }
 
@@ -19,24 +19,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             return type.Equals(TypeInfo.From<Task>()) || type.IsGenericType && type.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(Task<>)));
         }
 
-        public bool IsDefinitionBuilt => true;
-
-        public void Initialize(ITypeGenerator typeGenerator)
+        protected override TypeScriptType ReferenceFromInternal(ITypeInfo type, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
-        }
-
-        public void BuildDefinition(ITypeGenerator typeGenerator)
-        {
-        }
-
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider? attributeProvider)
-        {
-            var itemType = taskType.IsGenericType ? taskType.GetGenericArguments()[0] : TypeInfo.From(typeof(void));
-            var itemTypeScriptType = typeGenerator.ResolveType(itemType).ReferenceFrom(targetUnit, typeGenerator, null);
+            var itemType = Type.IsGenericType ? Type.GetGenericArguments()[0] : TypeInfo.From(typeof(void));
+            var itemTypeScriptType = typeGenerator.ReferenceFrom(itemType, targetUnit);
             return new TypeScriptPromiseOfType(itemTypeScriptType);
         }
 
-        private readonly ITypeInfo taskType;
         private readonly TypeScriptGenerationOptions options;
     }
 }

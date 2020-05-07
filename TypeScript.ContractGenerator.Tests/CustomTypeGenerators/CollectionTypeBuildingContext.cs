@@ -8,11 +8,11 @@ using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 {
-    public class CollectionTypeBuildingContext : ITypeBuildingContext
+    public class CollectionTypeBuildingContext : TypeBuildingContextBase
     {
         public CollectionTypeBuildingContext(ITypeInfo arrayType)
+            : base(arrayType)
         {
-            elementType = arrayType.GetGenericArguments()[0];
         }
 
         public static bool Accept(ITypeInfo typeInfo)
@@ -22,22 +22,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
                    typeInfo.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(ICollection<>))));
         }
 
-        public bool IsDefinitionBuilt => true;
-
-        public void Initialize(ITypeGenerator typeGenerator)
+        protected override TypeScriptType ReferenceFromInternal(ITypeInfo type, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
-        }
-
-        public void BuildDefinition(ITypeGenerator typeGenerator)
-        {
-        }
-
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider attributeProvider)
-        {
-            var itemType = typeGenerator.ResolveType(elementType).ReferenceFrom(targetUnit, typeGenerator, null);
+            var elementType = Type.GetGenericArguments()[0];
+            var itemType = typeGenerator.ReferenceFrom(elementType, targetUnit);
             return new TypeScriptArrayType(itemType);
         }
-
-        private readonly ITypeInfo elementType;
     }
 }

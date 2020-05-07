@@ -8,6 +8,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         bool IsDefinitionBuilt { get; }
         void Initialize(ITypeGenerator typeGenerator);
         void BuildDefinition(ITypeGenerator typeGenerator);
-        TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider? attributeProvider);
+        TypeScriptType ReferenceFrom(ITypeInfo type, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator);
     }
 }

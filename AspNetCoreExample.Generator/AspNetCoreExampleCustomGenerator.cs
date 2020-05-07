@@ -1,7 +1,5 @@
 ﻿using System;
 
-using Microsoft.AspNetCore.Mvc;
-
 using SkbKontur.TypeScript.ContractGenerator;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 

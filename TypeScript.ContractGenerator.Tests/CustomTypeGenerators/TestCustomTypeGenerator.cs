@@ -29,7 +29,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
                 return new CollectionTypeBuildingContext(typeInfo);
 
             if (typeInfo.Equals(TypeInfo.From<TimeSpan>()))
-                return new StringBuildingContext();
+                return new StringBuildingContext(typeInfo);
 
             if (typeInfo.IsAbstract)
                 return new AbstractTypeBuildingContext(unitFactory.GetOrCreateTypeUnit(initialUnitPath), typeInfo);

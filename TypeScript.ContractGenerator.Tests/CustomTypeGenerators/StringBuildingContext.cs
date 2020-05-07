@@ -4,19 +4,14 @@ using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 {
-    public class StringBuildingContext : ITypeBuildingContext
+    public class StringBuildingContext : TypeBuildingContextBase
     {
-        public bool IsDefinitionBuilt => true;
-
-        public void Initialize(ITypeGenerator typeGenerator)
+        public StringBuildingContext(ITypeInfo type)
+            : base(type)
         {
         }
 
-        public void BuildDefinition(ITypeGenerator typeGenerator)
-        {
-        }
-
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider attributeProvider)
+        protected override TypeScriptType ReferenceFromInternal(ITypeInfo type, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
             return new TypeScriptBuildInType("string");
         }

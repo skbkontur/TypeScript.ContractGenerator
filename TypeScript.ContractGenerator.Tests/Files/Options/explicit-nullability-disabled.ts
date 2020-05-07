@@ -1,15 +1,15 @@
 
 export type ExplicitNullabilityRootType = {
     someNotNullClass: SomeClass;
-    someNullableClass?: SomeClass;
+    someNullableClass: SomeClass;
     notNullString: string;
-    nullableString?: string;
+    nullableString: string;
     notNullInt: number;
-    nullableInt?: number;
+    nullableInt: number;
     notNullArray: number[];
-    nullableArray?: number[];
+    nullableArray: number[];
     notNullNullablesArray: number[];
-    nullableNullablesArray?: number[];
+    nullableNullablesArray: number[];
 };
 export type SomeClass = {
     a: number;

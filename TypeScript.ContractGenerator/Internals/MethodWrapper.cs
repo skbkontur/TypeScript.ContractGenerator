@@ -15,7 +15,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         public MethodInfo Method { get; }
 
         public string Name => Method.Name;
-        public ITypeInfo ReturnType => TypeInfo.From(Method.ReturnType).WithNullabilityInfo(NullabilityInfo.From(DeclaringType, this));
+        public ITypeInfo ReturnType => TypeInfo.From(Method.ReturnType).WithMemberInfo(this);
         public ITypeInfo? DeclaringType => TypeInfo.From(Method.DeclaringType);
 
         public IParameterInfo[] GetParameters()

@@ -3,33 +3,22 @@ using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
-    public class NullableTypeBuildingContext : ITypeBuildingContext
+    public class NullableTypeBuildingContext : TypeBuildingContextBase
     {
-        public NullableTypeBuildingContext(ITypeInfo nullableUnderlyingType, bool useGlobalNullable)
+        public NullableTypeBuildingContext(ITypeInfo nullableUnderlyingType, TypeScriptGenerationOptions options)
+            : base(nullableUnderlyingType)
         {
-            itemType = nullableUnderlyingType;
-            this.useGlobalNullable = useGlobalNullable;
+            this.options = options;
         }
 
-        public bool IsDefinitionBuilt => true;
-
-        public void Initialize(ITypeGenerator typeGenerator)
+        protected override TypeScriptType ReferenceFromInternal(ITypeInfo type, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
-        }
-
-        public void BuildDefinition(ITypeGenerator typeGenerator)
-        {
-        }
-
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider? attributeProvider)
-        {
-            var itemTypeScriptType = typeGenerator.ResolveType(itemType).ReferenceFrom(targetUnit, typeGenerator, null);
-            return useGlobalNullable
+            var itemTypeScriptType = typeGenerator.ReferenceFrom(Type, targetUnit);
+            return options.UseGlobalNullable
                        ? (TypeScriptType)new TypeScriptNullableType(itemTypeScriptType)
                        : new TypeScriptOrNullType(itemTypeScriptType);
         }
 
-        private readonly ITypeInfo itemType;
-        private readonly bool useGlobalNullable;
+        private readonly TypeScriptGenerationOptions options;
     }
 }

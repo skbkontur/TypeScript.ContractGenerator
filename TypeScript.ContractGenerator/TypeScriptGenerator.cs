@@ -83,7 +83,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return new TypeScriptTypeMemberDeclaration
                 {
                     Name = propertyInfo.Name.ToLowerCamelCase(),
-                    Optional = isNullable && Options.EnableOptionalProperties,
+                    Optional = isNullable && Options.EnableOptionalProperties && Options.NullabilityMode != NullabilityMode.None,
                     Type = GetMaybeNullableComplexType(unit, trueType, propertyInfo, isNullable),
                 };
         }
@@ -118,7 +118,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             {
                 var underlyingType = typeInfo.GetGenericArguments().Single();
                 if (Options.NullabilityMode != NullabilityMode.None)
-                    return new NullableTypeBuildingContext(underlyingType, Options.UseGlobalNullable);
+                    return new NullableTypeBuildingContext(underlyingType, Options);
                 return GetTypeBuildingContext(typeLocation, underlyingType);
             }
 
@@ -144,10 +144,10 @@ namespace SkbKontur.TypeScript.ContractGenerator
         private TypeScriptType GetTypeScriptType(TypeScriptUnit targetUnit, ITypeInfo typeInfo, IAttributeProvider? attributeProvider)
         {
             if (typeDeclarations.ContainsKey(typeInfo))
-                return typeDeclarations[typeInfo].ReferenceFrom(targetUnit, this, attributeProvider);
+                return typeDeclarations[typeInfo].ReferenceFrom(typeInfo, targetUnit, this);
             if (typeInfo.IsGenericTypeDefinition && typeInfo.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(Nullable<>))))
                 return new TypeScriptNullableType(GetTypeScriptType(targetUnit, typeInfo.GetGenericArguments()[0], null));
-            return ResolveType(typeInfo).ReferenceFrom(targetUnit, this, attributeProvider);
+            return this.ReferenceFrom(typeInfo, targetUnit);
         }
 
         public TypeScriptGenerationOptions Options { get; }

@@ -19,6 +19,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         public IParameterSymbol ParameterSymbol { get; }
 
         public string Name => ParameterSymbol.Name;
-        public ITypeInfo ParameterType => RoslynTypeInfo.From(ParameterSymbol.Type);
+        public ITypeInfo ParameterType => RoslynTypeInfo.From(ParameterSymbol.Type).WithMemberInfo(this);
+        public IMethodInfo Method => new RoslynMethodInfo(ParameterSymbol.ContainingSymbol as IMethodSymbol);
     }
 }

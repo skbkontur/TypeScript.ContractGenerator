@@ -3,15 +3,45 @@ using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
-    public class TypeBuildingContext : ITypeBuildingContext
+    public abstract class TypeBuildingContextBase : ITypeBuildingContext
     {
-        protected TypeBuildingContext(TypeScriptUnit unit, ITypeInfo type)
+        protected TypeBuildingContextBase(ITypeInfo type)
         {
-            Unit = unit;
             Type = type;
         }
 
+        protected ITypeInfo Type { get; private set; }
+
+        public virtual bool IsDefinitionBuilt => true;
+
         public virtual void Initialize(ITypeGenerator typeGenerator)
+        {
+        }
+
+        public virtual void BuildDefinition(ITypeGenerator typeGenerator)
+        {
+        }
+
+        public TypeScriptType ReferenceFrom(ITypeInfo type, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
+        {
+            // if (!type.Equals(Type))
+            // throw new InvalidOperationException($"Expected type {Type} with different meta, but got different type: {type}");
+
+            return ReferenceFromInternal(type, targetUnit, typeGenerator);
+        }
+
+        protected abstract TypeScriptType ReferenceFromInternal(ITypeInfo type, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator);
+    }
+
+    public class TypeBuildingContext : TypeBuildingContextBase
+    {
+        protected TypeBuildingContext(TypeScriptUnit unit, ITypeInfo type)
+            : base(type)
+        {
+            Unit = unit;
+        }
+
+        public override void Initialize(ITypeGenerator typeGenerator)
         {
             Unit.Body.Add(new TypeScriptExportTypeStatement {Declaration = Declaration});
         }
@@ -20,17 +50,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         protected TypeScriptUnit Unit { get; }
 
-        protected ITypeInfo Type { get; }
-
-        public virtual bool IsDefinitionBuilt => true;
-
-        public virtual void BuildDefinition(ITypeGenerator typeGenerator)
+        protected override TypeScriptType ReferenceFromInternal(ITypeInfo type, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
-        }
-
-        public virtual TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider? attributeProvider)
-        {
-            return targetUnit.AddTypeImport(Type, Declaration, Unit);
+            return targetUnit.AddTypeImport(type, Declaration, Unit);
         }
     }
 }

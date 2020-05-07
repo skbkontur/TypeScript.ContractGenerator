@@ -6,32 +6,23 @@ using SkbKontur.TypeScript.ContractGenerator.Extensions;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
-    public class GenericTypeTypeBuildingContext : ITypeBuildingContext
+    public class GenericTypeTypeBuildingContext : TypeBuildingContextBase
     {
         public GenericTypeTypeBuildingContext(ITypeInfo type, TypeScriptGenerationOptions options)
+            : base(type)
         {
-            this.type = type;
             this.options = options;
         }
 
-        public bool IsDefinitionBuilt => true;
-
-        public void Initialize(ITypeGenerator typeGenerator)
+        protected override TypeScriptType ReferenceFromInternal(ITypeInfo type, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
-        }
-
-        public void BuildDefinition(ITypeGenerator typeGenerator)
-        {
-        }
-
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider? attributeProvider)
-        {
-            var typeReference = typeGenerator.ResolveType(type.GetGenericTypeDefinition()).ReferenceFrom(targetUnit, typeGenerator, null);
+            var attributeProvider = type.Member;
+            var typeReference = typeGenerator.ReferenceFrom(Type.GetGenericTypeDefinition(), targetUnit);
             var arguments = new List<TypeScriptType>();
             var nullableIndex = 1;
-            foreach (var argument in type.GetGenericArguments())
+            foreach (var argument in Type.GetGenericArguments())
             {
-                var targetType = typeGenerator.ResolveType(argument).ReferenceFrom(targetUnit, typeGenerator, null);
+                var targetType = typeGenerator.ReferenceFrom(argument, targetUnit);
                 if (options.NullabilityMode == NullabilityMode.NullableReference)
                 {
                     var isNullable = TypeScriptGeneratorHelpers.NullableReferenceCanBeNull(attributeProvider, argument, nullableIndex);
@@ -46,7 +37,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             return new TypeScriptGenericTypeReference((TypeScriptTypeReference)typeReference, arguments.ToArray());
         }
 
-        private readonly ITypeInfo type;
         private readonly TypeScriptGenerationOptions options;
     }
 

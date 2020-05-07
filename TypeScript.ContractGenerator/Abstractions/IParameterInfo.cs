@@ -4,5 +4,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Abstractions
     {
         string Name { get; }
         ITypeInfo ParameterType { get; }
+        IMethodInfo Method { get; }
     }
 }

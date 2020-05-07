@@ -3,6 +3,7 @@ using System.Reflection;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+using SkbKontur.TypeScript.ContractGenerator.Extensions;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
@@ -20,7 +21,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 
             definition.Members.AddRange(Type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                                             .Where(m => !m.Name.Contains("_"))
-                                            .Select(m => new TypeScriptInterfaceFunctionMember(m.Name, typeGenerator.BuildAndImportType(Unit, m, m.ReturnType),
+                                            .Select(m => new TypeScriptInterfaceFunctionMember(m.Name.ToLowerCamelCase(), typeGenerator.BuildAndImportType(Unit, m, m.ReturnType),
                                                                                                m.GetParameters()
                                                                                                 .Select(p => new TypeScriptArgumentDeclaration
                                                                                                     {
@@ -31,7 +32,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
                                                                                                 .ToArray())));
 
             definition.Members.AddRange(Type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                                            .Select(x => new TypeScriptInterfacePropertyMember(x.Name, typeGenerator.BuildAndImportType(Unit, x, x.PropertyType))));
+                                            .Select(x => new TypeScriptInterfacePropertyMember(x.Name.ToLowerCamelCase(), typeGenerator.BuildAndImportType(Unit, x, x.PropertyType))));
 
             Declaration = new TypeScriptInterfaceDeclaration {Definition = definition, Name = Type.Name};
 

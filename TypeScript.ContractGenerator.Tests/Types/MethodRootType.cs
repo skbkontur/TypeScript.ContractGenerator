@@ -5,19 +5,19 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
     public class MethodRootType
     {
         [CanBeNull]
-        public CommonType Get([CanBeNull] string s)
+        public object Get([CanBeNull] string s)
         {
             return null;
         }
 
         [NotNull]
-        public CommonType GetNotNull([NotNull] string s)
+        public object GetNotNull([NotNull] string s)
         {
             return null;
         }
 
         [NotNull, ItemNotNull]
-        public async Task<CommonType> GetAsync([NotNull] string s)
+        public async Task<object> GetAsync([NotNull] string s)
         {
             return await Task.FromResult(new CommonType()).ConfigureAwait(false);
         }
@@ -40,19 +40,19 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
     public class NullableReferenceMethodType
     {
         [NotNull]
-        public CommonType? Get([NotNull] string? s, [CanBeNull] string nns)
+        public object? Get([NotNull] string? s, [CanBeNull] string nns)
         {
             return null;
         }
 
         [CanBeNull]
-        public CommonType GetNotNull(string s)
+        public object GetNotNull(string s)
         {
             return null;
         }
 
         [CanBeNull]
-        public async Task<CommonType> GetAsync([CanBeNull] string s)
+        public async Task<object> GetAsync([CanBeNull] string s)
         {
             return await Task.FromResult(new CommonType()).ConfigureAwait(false);
         }

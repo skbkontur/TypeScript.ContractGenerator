@@ -24,14 +24,24 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [TestCase(typeof(IgnoreRootType), "ignore-type")]
         public void GenerateCodeTest(Type rootType, string expectedFileName)
         {
-            var generatedCode = GenerateCode(rootType).Single();
+            var generatedCode = GenerateCode(TypeScriptGenerationOptions.Default, rootType).Single();
             var expectedCode = GetExpectedCode($"SimpleGenerator/{expectedFileName}");
             generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
 
-        private static string[] GenerateCode(Type rootType)
+        [Test]
+        [Ignore("p.vostretsov, 25.05.2020: ")]
+        public void TestNullableReferences()
         {
-            var generator = new TypeScriptGenerator(TypeScriptGenerationOptions.Default, CustomTypeGenerator.Null, new RoslynTypesProvider(rootType.FullName));
+            var options = new TypeScriptGenerationOptions {NullabilityMode = NullabilityMode.NullableReference};
+            var generatedCode = GenerateCode(options, typeof(NullableReferenceType)).Single();
+            var expectedCode = GetExpectedCode("Options/nullable-reference");
+            generatedCode.Diff(expectedCode).ShouldBeEmpty();
+        }
+
+        private static string[] GenerateCode(TypeScriptGenerationOptions options, Type rootType)
+        {
+            var generator = new TypeScriptGenerator(options, CustomTypeGenerator.Null, new RoslynTypesProvider(rootType.FullName));
             return generator.Generate().Select(x => x.GenerateCode(new DefaultCodeGenerationContext()).Replace("\r\n", "\n")).ToArray();
         }
 

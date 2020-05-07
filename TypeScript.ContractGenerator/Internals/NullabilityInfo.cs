@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 
@@ -28,7 +29,25 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             HasItemCanBeNull = HasAttribute(memberAttributes, AnnotationsNames.ItemCanBeNull);
         }
 
-        public static NullabilityInfo From(IAttributeProvider? type, IAttributeProvider member)
+        public static NullabilityInfo FromRoslyn(IAttributeProvider memberInfo)
+        {
+            return new NullabilityInfo(null, null, memberInfo.GetAttributes(true));
+        }
+
+        public static NullabilityInfo From(IAttributeProvider memberInfo)
+        {
+            if (memberInfo is IFieldInfo field)
+                return From(field.DeclaringType, field);
+            if (memberInfo is IMethodInfo method)
+                return From(method.DeclaringType, method);
+            if (memberInfo is IPropertyInfo property)
+                return From(property.DeclaringType, property);
+            if (memberInfo is IParameterInfo parameter)
+                return From(parameter.Method.DeclaringType, parameter.Method, parameter);
+            throw new InvalidOperationException("TODO");
+        }
+
+        private static NullabilityInfo From(IAttributeProvider? type, IAttributeProvider member)
         {
             var typeAttributes = type?.GetAttributes(inherit : true) ?? new IAttributeInfo[0];
             var memberAttributes = member.GetAttributes(inherit : true);
@@ -37,7 +56,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
                                        memberAttributes);
         }
 
-        public static NullabilityInfo From(IAttributeProvider? type, IAttributeProvider? method, IAttributeProvider parameter)
+        private static NullabilityInfo From(IAttributeProvider? type, IAttributeProvider? method, IAttributeProvider parameter)
         {
             var typeAttributes = type?.GetAttributes(inherit : true) ?? new IAttributeInfo[0];
             var methodAttributes = method?.GetAttributes(inherit : true) ?? new IAttributeInfo[0];

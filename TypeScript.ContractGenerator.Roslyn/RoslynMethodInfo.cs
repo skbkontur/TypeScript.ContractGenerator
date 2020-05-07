@@ -21,7 +21,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         public IMethodSymbol MethodSymbol { get; }
 
         public string Name => MethodSymbol.Name;
-        public ITypeInfo ReturnType => RoslynTypeInfo.From(MethodSymbol.ReturnType);
+        public ITypeInfo ReturnType => RoslynTypeInfo.From(MethodSymbol.ReturnType).WithMemberInfo(this);
         public ITypeInfo DeclaringType => RoslynTypeInfo.From(MethodSymbol.ContainingType);
 
         public IParameterInfo[] GetParameters()

@@ -8,12 +8,26 @@ using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
-    public class ArrayTypeBuildingContext : ITypeBuildingContext
+    public class ArrayTypeBuildingContext : TypeBuildingContextBase
     {
         public ArrayTypeBuildingContext(ITypeInfo arrayType, TypeScriptGenerationOptions options)
+            : base(arrayType)
         {
-            elementType = GetElementType(arrayType);
             this.options = options;
+        }
+
+        public static bool Accept(ITypeInfo type)
+        {
+            return type.IsArray || type.IsGenericType && type.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(List<>)));
+        }
+
+        protected override TypeScriptType ReferenceFromInternal(ITypeInfo type, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
+        {
+            var attributeProvider = type.Member;
+            var elementType = GetElementType(Type);
+            var itemType = typeGenerator.ReferenceFrom(elementType, targetUnit);
+            var resultType = TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(itemType, CanItemBeNull(elementType, attributeProvider), options);
+            return new TypeScriptArrayType(resultType);
         }
 
         private ITypeInfo GetElementType(ITypeInfo arrayType)
@@ -27,29 +41,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             throw new ArgumentException("arrayType should be either Array or List<T>", nameof(arrayType));
         }
 
-        public static bool Accept(ITypeInfo type)
-        {
-            return type.IsArray || type.IsGenericType && type.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(List<>)));
-        }
-
-        public bool IsDefinitionBuilt => true;
-
-        public void Initialize(ITypeGenerator typeGenerator)
-        {
-        }
-
-        public void BuildDefinition(ITypeGenerator typeGenerator)
-        {
-        }
-
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider? attributeProvider)
-        {
-            var itemType = typeGenerator.ResolveType(elementType).ReferenceFrom(targetUnit, typeGenerator, null);
-            var resultType = TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(itemType, CanItemBeNull(attributeProvider), options);
-            return new TypeScriptArrayType(resultType);
-        }
-
-        private bool CanItemBeNull(IAttributeProvider? attributeProvider)
+        private bool CanItemBeNull(ITypeInfo elementType, IAttributeProvider? attributeProvider)
         {
             if (elementType.IsValueType || elementType.IsEnum || attributeProvider == null)
                 return false;
@@ -63,6 +55,5 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         }
 
         private readonly TypeScriptGenerationOptions options;
-        private readonly ITypeInfo elementType;
     }
 }
