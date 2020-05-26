@@ -21,8 +21,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         protected override TypeScriptType ReferenceFromInternal(ITypeInfo type, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
-            if (builtinTypes.ContainsKey(Type))
-                return new TypeScriptBuildInType(builtinTypes[Type]);
+            if (builtinTypes.ContainsKey(type))
+                return new TypeScriptBuildInType(builtinTypes[type]);
             throw new ArgumentOutOfRangeException();
         }
 

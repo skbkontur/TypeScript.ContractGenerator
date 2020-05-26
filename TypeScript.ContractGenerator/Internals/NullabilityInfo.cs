@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
@@ -7,6 +8,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 {
     public class NullabilityInfo
     {
+        private NullabilityInfo(byte? nullableContext, byte[]? nullableInfo)
+        {
+            NullableContext = nullableContext;
+            NullableInfo = nullableInfo;
+        }
+
         private NullabilityInfo(byte? nullableContext, byte[]? nullableInfo, bool hasNotNull, bool hasCanBeNull, bool hasItemNotNull, bool hasItemCanBeNull)
         {
             NullableContext = nullableContext;
@@ -68,7 +75,48 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         public NullabilityInfo ForItem()
         {
-            return new NullabilityInfo(NullableContext, NullableInfo, HasItemNotNull, HasItemCanBeNull, false, false);
+            var nullableInfo = NullableInfo == null || NullableInfo.Length == 1 ? NullableInfo : NullableInfo.Skip(1).ToArray();
+            return new NullabilityInfo(NullableContext, nullableInfo, HasItemNotNull, HasItemCanBeNull, false, false);
+        }
+
+        public NullabilityInfo?[] ForGenericArguments(NullabilityInfo nullabilityInfo, Type[] args)
+        {
+            if (nullabilityInfo.NullableInfo == null || nullabilityInfo.NullableInfo.Length < 2)
+                return args.Select(x => new NullabilityInfo(nullabilityInfo.NullableContext, nullabilityInfo.NullableInfo)).ToArray();
+
+            var result = new List<NullabilityInfo?>();
+            var index = 1;
+            for (var i = 0; i < args.Length; i++)
+            {
+                var argsLength = GetGenericArgumentsToSkip(args[i]);
+                result.Add(argsLength == 0
+                               ? null
+                               : new NullabilityInfo(
+                                     nullabilityInfo.NullableContext,
+                                     nullabilityInfo.NullableInfo.Skip(index).Take(argsLength).ToArray()
+                                     )
+                    );
+                index += argsLength;
+            }
+            return result.ToArray();
+        }
+
+        private static int GetGenericArgumentsToSkip(Type type)
+        {
+            if (type.IsArray)
+                return 1 + GetGenericArgumentsToSkip(type.GetElementType());
+
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+                return 0;
+
+            if (!type.IsGenericType)
+                return type.IsValueType ? 0 : 1;
+
+            var count = 1;
+            foreach (var argument in type.GetGenericArguments())
+                count += GetGenericArgumentsToSkip(argument);
+
+            return count;
         }
 
         private static byte[]? GetNullableFlagsInternal(IAttributeInfo[] attributes)

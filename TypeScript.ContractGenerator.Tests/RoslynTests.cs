@@ -32,7 +32,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         }
 
         [Test]
-        [Ignore("p.vostretsov, 25.05.2020: ")]
         public void TestNullableReferences()
         {
             var options = new TypeScriptGenerationOptions {NullabilityMode = NullabilityMode.NullableReference};

@@ -20,7 +20,7 @@ export type ArrayRootType = {
     customTypesDict?: null | {
         [key: string]: AnotherCustomType;
     };
-    set?: null | string[];
+    set?: null | Array<null | string>;
     notNullsArray?: null | AnotherCustomType[];
     notNullNotNullsArray: AnotherCustomType[];
 };

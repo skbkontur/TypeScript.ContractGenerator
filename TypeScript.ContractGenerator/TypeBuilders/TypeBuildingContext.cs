@@ -12,7 +12,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             Type = type;
         }
 
-        protected ITypeInfo Type { get; private set; }
+        protected ITypeInfo Type { get; }
 
         public virtual bool IsDefinitionBuilt => true;
 

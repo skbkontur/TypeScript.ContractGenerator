@@ -8,7 +8,7 @@ export type ArrayRootType = {
     nullableEnums?: null | Array<null | AnotherEnum>;
     strings?: null | Array<null | string>;
     customTypes?: null | Array<null | AnotherCustomType>;
-    stringsList?: null | string[];
+    stringsList?: null | Array<null | string>;
     intKeyDict?: null | {
         [key: number]: AnotherEnum;
     };
@@ -18,7 +18,7 @@ export type ArrayRootType = {
     customTypesDict?: null | {
         [key: string]: AnotherCustomType;
     };
-    set?: null | string[];
+    set?: null | Array<null | string>;
     notNullsArray?: null | AnotherCustomType[];
     notNullNotNullsArray: AnotherCustomType[];
 };

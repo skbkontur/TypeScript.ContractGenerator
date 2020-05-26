@@ -19,6 +19,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
             TypeSymbol = typeSymbol;
         }
 
+        private RoslynTypeInfo(ITypeSymbol typeSymbol, NullabilityInfo? nullabilityInfo)
+        {
+            TypeSymbol = typeSymbol;
+            NullabilityInfo = nullabilityInfo;
+        }
+
         private RoslynTypeInfo(ITypeSymbol typeSymbol, IAttributeProvider memberInfo)
         {
             TypeSymbol = typeSymbol;
@@ -102,9 +108,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
 
         public ITypeInfo[] GetGenericArguments()
         {
-            if (TypeSymbol is INamedTypeSymbol namedTypeSymbol)
-                return namedTypeSymbol.TypeArguments.Select(From).ToArray();
-            return new ITypeInfo[0];
+            if (!(TypeSymbol is INamedTypeSymbol namedTypeSymbol))
+                return new ITypeInfo[0];
+
+            if (NullabilityInfo != null && this.HasItem())
+                return new ITypeInfo[] {new RoslynTypeInfo(namedTypeSymbol.TypeArguments[0], NullabilityInfo.ForItem())};
+
+            return namedTypeSymbol.TypeArguments.Select(From).ToArray();
         }
 
         public ITypeInfo[] GetInterfaces()
@@ -122,7 +132,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         public ITypeInfo GetElementType()
         {
             if (TypeSymbol is IArrayTypeSymbol arrayTypeSymbol)
-                return new RoslynTypeInfo(arrayTypeSymbol.ElementType);
+                return new RoslynTypeInfo(arrayTypeSymbol.ElementType, NullabilityInfo?.ForItem());
             return null;
         }
 

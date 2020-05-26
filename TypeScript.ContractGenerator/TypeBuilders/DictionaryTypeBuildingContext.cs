@@ -20,9 +20,14 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         protected override TypeScriptType ReferenceFromInternal(ITypeInfo type, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
-            var attributeProvider = type.Member;
-            var keyType = Type.GetGenericArguments()[0];
-            var valueType = Type.GetGenericArguments()[1];
+            var genericArgs = type.GetGenericArguments();
+            var keyType = typeGenerator.BuildAndImportType(targetUnit, genericArgs[0]);
+            var valueType = typeGenerator.BuildAndImportType(targetUnit, genericArgs[1]);
+            if (typeGenerator.Options.NullabilityMode != NullabilityMode.NullableReference)
+            {
+                keyType = keyType is INullabilityWrapperType keyWrapper ? keyWrapper.InnerType : keyType;
+                valueType = valueType is INullabilityWrapperType valueWrapper ? valueWrapper.InnerType : valueType;
+            }
             return new TypeScriptTypeDefintion
                 {
                     Members =
@@ -32,34 +37,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                                     Argument = new TypeScriptArgumentDeclaration
                                         {
                                             Name = "key",
-                                            Type = GetKeyType(keyType, targetUnit, typeGenerator, attributeProvider),
+                                            Type = keyType,
                                         },
-                                    ResultType = GetValueType(keyType, valueType, targetUnit, typeGenerator, attributeProvider),
+                                    ResultType = valueType,
                                     Optional = true,
                                 }
                         }
                 };
-        }
-
-        private TypeScriptType GetKeyType(ITypeInfo keyType, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider? attributeProvider)
-        {
-            var key = typeGenerator.BuildAndImportType(targetUnit, keyType);
-            return MaybeNull(keyType, key, typeGenerator.Options, attributeProvider, 1);
-        }
-
-        private TypeScriptType GetValueType(ITypeInfo keyType, ITypeInfo valueType, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider? attributeProvider)
-        {
-            var value = typeGenerator.BuildAndImportType(targetUnit, valueType);
-            return MaybeNull(valueType, value, typeGenerator.Options, attributeProvider, 1 + TypeScriptGeneratorHelpers.GetGenericArgumentsToSkip(keyType));
-        }
-
-        private TypeScriptType MaybeNull(ITypeInfo trueType, TypeScriptType type, TypeScriptGenerationOptions options, IAttributeProvider? attributeProvider, int index)
-        {
-            if (options.NullabilityMode != NullabilityMode.NullableReference)
-                return type;
-
-            var isNullable = TypeScriptGeneratorHelpers.NullableReferenceCanBeNull(attributeProvider, trueType, index);
-            return TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(type, isNullable, options);
         }
     }
 }

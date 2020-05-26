@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 
@@ -10,6 +12,15 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         public static IAttributeInfo[] GetAttributes(this ICustomAttributeProvider attributeProvider, bool inherit)
         {
             return attributeProvider.GetCustomAttributes(inherit).Select(x => (IAttributeInfo)new AttributeWrapper(x)).ToArray();
+        }
+
+        public static bool HasItem(this ITypeInfo type)
+        {
+            if (!type.IsGenericType)
+                return false;
+
+            var typeDefinition = type.GetGenericTypeDefinition();
+            return typeDefinition.Equals(TypeInfo.From(typeof(Task<>))) || typeDefinition.Equals(TypeInfo.From(typeof(List<>)));
         }
 
         public static bool IsAssignableFrom(ITypeInfo self, ITypeInfo other)

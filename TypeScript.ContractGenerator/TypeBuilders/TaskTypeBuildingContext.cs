@@ -20,7 +20,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         protected override TypeScriptType ReferenceFromInternal(ITypeInfo type, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
-            var itemType = Type.IsGenericType ? Type.GetGenericArguments()[0] : TypeInfo.From(typeof(void));
+            var itemType = type.IsGenericType ? type.GetGenericArguments()[0] : TypeInfo.From(typeof(void));
             var itemTypeScriptType = typeGenerator.BuildAndImportType(targetUnit, itemType);
             return new TypeScriptPromiseOfType(itemTypeScriptType);
         }

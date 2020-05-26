@@ -24,7 +24,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 
         protected override TypeScriptType ReferenceFromInternal(ITypeInfo type, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
-            var elementType = Type.GetGenericArguments()[0];
+            var elementType = type.GetGenericArguments()[0];
             var itemType = typeGenerator.BuildAndImportType(targetUnit, elementType);
             return new TypeScriptArrayType(itemType);
         }

@@ -13,6 +13,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             Type = type;
         }
 
+        private TypeInfo(Type type, NullabilityInfo? nullabilityInfo)
+        {
+            Type = type;
+            NullabilityInfo = nullabilityInfo;
+        }
+
         private TypeInfo(Type type, IAttributeProvider memberInfo)
         {
             Type = type;
@@ -65,7 +71,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         public ITypeInfo[] GetGenericArguments()
         {
-            return Type.GetGenericArguments().Select(From).ToArray();
+            if (NullabilityInfo != null && this.HasItem())
+                return new ITypeInfo[] {new TypeInfo(Type.GetGenericArguments()[0], NullabilityInfo.ForItem())};
+
+            var args = Type.GetGenericArguments();
+            var argsNullability = NullabilityInfo?.ForGenericArguments(NullabilityInfo, args);
+            return args.Select((x, i) => (ITypeInfo)new TypeInfo(x, argsNullability?[i])).ToArray();
         }
 
         public ITypeInfo[] GetInterfaces()
@@ -80,10 +91,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         public ITypeInfo GetElementType()
         {
-            return From(Type.GetElementType());
+            return new TypeInfo(Type.GetElementType(), NullabilityInfo?.ForItem());
         }
 
-        public ITypeInfo WithMemberInfo(IAttributeProvider? memberInfo)
+        public ITypeInfo WithMemberInfo(IAttributeProvider memberInfo)
         {
             return new TypeInfo(Type, memberInfo);
         }
