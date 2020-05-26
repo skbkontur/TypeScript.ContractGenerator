@@ -3,30 +3,15 @@ using System.Linq;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
-using SkbKontur.TypeScript.ContractGenerator.Extensions;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace SkbKontur.TypeScript.ContractGenerator
 {
     public static class TypeScriptGeneratorHelpers
     {
-        public static TypeScriptType ReferenceFrom(this ITypeGenerator typeGenerator, ITypeInfo type, TypeScriptUnit typeScriptUnit)
+        public static TypeScriptType BuildAndImportType(this ITypeGenerator typeGenerator, TypeScriptUnit typeScriptUnit, ITypeInfo type)
         {
             return typeGenerator.ResolveType(type).ReferenceFrom(type, typeScriptUnit, typeGenerator);
-        }
-
-        public static (bool, ITypeInfo) ProcessNullable(IAttributeProvider? attributeProvider, ITypeInfo type, NullabilityMode nullabilityMode)
-        {
-            if (type.IsGenericType && type.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(Nullable<>))))
-            {
-                var underlyingType = type.GetGenericArguments()[0];
-                return (true, underlyingType);
-            }
-
-            if (attributeProvider == null || !type.IsClass && !type.IsInterface)
-                return (false, type);
-
-            return (CanBeNull(attributeProvider, nullabilityMode), type);
         }
 
         public static bool NullableReferenceCanBeNull(IAttributeProvider? attributeProvider, ITypeInfo type, int index)
@@ -57,20 +42,6 @@ namespace SkbKontur.TypeScript.ContractGenerator
         {
             var nullableAttribute = attributeProvider?.GetAttributes(true).SingleOrDefault(a => a.AttributeType.Name == AnnotationsNames.NullableContext);
             return (byte?)nullableAttribute?.AttributeData["Flag"];
-        }
-
-        private static bool CanBeNull(IAttributeProvider attributeProvider, NullabilityMode nullabilityMode)
-        {
-            if (nullabilityMode == NullabilityMode.NullableReference)
-            {
-                var flags = GetNullableFlags(attributeProvider);
-                return flags[0] == 2;
-            }
-
-            return
-                nullabilityMode == NullabilityMode.Pessimistic
-                    ? !attributeProvider.IsNameDefined(AnnotationsNames.NotNull) && !attributeProvider.IsNameDefined(AnnotationsNames.Required)
-                    : attributeProvider.IsNameDefined(AnnotationsNames.CanBeNull);
         }
 
         public static TypeScriptType BuildTargetNullableTypeByOptions(TypeScriptType innerType, bool isNullable, TypeScriptGenerationOptions options)

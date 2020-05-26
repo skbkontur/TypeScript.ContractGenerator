@@ -90,6 +90,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         public bool CanBeNull(NullabilityMode nullabilityMode)
         {
+            if (nullabilityMode == NullabilityMode.None)
+                return false;
             if (nullabilityMode == NullabilityMode.NullableReference)
                 return (NullableInfo?[0] ?? NullableContext) == 2;
             return nullabilityMode == NullabilityMode.Pessimistic ? !HasNotNull : HasCanBeNull;

@@ -1,8 +1,6 @@
 using System;
 using System.Reflection;
 
-using SkbKontur.TypeScript.ContractGenerator.Internals;
-
 namespace SkbKontur.TypeScript.ContractGenerator.Abstractions
 {
     public interface ITypeInfo : IAttributeProvider, IEquatable<ITypeInfo>
@@ -10,7 +8,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Abstractions
         string Name { get; }
         string FullName { get; }
         string Namespace { get; }
-        NullabilityInfo NullabilityInfo { get; }
         bool IsEnum { get; }
         bool IsValueType { get; }
         bool IsArray { get; }

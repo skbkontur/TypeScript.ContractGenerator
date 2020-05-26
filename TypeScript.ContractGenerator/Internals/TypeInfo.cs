@@ -95,6 +95,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         public bool CanBeNull(NullabilityMode nullabilityMode)
         {
+            if (!IsClass && !IsInterface)
+                return false;
+
             return NullabilityInfo?.CanBeNull(nullabilityMode) ?? false;
         }
 

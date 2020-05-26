@@ -8,10 +8,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class DictionaryTypeBuildingContext : TypeBuildingContextBase
     {
-        public DictionaryTypeBuildingContext(ITypeInfo dictionaryType, TypeScriptGenerationOptions options)
+        public DictionaryTypeBuildingContext(ITypeInfo dictionaryType)
             : base(dictionaryType)
         {
-            this.options = options;
         }
 
         public static bool Accept(ITypeInfo type)
@@ -44,17 +43,17 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         private TypeScriptType GetKeyType(ITypeInfo keyType, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider? attributeProvider)
         {
-            var key = typeGenerator.ReferenceFrom(keyType, targetUnit);
-            return MaybeNull(keyType, key, attributeProvider, 1);
+            var key = typeGenerator.BuildAndImportType(targetUnit, keyType);
+            return MaybeNull(keyType, key, typeGenerator.Options, attributeProvider, 1);
         }
 
         private TypeScriptType GetValueType(ITypeInfo keyType, ITypeInfo valueType, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider? attributeProvider)
         {
-            var value = typeGenerator.ReferenceFrom(valueType, targetUnit);
-            return MaybeNull(valueType, value, attributeProvider, 1 + TypeScriptGeneratorHelpers.GetGenericArgumentsToSkip(keyType));
+            var value = typeGenerator.BuildAndImportType(targetUnit, valueType);
+            return MaybeNull(valueType, value, typeGenerator.Options, attributeProvider, 1 + TypeScriptGeneratorHelpers.GetGenericArgumentsToSkip(keyType));
         }
 
-        private TypeScriptType MaybeNull(ITypeInfo trueType, TypeScriptType type, IAttributeProvider? attributeProvider, int index)
+        private TypeScriptType MaybeNull(ITypeInfo trueType, TypeScriptType type, TypeScriptGenerationOptions options, IAttributeProvider? attributeProvider, int index)
         {
             if (options.NullabilityMode != NullabilityMode.NullableReference)
                 return type;
@@ -62,7 +61,5 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             var isNullable = TypeScriptGeneratorHelpers.NullableReferenceCanBeNull(attributeProvider, trueType, index);
             return TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(type, isNullable, options);
         }
-
-        private readonly TypeScriptGenerationOptions options;
     }
 }

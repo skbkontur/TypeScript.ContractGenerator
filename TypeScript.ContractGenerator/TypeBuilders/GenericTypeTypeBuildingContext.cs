@@ -8,26 +8,25 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class GenericTypeTypeBuildingContext : TypeBuildingContextBase
     {
-        public GenericTypeTypeBuildingContext(ITypeInfo type, TypeScriptGenerationOptions options)
+        public GenericTypeTypeBuildingContext(ITypeInfo type)
             : base(type)
         {
-            this.options = options;
         }
 
         protected override TypeScriptType ReferenceFromInternal(ITypeInfo type, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
             var attributeProvider = type.Member;
-            var typeReference = typeGenerator.ReferenceFrom(Type.GetGenericTypeDefinition(), targetUnit);
+            var typeReference = typeGenerator.BuildAndImportType(targetUnit, Type.GetGenericTypeDefinition());
             var arguments = new List<TypeScriptType>();
             var nullableIndex = 1;
             foreach (var argument in Type.GetGenericArguments())
             {
-                var targetType = typeGenerator.ReferenceFrom(argument, targetUnit);
-                if (options.NullabilityMode == NullabilityMode.NullableReference)
+                var targetType = typeGenerator.BuildAndImportType(targetUnit, argument);
+                if (typeGenerator.Options.NullabilityMode == NullabilityMode.NullableReference)
                 {
                     var isNullable = TypeScriptGeneratorHelpers.NullableReferenceCanBeNull(attributeProvider, argument, nullableIndex);
                     nullableIndex += TypeScriptGeneratorHelpers.GetGenericArgumentsToSkip(argument);
-                    arguments.Add(TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(targetType, !argument.IsValueType && isNullable, options));
+                    arguments.Add(TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(targetType, !argument.IsValueType && isNullable, typeGenerator.Options));
                 }
                 else
                 {
@@ -36,8 +35,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             }
             return new TypeScriptGenericTypeReference((TypeScriptTypeReference)typeReference, arguments.ToArray());
         }
-
-        private readonly TypeScriptGenerationOptions options;
     }
 
     public class TypeScriptGenericTypeReference : TypeScriptType

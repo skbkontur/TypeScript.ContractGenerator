@@ -39,22 +39,20 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 
         public TypeScriptTypeMemberDeclaration ResolveProperty(TypeScriptUnit unit, ITypeGenerator typeGenerator, ITypeInfo typeInfo, IPropertyInfo propertyInfo)
         {
-            var (isNullable, _) = TypeScriptGeneratorHelpers.ProcessNullable(propertyInfo, propertyInfo.PropertyType, typeGenerator.Options.NullabilityMode);
-
             if (!TryGetGetOnlyEnumPropertyValue(typeInfo, propertyInfo, out var value))
                 return null;
 
             return new TypeScriptTypeMemberDeclaration
                 {
                     Name = propertyInfo.Name.ToLowerCamelCase(),
-                    Optional = isNullable && typeGenerator.Options.EnableOptionalProperties,
+                    Optional = false,
                     Type = GetConstEnumType(typeGenerator, unit, propertyInfo, value),
                 };
         }
 
         private static TypeScriptType GetConstEnumType(ITypeGenerator typeGenerator, TypeScriptUnit unit, IPropertyInfo property, string value)
         {
-            return new TypeScriptEnumValueType(typeGenerator.BuildAndImportType(unit, property, property.PropertyType), value);
+            return new TypeScriptEnumValueType(typeGenerator.BuildAndImportType(unit, property.PropertyType), value);
         }
 
         private static bool TryGetGetOnlyEnumPropertyValue(ITypeInfo typeInfo, IPropertyInfo propertyInfo, out string value)

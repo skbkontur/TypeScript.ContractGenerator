@@ -79,22 +79,13 @@ namespace SkbKontur.TypeScript.ContractGenerator
             if (propertyInfo.IsNameDefined(nameof(ContractGeneratorIgnoreAttribute)))
                 return null;
 
-            var (isNullable, trueType) = TypeScriptGeneratorHelpers.ProcessNullable(propertyInfo, propertyInfo.PropertyType, Options.NullabilityMode);
+            var typeScriptType = this.BuildAndImportType(unit, propertyInfo.PropertyType);
             return new TypeScriptTypeMemberDeclaration
                 {
                     Name = propertyInfo.Name.ToLowerCamelCase(),
-                    Optional = isNullable && Options.EnableOptionalProperties && Options.NullabilityMode != NullabilityMode.None,
-                    Type = GetMaybeNullableComplexType(unit, trueType, propertyInfo, isNullable),
+                    Optional = typeScriptType is INullabilityWrapperType && Options.EnableOptionalProperties,
+                    Type = typeScriptType,
                 };
-        }
-
-        private TypeScriptType GetMaybeNullableComplexType(TypeScriptUnit unit, ITypeInfo type, IPropertyInfo property, bool isNullable)
-        {
-            var propertyType = BuildAndImportType(unit, property, type);
-            if (property.PropertyType.IsGenericParameter)
-                propertyType = new TypeScriptTypeReference(property.PropertyType.Name);
-
-            return TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(propertyType, isNullable, Options);
         }
 
         private ITypeBuildingContext GetTypeBuildingContext(string typeLocation, ITypeInfo typeInfo)
@@ -103,27 +94,22 @@ namespace SkbKontur.TypeScript.ContractGenerator
                 return new BuiltinTypeBuildingContext(typeInfo);
 
             if (ArrayTypeBuildingContext.Accept(typeInfo))
-                return new ArrayTypeBuildingContext(typeInfo, Options);
+                return new ArrayTypeBuildingContext(typeInfo);
 
             if (DictionaryTypeBuildingContext.Accept(typeInfo))
-                return new DictionaryTypeBuildingContext(typeInfo, Options);
+                return new DictionaryTypeBuildingContext(typeInfo);
 
             if (TaskTypeBuildingContext.Accept(typeInfo))
-                return new TaskTypeBuildingContext(typeInfo, Options);
+                return new TaskTypeBuildingContext(typeInfo);
+
+            if (NullableTypeBuildingContext.Accept(typeInfo))
+                return new NullableTypeBuildingContext(typeInfo);
 
             if (typeInfo.IsEnum)
                 return new TypeScriptEnumTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), typeInfo);
 
-            if (typeInfo.IsGenericType && !typeInfo.IsGenericTypeDefinition && typeInfo.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(Nullable<>))))
-            {
-                var underlyingType = typeInfo.GetGenericArguments().Single();
-                if (Options.NullabilityMode != NullabilityMode.None)
-                    return new NullableTypeBuildingContext(underlyingType, Options);
-                return GetTypeBuildingContext(typeLocation, underlyingType);
-            }
-
             if (typeInfo.IsGenericType && !typeInfo.IsGenericTypeDefinition)
-                return new GenericTypeTypeBuildingContext(typeInfo, Options);
+                return new GenericTypeTypeBuildingContext(typeInfo);
 
             if (typeInfo.IsGenericParameter)
                 return new GenericParameterTypeBuildingContext(typeInfo);
@@ -132,22 +118,6 @@ namespace SkbKontur.TypeScript.ContractGenerator
                 return new CustomTypeTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), typeInfo);
 
             return new CustomTypeTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), typeInfo);
-        }
-
-        public TypeScriptType BuildAndImportType(TypeScriptUnit targetUnit, IAttributeProvider? attributeProvider, ITypeInfo typeInfo)
-        {
-            var (isNullable, resultType) = TypeScriptGeneratorHelpers.ProcessNullable(attributeProvider, typeInfo, Options.NullabilityMode);
-            var targetType = GetTypeScriptType(targetUnit, resultType, attributeProvider);
-            return TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(targetType, isNullable, Options);
-        }
-
-        private TypeScriptType GetTypeScriptType(TypeScriptUnit targetUnit, ITypeInfo typeInfo, IAttributeProvider? attributeProvider)
-        {
-            if (typeDeclarations.ContainsKey(typeInfo))
-                return typeDeclarations[typeInfo].ReferenceFrom(typeInfo, targetUnit, this);
-            if (typeInfo.IsGenericTypeDefinition && typeInfo.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(Nullable<>))))
-                return new TypeScriptNullableType(GetTypeScriptType(targetUnit, typeInfo.GetGenericArguments()[0], null));
-            return this.ReferenceFrom(typeInfo, targetUnit);
         }
 
         public TypeScriptGenerationOptions Options { get; }

@@ -140,6 +140,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
 
         public bool CanBeNull(NullabilityMode nullabilityMode)
         {
+            if (TypeSymbol.NullableAnnotation == NullableAnnotation.None)
+                return NullabilityInfo?.CanBeNull(nullabilityMode) ?? false;
             return TypeSymbol.NullableAnnotation == NullableAnnotation.Annotated;
         }
 

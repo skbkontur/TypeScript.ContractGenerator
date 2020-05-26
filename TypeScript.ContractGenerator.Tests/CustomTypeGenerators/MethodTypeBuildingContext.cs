@@ -21,18 +21,18 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 
             definition.Members.AddRange(Type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                                             .Where(m => !m.Name.Contains("_"))
-                                            .Select(m => new TypeScriptInterfaceFunctionMember(m.Name.ToLowerCamelCase(), typeGenerator.BuildAndImportType(Unit, m, m.ReturnType),
+                                            .Select(m => new TypeScriptInterfaceFunctionMember(m.Name.ToLowerCamelCase(), typeGenerator.BuildAndImportType(Unit, m.ReturnType),
                                                                                                m.GetParameters()
                                                                                                 .Select(p => new TypeScriptArgumentDeclaration
                                                                                                     {
                                                                                                         Name = p.Name,
                                                                                                         Optional = false,
-                                                                                                        Type = typeGenerator.BuildAndImportType(Unit, p, p.ParameterType),
+                                                                                                        Type = typeGenerator.BuildAndImportType(Unit, p.ParameterType),
                                                                                                     })
                                                                                                 .ToArray())));
 
             definition.Members.AddRange(Type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                                            .Select(x => new TypeScriptInterfacePropertyMember(x.Name.ToLowerCamelCase(), typeGenerator.BuildAndImportType(Unit, x, x.PropertyType))));
+                                            .Select(x => new TypeScriptInterfacePropertyMember(x.Name.ToLowerCamelCase(), typeGenerator.BuildAndImportType(Unit, x.PropertyType))));
 
             Declaration = new TypeScriptInterfaceDeclaration {Definition = definition, Name = Type.Name};
 

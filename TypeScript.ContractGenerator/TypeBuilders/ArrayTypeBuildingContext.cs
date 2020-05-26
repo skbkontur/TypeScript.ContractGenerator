@@ -10,10 +10,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class ArrayTypeBuildingContext : TypeBuildingContextBase
     {
-        public ArrayTypeBuildingContext(ITypeInfo arrayType, TypeScriptGenerationOptions options)
+        public ArrayTypeBuildingContext(ITypeInfo arrayType)
             : base(arrayType)
         {
-            this.options = options;
         }
 
         public static bool Accept(ITypeInfo type)
@@ -24,9 +23,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
         protected override TypeScriptType ReferenceFromInternal(ITypeInfo type, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
             var attributeProvider = type.Member;
-            var elementType = GetElementType(Type);
-            var itemType = typeGenerator.ReferenceFrom(elementType, targetUnit);
-            var resultType = TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(itemType, CanItemBeNull(elementType, attributeProvider), options);
+            var elementType = GetElementType(type);
+            var itemType = typeGenerator.BuildAndImportType(targetUnit, elementType);
+            var resultType = TypeScriptGeneratorHelpers.BuildTargetNullableTypeByOptions(
+                itemType,
+                CanItemBeNull(elementType, typeGenerator.Options, attributeProvider),
+                typeGenerator.Options
+                );
             return new TypeScriptArrayType(resultType);
         }
 
@@ -41,7 +44,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             throw new ArgumentException("arrayType should be either Array or List<T>", nameof(arrayType));
         }
 
-        private bool CanItemBeNull(ITypeInfo elementType, IAttributeProvider? attributeProvider)
+        private bool CanItemBeNull(ITypeInfo elementType, TypeScriptGenerationOptions options, IAttributeProvider? attributeProvider)
         {
             if (elementType.IsValueType || elementType.IsEnum || attributeProvider == null)
                 return false;
@@ -53,7 +56,5 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                        ? !attributeProvider.IsNameDefined(AnnotationsNames.ItemNotNull)
                        : attributeProvider.IsNameDefined(AnnotationsNames.ItemCanBeNull);
         }
-
-        private readonly TypeScriptGenerationOptions options;
     }
 }
