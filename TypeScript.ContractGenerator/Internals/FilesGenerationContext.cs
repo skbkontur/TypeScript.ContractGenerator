@@ -25,11 +25,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
                         JavaScriptTypeChecker = javaScriptTypeChecker
                     };
             case JavaScriptTypeChecker.TypeScript:
-                var linterDisable = linterDisableMode == LinterDisableMode.TsLint ? "tslint:disable" : "eslint-disable";
+                var linterDisable = linterDisableMode == LinterDisableMode.TsLint ? "// tslint:disable" : "/* eslint-disable */";
                 return new FilesGenerationContext
                     {
                         FileExtension = "ts",
-                        HeaderGenerationFunc = marker => $"// {linterDisable}\n{marker}\n",
+                        HeaderGenerationFunc = marker => $"{linterDisable}\n{marker}\n",
                         JavaScriptTypeChecker = javaScriptTypeChecker,
                     };
             default:

@@ -15,6 +15,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         public bool EnableOptionalProperties { get; set; } = true;
 
+        [Obsolete("Will be removed in 2.0")]
         public bool EnableExplicitNullability { get; set; } = true;
 
         public bool UseGlobalNullable { get; set; }
