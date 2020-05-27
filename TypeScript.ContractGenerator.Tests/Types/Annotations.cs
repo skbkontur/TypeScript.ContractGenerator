@@ -14,6 +14,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
     {
     }
 
+    internal class ItemCanBeNullAttribute : Attribute
+    {
+    }
+
     internal class InferValueAttribute : Attribute
     {
     }

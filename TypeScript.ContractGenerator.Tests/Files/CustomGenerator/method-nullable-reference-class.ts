@@ -1,5 +1,5 @@
 
-export interface MethodRootType {
+export interface NullableReferenceMethodType {
     get(s: null | string, nns: string): null | object;
     getNotNull(s: string): object;
     getAsync(s: string): Promise<object>;

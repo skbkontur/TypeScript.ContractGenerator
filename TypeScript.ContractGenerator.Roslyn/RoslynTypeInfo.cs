@@ -70,7 +70,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
                                     .Select(x => (IMethodInfo)new RoslynMethodInfo(x))
                                     .ToArray();
 
-            if (BaseType != null)
+            if (!bindingAttr.HasFlag(BindingFlags.DeclaredOnly) && BaseType != null)
                 methods = methods.Concat(BaseType.GetMethods(bindingAttr).Where(x => methods.All(t => t.Name != x.Name))).ToArray();
 
             return methods;
@@ -85,7 +85,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
                                   .Select(x => (IPropertyInfo)new RoslynPropertyInfo(x))
                                   .ToArray();
 
-            if (BaseType != null)
+            if (!bindingAttr.HasFlag(BindingFlags.DeclaredOnly) && BaseType != null)
                 types = types.Concat(BaseType.GetProperties(bindingAttr).Where(x => types.All(t => t.Name != x.Name))).ToArray();
 
             return types;
@@ -100,7 +100,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
                                    .Select(x => (IFieldInfo)new RoslynFieldInfo(x))
                                    .ToArray();
 
-            if (BaseType != null)
+            if (!bindingAttr.HasFlag(BindingFlags.DeclaredOnly) && BaseType != null)
                 fields = fields.Concat(BaseType.GetFields(bindingAttr).Where(x => fields.All(t => t.Name != x.Name))).ToArray();
 
             return fields;
@@ -150,7 +150,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
 
         public bool CanBeNull(NullabilityMode nullabilityMode)
         {
-            if (TypeSymbol.NullableAnnotation == NullableAnnotation.None)
+            if (!IsClass && !IsInterface)
+                return false;
+
+            if (!nullabilityMode.HasFlag(NullabilityMode.NullableReference) || TypeSymbol.NullableAnnotation == NullableAnnotation.None)
                 return NullabilityInfo?.CanBeNull(nullabilityMode) ?? false;
             return TypeSymbol.NullableAnnotation == NullableAnnotation.Annotated;
         }

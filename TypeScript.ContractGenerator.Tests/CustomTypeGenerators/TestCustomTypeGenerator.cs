@@ -22,7 +22,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 
         public ITypeBuildingContext ResolveType(string initialUnitPath, ITypeGenerator typeGenerator, ITypeInfo typeInfo, ITypeScriptUnitFactory unitFactory)
         {
-            if (typeInfo.Equals(TypeInfo.From<MethodRootType>()))
+            if (typeInfo.Equals(TypeInfo.From<MethodRootType>()) || typeInfo.Equals(TypeInfo.From<NullableReferenceMethodType>()))
                 return new MethodTypeBuildingContext(unitFactory.GetOrCreateTypeUnit(initialUnitPath), typeInfo);
 
             if (CollectionTypeBuildingContext.Accept(typeInfo))

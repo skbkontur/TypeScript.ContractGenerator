@@ -63,21 +63,18 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
 
-        [TestCase(typeof(MethodRootType), typeof(TestCustomTypeGenerator), "method-class")]
-        public void CustomGeneratorWithMethodsTest(Type rootType, Type type, string expectedFileName)
+        [TestCase(typeof(MethodRootType), typeof(TestCustomTypeGenerator), NullabilityMode.Pessimistic, "method-class")]
+        [TestCase(typeof(MethodRootType), typeof(TestCustomTypeGenerator), NullabilityMode.Pessimistic | NullabilityMode.NullableReference, "method-class")]
+        [TestCase(typeof(MethodRootType), typeof(TestCustomTypeGenerator), NullabilityMode.NullableReference, "method-invalid-nullable-reference-class")]
+        [TestCase(typeof(NullableReferenceMethodType), typeof(TestCustomTypeGenerator), NullabilityMode.NullableReference, "method-nullable-reference-class")]
+        [TestCase(typeof(NullableReferenceMethodType), typeof(TestCustomTypeGenerator), NullabilityMode.Optimistic | NullabilityMode.NullableReference, "method-nullable-reference-class")]
+        [TestCase(typeof(NullableReferenceMethodType), typeof(TestCustomTypeGenerator), NullabilityMode.Optimistic, "method-no-nullable-reference-class")]
+        public void CustomGeneratorWithMethodsTest(Type rootType, Type type, NullabilityMode nullabilityMode, string expectedFileName)
         {
             var options = TypeScriptGenerationOptions.Default;
-            var rootTypes = new[] {typeof(MethodRootType), typeof(NullableReferenceMethodType)};
-            var customGenerator = new TestCustomTypeGenerator();
-
-            options.NullabilityMode = NullabilityMode.Pessimistic;
+            options.NullabilityMode = nullabilityMode;
             var generatedCode = GenerateCode(options, (ICustomTypeGenerator)Activator.CreateInstance(type), rootType).Single();
             var expectedCode = GetExpectedCode($"CustomGenerator/{expectedFileName}");
-            generatedCode.Diff(expectedCode).ShouldBeEmpty();
-
-            options.NullabilityMode = NullabilityMode.Optimistic | NullabilityMode.NullableReference;
-            generatedCode = GenerateCode(options, (ICustomTypeGenerator)Activator.CreateInstance(type), rootType).Single();
-            expectedCode = GetExpectedCode($"CustomGenerator/{expectedFileName}");
             generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
 

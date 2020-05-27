@@ -140,7 +140,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         {
             if (nullabilityMode == NullabilityMode.None)
                 return false;
-            if (nullabilityMode == NullabilityMode.NullableReference)
+            if (nullabilityMode == NullabilityMode.NullableReference ||
+                nullabilityMode.HasFlag(NullabilityMode.NullableReference) && (NullableContext != null || NullableInfo != null))
                 return (NullableInfo?[0] ?? NullableContext) == 2;
             return nullabilityMode == NullabilityMode.Pessimistic ? !HasNotNull : HasCanBeNull;
         }
