@@ -14,7 +14,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         public FieldInfo Field { get; }
 
         public string Name => Field.Name;
-        public ITypeInfo FieldType => TypeInfo.From(Field.FieldType);
+        public ITypeInfo FieldType => TypeInfo.From(Field.FieldType).WithMemberInfo(this);
         public ITypeInfo? DeclaringType => TypeInfo.From(Field.DeclaringType);
 
         public IAttributeInfo[] GetAttributes(bool inherit)

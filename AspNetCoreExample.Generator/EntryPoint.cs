@@ -1,10 +1,7 @@
 using System;
 using System.IO;
 
-using Microsoft.AspNetCore.Mvc;
-
 using SkbKontur.TypeScript.ContractGenerator;
-using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace AspNetCoreExample.Generator
 {
@@ -15,7 +12,6 @@ namespace AspNetCoreExample.Generator
             var targetPath = Path.Combine(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).FullName, "../../../output");
             var options = new TypeScriptGenerationOptions
                 {
-                    EnableExplicitNullability = true,
                     EnableOptionalProperties = false,
                     LinterDisableMode = LinterDisableMode.TsLint,
                     UseGlobalNullable = true,

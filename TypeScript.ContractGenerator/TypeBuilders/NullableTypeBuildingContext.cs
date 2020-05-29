@@ -1,35 +1,32 @@
+using System;
+
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
+using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
-    public class NullableTypeBuildingContext : ITypeBuildingContext
+    public class NullableTypeBuildingContext : TypeBuildingContextBase
     {
-        public NullableTypeBuildingContext(ITypeInfo nullableUnderlyingType, bool useGlobalNullable)
-        {
-            itemType = nullableUnderlyingType;
-            this.useGlobalNullable = useGlobalNullable;
-        }
-
-        public bool IsDefinitionBuilt => true;
-
-        public void Initialize(ITypeGenerator typeGenerator)
+        public NullableTypeBuildingContext(ITypeInfo type)
+            : base(type)
         {
         }
 
-        public void BuildDefinition(ITypeGenerator typeGenerator)
+        public static bool Accept(ITypeInfo type)
         {
+            return type.IsGenericType && type.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(Nullable<>)));
         }
 
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider? attributeProvider)
+        protected override TypeScriptType ReferenceFromInternal(ITypeInfo type, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
-            var itemTypeScriptType = typeGenerator.ResolveType(itemType).ReferenceFrom(targetUnit, typeGenerator, null);
-            return useGlobalNullable
+            var itemTypeScriptType = typeGenerator.BuildAndImportType(targetUnit, type.GetGenericArguments()[0]);
+            if (typeGenerator.Options.NullabilityMode == NullabilityMode.None)
+                return itemTypeScriptType;
+
+            return typeGenerator.Options.UseGlobalNullable
                        ? (TypeScriptType)new TypeScriptNullableType(itemTypeScriptType)
                        : new TypeScriptOrNullType(itemTypeScriptType);
         }
-
-        private readonly ITypeInfo itemType;
-        private readonly bool useGlobalNullable;
     }
 }

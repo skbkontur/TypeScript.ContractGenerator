@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis;
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 
+using NullabilityInfo = SkbKontur.TypeScript.ContractGenerator.Internals.NullabilityInfo;
 using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
@@ -16,6 +17,19 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         private RoslynTypeInfo(ITypeSymbol typeSymbol)
         {
             TypeSymbol = typeSymbol;
+        }
+
+        private RoslynTypeInfo(ITypeSymbol typeSymbol, NullabilityInfo? nullabilityInfo)
+        {
+            TypeSymbol = typeSymbol;
+            NullabilityInfo = nullabilityInfo;
+        }
+
+        private RoslynTypeInfo(ITypeSymbol typeSymbol, IAttributeProvider memberInfo)
+        {
+            TypeSymbol = typeSymbol;
+            Member = memberInfo;
+            NullabilityInfo = NullabilityInfo.FromRoslyn(memberInfo);
         }
 
         public static ITypeInfo From(ITypeSymbol typeSymbol)
@@ -29,6 +43,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         }
 
         public ITypeSymbol TypeSymbol { get; }
+        public NullabilityInfo? NullabilityInfo { get; }
 
         public string Name => TypeSymbol.MetadataName;
         public string FullName => TypeSymbol.Name;
@@ -43,6 +58,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         public bool IsGenericParameter => TypeSymbol.TypeKind == TypeKind.TypeParameter;
         public bool IsGenericTypeDefinition => IsGenericType && TypeSymbol.IsDefinition;
         public ITypeInfo BaseType => From(TypeSymbol.BaseType);
+        public IAttributeProvider? Member { get; }
 
         public IMethodInfo[] GetMethods(BindingFlags bindingAttr)
         {
@@ -54,7 +70,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
                                     .Select(x => (IMethodInfo)new RoslynMethodInfo(x))
                                     .ToArray();
 
-            if (BaseType != null)
+            if (!bindingAttr.HasFlag(BindingFlags.DeclaredOnly) && BaseType != null)
                 methods = methods.Concat(BaseType.GetMethods(bindingAttr).Where(x => methods.All(t => t.Name != x.Name))).ToArray();
 
             return methods;
@@ -69,7 +85,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
                                   .Select(x => (IPropertyInfo)new RoslynPropertyInfo(x))
                                   .ToArray();
 
-            if (BaseType != null)
+            if (!bindingAttr.HasFlag(BindingFlags.DeclaredOnly) && BaseType != null)
                 types = types.Concat(BaseType.GetProperties(bindingAttr).Where(x => types.All(t => t.Name != x.Name))).ToArray();
 
             return types;
@@ -84,7 +100,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
                                    .Select(x => (IFieldInfo)new RoslynFieldInfo(x))
                                    .ToArray();
 
-            if (BaseType != null)
+            if (!bindingAttr.HasFlag(BindingFlags.DeclaredOnly) && BaseType != null)
                 fields = fields.Concat(BaseType.GetFields(bindingAttr).Where(x => fields.All(t => t.Name != x.Name))).ToArray();
 
             return fields;
@@ -92,9 +108,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
 
         public ITypeInfo[] GetGenericArguments()
         {
-            if (TypeSymbol is INamedTypeSymbol namedTypeSymbol)
-                return namedTypeSymbol.TypeArguments.Select(From).ToArray();
-            return new ITypeInfo[0];
+            if (!(TypeSymbol is INamedTypeSymbol namedTypeSymbol))
+                return new ITypeInfo[0];
+
+            if (NullabilityInfo != null && this.HasItem())
+                return new ITypeInfo[] {new RoslynTypeInfo(namedTypeSymbol.TypeArguments[0], NullabilityInfo.ForItem())};
+
+            return namedTypeSymbol.TypeArguments.Select(From).ToArray();
         }
 
         public ITypeInfo[] GetInterfaces()
@@ -112,8 +132,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         public ITypeInfo GetElementType()
         {
             if (TypeSymbol is IArrayTypeSymbol arrayTypeSymbol)
-                return new RoslynTypeInfo(arrayTypeSymbol.ElementType);
+                return new RoslynTypeInfo(arrayTypeSymbol.ElementType, NullabilityInfo?.ForItem());
             return null;
+        }
+
+        public ITypeInfo WithMemberInfo(IAttributeProvider memberInfo)
+        {
+            return new RoslynTypeInfo(TypeSymbol, memberInfo);
         }
 
         public string[] GetEnumNames()
@@ -121,6 +146,16 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
             if (TypeSymbol is INamedTypeSymbol namedTypeSymbol)
                 return namedTypeSymbol.GetMembers().Select(x => x.Name).Where(x => x != ".ctor" && x != "value__").ToArray();
             return new string[0];
+        }
+
+        public bool CanBeNull(NullabilityMode nullabilityMode)
+        {
+            if (!IsClass && !IsInterface)
+                return false;
+
+            if (!nullabilityMode.HasFlag(NullabilityMode.NullableReference) || TypeSymbol.NullableAnnotation == NullableAnnotation.None)
+                return NullabilityInfo?.CanBeNull(nullabilityMode) ?? false;
+            return TypeSymbol.NullableAnnotation == NullableAnnotation.Annotated;
         }
 
         public bool IsAssignableFrom(ITypeInfo type)

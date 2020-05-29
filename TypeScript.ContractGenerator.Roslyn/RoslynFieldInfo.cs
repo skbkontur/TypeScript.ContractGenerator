@@ -19,7 +19,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         public IFieldSymbol FieldSymbol { get; }
 
         public string Name => FieldSymbol.Name;
-        public ITypeInfo FieldType => RoslynTypeInfo.From(FieldSymbol.Type);
+        public ITypeInfo FieldType => RoslynTypeInfo.From(FieldSymbol.Type).WithMemberInfo(this);
         public ITypeInfo DeclaringType => RoslynTypeInfo.From(FieldSymbol.ContainingType);
     }
 }

@@ -19,9 +19,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
         [Option("optionalProps", Required = false, HelpText = "Enables optional properties.", Default = true)]
         public bool EnableOptionalProperties { get; set; }
 
-        [Option("explicitNull", Required = false, HelpText = "Enables explicit nullability", Default = true)]
-        public bool EnableExplicitNullability { get; set; }
-
         [Option("globalNullable", Required = false, HelpText = "Enables global nullable", Default = false)]
         public bool UseGlobalNullable { get; set; }
 
@@ -35,7 +32,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
         {
             return new TypeScriptGenerationOptions
                 {
-                    EnableExplicitNullability = o.EnableExplicitNullability,
                     EnableOptionalProperties = o.EnableOptionalProperties,
                     UseGlobalNullable = o.UseGlobalNullable,
                     NullabilityMode = o.NullabilityMode,

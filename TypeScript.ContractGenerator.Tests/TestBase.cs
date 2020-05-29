@@ -17,16 +17,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             filesGenerationContext = FilesGenerationContext.Create(LinterDisableMode.TsLint);
         }
 
-        protected string[] GenerateCode(Type rootType)
-        {
-            return GenerateCode(CustomTypeGenerator.Null, rootType);
-        }
-
-        protected string[] GenerateCode(ICustomTypeGenerator customTypeGenerator, Type rootType)
-        {
-            return GenerateCode(TypeScriptGenerationOptions.Default, customTypeGenerator, rootType);
-        }
-
         protected string[] GenerateCode(TypeScriptGenerationOptions options, ICustomTypeGenerator customTypeGenerator, Type rootType)
         {
             var generator = new TypeScriptGenerator(options, customTypeGenerator, new TypesProvider(rootType));

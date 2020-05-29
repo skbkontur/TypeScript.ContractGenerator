@@ -13,6 +13,19 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             Type = type;
         }
 
+        private TypeInfo(Type type, NullabilityInfo? nullabilityInfo)
+        {
+            Type = type;
+            NullabilityInfo = nullabilityInfo;
+        }
+
+        private TypeInfo(Type type, IAttributeProvider memberInfo)
+        {
+            Type = type;
+            Member = memberInfo;
+            NullabilityInfo = NullabilityInfo.From(memberInfo);
+        }
+
         public static ITypeInfo From<T>()
         {
             return new TypeInfo(typeof(T));
@@ -24,6 +37,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         }
 
         public Type Type { get; }
+        public NullabilityInfo? NullabilityInfo { get; }
 
         public string Name => Type.Name;
         public string FullName => Type.FullName;
@@ -38,6 +52,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         public bool IsGenericParameter => Type.IsGenericParameter;
         public bool IsGenericTypeDefinition => Type.IsGenericTypeDefinition;
         public ITypeInfo? BaseType => From(Type.BaseType);
+        public IAttributeProvider? Member { get; }
 
         public IMethodInfo[] GetMethods(BindingFlags bindingAttr)
         {
@@ -56,7 +71,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         public ITypeInfo[] GetGenericArguments()
         {
-            return Type.GetGenericArguments().Select(From).ToArray();
+            if (NullabilityInfo != null && this.HasItem())
+                return new ITypeInfo[] {new TypeInfo(Type.GetGenericArguments()[0], NullabilityInfo.ForItem())};
+
+            var args = Type.GetGenericArguments();
+            var argsNullability = NullabilityInfo?.ForGenericArguments(NullabilityInfo, args);
+            return args.Select((x, i) => (ITypeInfo)new TypeInfo(x, argsNullability?[i])).ToArray();
         }
 
         public ITypeInfo[] GetInterfaces()
@@ -71,12 +91,25 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         public ITypeInfo GetElementType()
         {
-            return From(Type.GetElementType());
+            return new TypeInfo(Type.GetElementType(), NullabilityInfo?.ForItem());
+        }
+
+        public ITypeInfo WithMemberInfo(IAttributeProvider memberInfo)
+        {
+            return new TypeInfo(Type, memberInfo);
         }
 
         public string[] GetEnumNames()
         {
             return Type.GetEnumNames();
+        }
+
+        public bool CanBeNull(NullabilityMode nullabilityMode)
+        {
+            if (!IsClass && !IsInterface)
+                return false;
+
+            return NullabilityInfo?.CanBeNull(nullabilityMode) ?? false;
         }
 
         public bool IsAssignableFrom(ITypeInfo type)

@@ -19,7 +19,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         public IPropertySymbol PropertySymbol { get; }
 
         public string Name => PropertySymbol.Name;
-        public ITypeInfo PropertyType => RoslynTypeInfo.From(PropertySymbol.Type);
+        public ITypeInfo PropertyType => RoslynTypeInfo.From(PropertySymbol.Type).WithMemberInfo(this);
         public ITypeInfo DeclaringType => RoslynTypeInfo.From(PropertySymbol.ContainingType);
     }
 }

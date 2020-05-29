@@ -3,28 +3,16 @@ using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
-    public class GenericParameterTypeBuildingContext : ITypeBuildingContext
+    public class GenericParameterTypeBuildingContext : TypeBuildingContextBase
     {
         public GenericParameterTypeBuildingContext(ITypeInfo type)
-        {
-            this.type = type;
-        }
-
-        public bool IsDefinitionBuilt => true;
-
-        public void Initialize(ITypeGenerator typeGenerator)
+            : base(type)
         {
         }
 
-        public void BuildDefinition(ITypeGenerator typeGenerator)
+        protected override TypeScriptType ReferenceFromInternal(ITypeInfo type, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
+            return new TypeScriptTypeReference(Type.Name);
         }
-
-        public TypeScriptType ReferenceFrom(TypeScriptUnit targetUnit, ITypeGenerator typeGenerator, IAttributeProvider? attributeProvider)
-        {
-            return new TypeScriptTypeReference(type.Name);
-        }
-
-        private readonly ITypeInfo type;
     }
 }

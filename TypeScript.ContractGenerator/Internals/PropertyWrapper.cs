@@ -14,7 +14,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         public PropertyInfo Property { get; }
 
         public string Name => Property.Name;
-        public ITypeInfo PropertyType => TypeInfo.From(Property.PropertyType);
+        public ITypeInfo PropertyType => TypeInfo.From(Property.PropertyType).WithMemberInfo(this);
         public ITypeInfo? DeclaringType => TypeInfo.From(Property.DeclaringType);
 
         public IAttributeInfo[] GetAttributes(bool inherit)

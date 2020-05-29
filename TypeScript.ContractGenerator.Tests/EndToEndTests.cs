@@ -27,7 +27,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [TestCase(typeof(IgnoreRootType), "ignore-type")]
         public void GenerateCodeTest(Type rootType, string expectedFileName)
         {
-            var generatedCode = GenerateCode(rootType).Single();
+            var generatedCode = GenerateCode(TypeScriptGenerationOptions.Default, CustomTypeGenerator.Null, rootType).Single();
             var expectedCode = GetExpectedCode($"SimpleGenerator/{expectedFileName}");
             generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
@@ -56,10 +56,24 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [TestCase(typeof(EnumWithConstGetterContainingRootType), typeof(TestCustomPropertyResolver), "custom-property-resolver")]
         [TestCase(typeof(FirstInheritor), typeof(TestCustomTypeGenerator), "inherit-abstract-class")]
         [TestCase(typeof(AbstractClassRootType), typeof(TestCustomTypeGenerator), "abstract-class")]
-        [TestCase(typeof(MethodRootType), typeof(TestCustomTypeGenerator), "method-class")]
         public void CustomGeneratorTest(Type rootType, Type type, string expectedFileName)
         {
-            var generatedCode = GenerateCode((ICustomTypeGenerator)Activator.CreateInstance(type), rootType).Single();
+            var generatedCode = GenerateCode(TypeScriptGenerationOptions.Default, (ICustomTypeGenerator)Activator.CreateInstance(type), rootType).Single();
+            var expectedCode = GetExpectedCode($"CustomGenerator/{expectedFileName}");
+            generatedCode.Diff(expectedCode).ShouldBeEmpty();
+        }
+
+        [TestCase(typeof(MethodRootType), typeof(TestCustomTypeGenerator), NullabilityMode.Pessimistic, "method-class")]
+        [TestCase(typeof(MethodRootType), typeof(TestCustomTypeGenerator), NullabilityMode.Pessimistic | NullabilityMode.NullableReference, "method-class")]
+        [TestCase(typeof(MethodRootType), typeof(TestCustomTypeGenerator), NullabilityMode.NullableReference, "method-invalid-nullable-reference-class")]
+        [TestCase(typeof(NullableReferenceMethodType), typeof(TestCustomTypeGenerator), NullabilityMode.NullableReference, "method-nullable-reference-class")]
+        [TestCase(typeof(NullableReferenceMethodType), typeof(TestCustomTypeGenerator), NullabilityMode.Optimistic | NullabilityMode.NullableReference, "method-nullable-reference-class")]
+        [TestCase(typeof(NullableReferenceMethodType), typeof(TestCustomTypeGenerator), NullabilityMode.Optimistic, "method-no-nullable-reference-class")]
+        public void CustomGeneratorWithMethodsTest(Type rootType, Type type, NullabilityMode nullabilityMode, string expectedFileName)
+        {
+            var options = TypeScriptGenerationOptions.Default;
+            options.NullabilityMode = nullabilityMode;
+            var generatedCode = GenerateCode(options, (ICustomTypeGenerator)Activator.CreateInstance(type), rootType).Single();
             var expectedCode = GetExpectedCode($"CustomGenerator/{expectedFileName}");
             generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }

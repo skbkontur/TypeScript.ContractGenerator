@@ -18,6 +18,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Abstractions
         bool IsGenericParameter { get; }
         bool IsGenericTypeDefinition { get; }
         ITypeInfo? BaseType { get; }
+        IAttributeProvider? Member { get; }
 
         IMethodInfo[] GetMethods(BindingFlags bindingAttr);
         IPropertyInfo[] GetProperties(BindingFlags bindingAttr);
@@ -26,7 +27,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Abstractions
         ITypeInfo[] GetInterfaces();
         ITypeInfo GetGenericTypeDefinition();
         ITypeInfo GetElementType();
+        ITypeInfo WithMemberInfo(IAttributeProvider memberInfo);
         string[] GetEnumNames();
+        bool CanBeNull(NullabilityMode nullabilityMode);
         bool IsAssignableFrom(ITypeInfo type);
     }
 }

@@ -49,7 +49,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             return typeInfo;
         }
 
-        protected virtual TypeScriptType? ResolveReturnType(IMethodInfo methodInfo, Func<IAttributeProvider, ITypeInfo, TypeScriptType> buildAndImportType)
+        protected virtual TypeScriptType? ResolveReturnType(IMethodInfo methodInfo, Func<ITypeInfo, TypeScriptType> buildAndImportType)
         {
             return null;
         }
@@ -68,11 +68,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
 
         public override void Initialize(ITypeGenerator typeGenerator)
         {
-            Declaration = GenerateInternalApiController(Unit, Type, (x, y) => typeGenerator.BuildAndImportType(Unit, x, y));
+            Declaration = GenerateInternalApiController(Unit, Type, x => typeGenerator.BuildAndImportType(Unit, x));
             base.Initialize(typeGenerator);
         }
 
-        private TypeScriptTypeDeclaration GenerateInternalApiController(TypeScriptUnit targetUnit, ITypeInfo type, Func<IAttributeProvider, ITypeInfo, TypeScriptType> buildAndImportType)
+        private TypeScriptTypeDeclaration GenerateInternalApiController(TypeScriptUnit targetUnit, ITypeInfo type, Func<ITypeInfo, TypeScriptType> buildAndImportType)
         {
             var baseApi = GetApiBase(type);
             var apiName = GetApiName(type);
@@ -111,7 +111,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             return interfaceDeclaration;
         }
 
-        private IEnumerable<TypeScriptClassMemberDefinition> BuildApiImplMember(IMethodInfo methodInfo, Func<IAttributeProvider, ITypeInfo, TypeScriptType> buildAndImportType, ITypeInfo controllerType)
+        private IEnumerable<TypeScriptClassMemberDefinition> BuildApiImplMember(IMethodInfo methodInfo, Func<ITypeInfo, TypeScriptType> buildAndImportType, ITypeInfo controllerType)
         {
             var functionDefinition = new TypeScriptFunctionDefinition
                 {
@@ -123,7 +123,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                 methodInfo.GetParameters().Where(x => PassParameterToCall(x, controllerType)).Select(x => new TypeScriptArgumentDeclaration
                     {
                         Name = x.Name,
-                        Type = buildAndImportType(x, x.ParameterType)
+                        Type = buildAndImportType(x.ParameterType)
                     })
                 );
             yield return
@@ -134,12 +134,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                     };
         }
 
-        private TypeScriptType GetMethodResult(IMethodInfo methodInfo, Func<IAttributeProvider, ITypeInfo, TypeScriptType> buildAndImportType)
+        private TypeScriptType GetMethodResult(IMethodInfo methodInfo, Func<ITypeInfo, TypeScriptType> buildAndImportType)
         {
             var method = ((MethodWrapper)methodInfo).Method;
             if (methodResults.TryGetValue(method, out var result))
                 return result;
-            return methodResults[method] = ResolveReturnType(methodInfo, buildAndImportType) ?? new TypeScriptPromiseOfType(buildAndImportType(methodInfo, ResolveReturnType(methodInfo.ReturnType)));
+            return methodResults[method] = ResolveReturnType(methodInfo, buildAndImportType) ?? new TypeScriptPromiseOfType(buildAndImportType(ResolveReturnType(methodInfo.ReturnType)));
         }
 
         private TypeScriptReturnStatement CreateCall(IMethodInfo methodInfo, ITypeInfo controllerType)
@@ -216,7 +216,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             return result;
         }
 
-        private IEnumerable<TypeScriptInterfaceFunctionMember> BuildApiInterfaceMember(IMethodInfo methodInfo, Func<IAttributeProvider, ITypeInfo, TypeScriptType> buildAndImportType, ITypeInfo controllerType)
+        private IEnumerable<TypeScriptInterfaceFunctionMember> BuildApiInterfaceMember(IMethodInfo methodInfo, Func<ITypeInfo, TypeScriptType> buildAndImportType, ITypeInfo controllerType)
         {
             var result = new TypeScriptInterfaceFunctionMember(
                 methodInfo.Name.ToLowerCamelCase(),
@@ -228,7 +228,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                           .Select(x => new TypeScriptArgumentDeclaration
                               {
                                   Name = x.Name,
-                                  Type = buildAndImportType(x, x.ParameterType)
+                                  Type = buildAndImportType(x.ParameterType)
                               })
                 );
             yield return result;
