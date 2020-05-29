@@ -21,9 +21,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
         }
 
         [CanBeNull, ItemCanBeNull]
-        public async Task<object> GetAsync([CanBeNull] string s)
+        public async Task<object?> GetAsync([CanBeNull] string s)
         {
-            return await Task.FromResult(new CommonType()).ConfigureAwait(false);
+            return await Task.FromResult(new object()).ConfigureAwait(false);
         }
 
         [NotNull]

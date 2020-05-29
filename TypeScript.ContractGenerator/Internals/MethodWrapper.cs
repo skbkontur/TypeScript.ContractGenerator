@@ -25,7 +25,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         public IAttributeInfo[] GetAttributes(bool inherit)
         {
-            return Method.GetAttributes(inherit);
+            return Method.GetAttributes(inherit)
+                         .Concat(Method.ReturnTypeCustomAttributes.GetAttributes(inherit))
+                         .ToArray();
         }
     }
 }
