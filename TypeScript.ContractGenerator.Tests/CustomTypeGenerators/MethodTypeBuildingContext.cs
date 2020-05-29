@@ -31,7 +31,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
                                                                                                     })
                                                                                                 .ToArray())));
 
-            definition.Members.AddRange(Type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            definition.Members.AddRange(Type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                                             .Select(x => new TypeScriptInterfacePropertyMember(x.Name.ToLowerCamelCase(), typeGenerator.BuildAndImportType(Unit, x.PropertyType))));
 
             Declaration = new TypeScriptInterfaceDeclaration {Definition = definition, Name = Type.Name};

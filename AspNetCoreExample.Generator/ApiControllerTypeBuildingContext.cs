@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +10,7 @@ using SkbKontur.TypeScript.ContractGenerator.Extensions;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController;
 
-using static SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
-
-using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
-using AnotherTypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
+using BindingFlags = System.Reflection.BindingFlags;
 
 namespace AspNetCoreExample.Generator
 {
@@ -27,13 +23,6 @@ namespace AspNetCoreExample.Generator
 
         public static bool Accept(ITypeInfo type)
         {
-            var test0 = From(typeof(int));
-            var test1 = From<Type>();
-            var test2 = TypeInfo.From<ControllerBase>();
-            var test3 = TypeInfo.From(typeof(void));
-            var test4 = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo.From<string>();
-            var test5 = AnotherTypeInfo.From(typeof(Task<>));
-
             return TypeInfo.From<ControllerBase>().IsAssignableFrom(type);
         }
 
@@ -47,13 +36,6 @@ namespace AspNetCoreExample.Generator
                 };
         }
 
-        private string GetApiBaseName(ITypeInfo controllerType)
-        {
-            if (IsUserScopedApi(controllerType))
-                return "UserApiBase";
-            return "ApiBase";
-        }
-
         protected override ITypeInfo ResolveReturnType(ITypeInfo typeInfo)
         {
             if (typeInfo.IsGenericType)
@@ -63,10 +45,9 @@ namespace AspNetCoreExample.Generator
                     return ResolveReturnType(typeInfo.GetGenericArguments()[0]);
             }
 
-            if (typeInfo.Equals(TypeInfo.From<Task>()))
+            if (typeInfo.Equals(TypeInfo.From<Task>()) || typeInfo.Equals(TypeInfo.From<ActionResult>()))
                 return TypeInfo.From(typeof(void));
-            if (typeInfo.Equals(TypeInfo.From<ActionResult>()))
-                return TypeInfo.From(typeof(void));
+
             return typeInfo;
         }
 
@@ -92,7 +73,7 @@ namespace AspNetCoreExample.Generator
             var routeTemplate = methodInfo.GetAttributes(false)
                                           .Select(x => x.AttributeData.TryGetValue("Template", out var value) ? (string)value : null)
                                           .SingleOrDefault(x => !string.IsNullOrEmpty(x));
-            return AppendRoutePrefix(routeTemplate, controllerType);
+            return AppendRoutePrefix(routeTemplate ?? string.Empty, controllerType);
         }
 
         protected override bool PassParameterToCall(IParameterInfo parameterInfo, ITypeInfo controllerType)
@@ -114,13 +95,15 @@ namespace AspNetCoreExample.Generator
 
         protected override IMethodInfo[] GetMethodsToImplement(ITypeInfo controllerType)
         {
-            return controllerType.GetMethods(BindingFlags.Instance | BindingFlags.Public)
-                                 .Where(m => !((MethodWrapper)m).Method.IsSpecialName)
-                                 .Where(x => x.DeclaringType.Equals(controllerType))
-                                 .ToArray();
+            return controllerType.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly).ToArray();
         }
 
-        private string AppendRoutePrefix(string routeTemplate, ITypeInfo controllerType)
+        private static string GetApiBaseName(IAttributeProvider controllerType)
+        {
+            return IsUserScopedApi(controllerType) ? "UserApiBase" : "ApiBase";
+        }
+
+        private static string AppendRoutePrefix(string routeTemplate, IAttributeProvider controllerType)
         {
             var routeAttribute = controllerType.GetAttributes(TypeInfo.From<RouteAttribute>()).SingleOrDefault();
             var fullRoute = (routeAttribute == null ? "" : routeAttribute.AttributeData["Template"] + "/") + routeTemplate;
@@ -129,10 +112,10 @@ namespace AspNetCoreExample.Generator
             return fullRoute.Substring("v1/".Length);
         }
 
-        private bool IsUserScopedApi(ITypeInfo controller)
+        private static bool IsUserScopedApi(IAttributeProvider controller)
         {
             var route = controller.GetAttributes(TypeInfo.From<RouteAttribute>()).SingleOrDefault();
-            var template = (string)route?.AttributeData["Template"];
+            var template = (string?)route?.AttributeData["Template"];
             return template?.StartsWith("v1/user/{userId}") ?? false;
         }
     }

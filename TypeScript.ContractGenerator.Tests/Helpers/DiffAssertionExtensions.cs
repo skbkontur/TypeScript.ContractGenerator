@@ -10,7 +10,7 @@ using NUnit.Framework;
 
 using SkbKontur.TypeScript.ContractGenerator.Tests.Types;
 
-namespace SkbKontur.TypeScript.ContractGenerator.Tests
+namespace SkbKontur.TypeScript.ContractGenerator.Tests.Helpers
 {
     public static class DiffAssertionExtensions
     {

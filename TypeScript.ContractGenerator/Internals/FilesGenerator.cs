@@ -4,24 +4,25 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 {
     internal static class FilesGenerator
     {
-        public static void GenerateFiles(string targetDir, DefaultTypeScriptGeneratorOutput output, FilesGenerationContext filesGenerationContext)
+        public static void GenerateFiles(string targetDir, DefaultTypeScriptGeneratorOutput output, LinterDisableMode linterDisableMode)
         {
-            DeleteFiles(targetDir, $"*.{filesGenerationContext.FileExtension}");
+            DeleteFiles(targetDir, "*.ts");
             Directory.CreateDirectory(targetDir);
             foreach (var unit in output.Units)
             {
-                var targetFileName = GetUnitTargetFileName(targetDir, unit, filesGenerationContext.FileExtension);
+                var targetFileName = GetUnitTargetFileName(targetDir, unit);
 
                 EnsureDirectoryExists(targetFileName);
 
-                File.WriteAllText(targetFileName, filesGenerationContext.HeaderGenerationFunc(generatedContentMarkerString));
+                var linterDisable = linterDisableMode == LinterDisableMode.TsLint ? "// tslint:disable" : "/* eslint-disable */";
+                File.WriteAllText(targetFileName, $"{linterDisable}\n{generatedContentMarkerString}\n");
                 File.AppendAllText(targetFileName, unit.GenerateCode(new DefaultCodeGenerationContext()));
             }
         }
 
-        private static string GetUnitTargetFileName(string targetDir, TypeScriptUnit unit, string fileExtension)
+        private static string GetUnitTargetFileName(string targetDir, TypeScriptUnit unit)
         {
-            var targetFileName = Path.Combine(targetDir, $"{unit.Path}.{fileExtension}");
+            var targetFileName = Path.Combine(targetDir, $"{unit.Path}.ts");
             return targetFileName;
         }
 
@@ -37,16 +38,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             if (!Directory.Exists(targetDir))
                 return;
 
-            var files = Directory.GetFiles(targetDir, searchPattern, SearchOption.AllDirectories);
-            foreach (var file in files)
+            foreach (var file in Directory.GetFiles(targetDir, searchPattern, SearchOption.AllDirectories))
             {
                 if (File.ReadAllText(file).Contains(generatedContentMarkerString))
-                {
                     File.Delete(file);
-                }
             }
         }
 
-        private static readonly string generatedContentMarkerString = "// TypeScriptContractGenerator's generated content";
+        private const string generatedContentMarkerString = "// TypeScriptContractGenerator's generated content";
     }
 }
