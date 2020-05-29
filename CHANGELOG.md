@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.10.3 - 2020.05.28
+- Fix eslint-ignore comment
+- Add public modifier to function definition
+- Add EnableExplicitNullability obsoletion warning
+- Update deps
+
 ## v1.10 - 2020.01.10
 - Fix type definition duplicates for custom generic type building context 
 - Add obsoletion warnings for `JavaScriptTypeChecker.Flow`, `EnumGenerationMode.FixedStringsAndDictionary` and `TypeScriptGenerationOptions.Pluralize`
