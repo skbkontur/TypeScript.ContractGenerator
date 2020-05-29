@@ -17,9 +17,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         private RoslynTypeInfo(ITypeSymbol typeSymbol)
         {
             TypeSymbol = typeSymbol;
+            NullabilityInfo = NullabilityInfo.Empty;
         }
 
-        private RoslynTypeInfo(ITypeSymbol typeSymbol, NullabilityInfo? nullabilityInfo)
+        private RoslynTypeInfo(ITypeSymbol typeSymbol, NullabilityInfo nullabilityInfo)
         {
             TypeSymbol = typeSymbol;
             NullabilityInfo = nullabilityInfo;
@@ -43,7 +44,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         }
 
         public ITypeSymbol TypeSymbol { get; }
-        public NullabilityInfo? NullabilityInfo { get; }
+        public NullabilityInfo NullabilityInfo { get; }
 
         public string Name => TypeSymbol.MetadataName;
         public string FullName => TypeSymbol.Name;
@@ -111,7 +112,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
             if (!(TypeSymbol is INamedTypeSymbol namedTypeSymbol))
                 return new ITypeInfo[0];
 
-            if (NullabilityInfo != null && this.HasItem())
+            if (!NullabilityInfo.IsEmpty() && this.HasItem())
                 return new ITypeInfo[] {new RoslynTypeInfo(namedTypeSymbol.TypeArguments[0], NullabilityInfo.ForItem())};
 
             return namedTypeSymbol.TypeArguments.Select(From).ToArray();
@@ -132,7 +133,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         public ITypeInfo GetElementType()
         {
             if (TypeSymbol is IArrayTypeSymbol arrayTypeSymbol)
-                return new RoslynTypeInfo(arrayTypeSymbol.ElementType, NullabilityInfo?.ForItem());
+                return new RoslynTypeInfo(arrayTypeSymbol.ElementType, NullabilityInfo.ForItem());
             return null;
         }
 
@@ -150,11 +151,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
 
         public bool CanBeNull(NullabilityMode nullabilityMode)
         {
-            if (!IsClass && !IsInterface)
+            if (this.NeverNull())
                 return false;
 
             if (!nullabilityMode.HasFlag(NullabilityMode.NullableReference) || TypeSymbol.NullableAnnotation == NullableAnnotation.None)
-                return NullabilityInfo?.CanBeNull(nullabilityMode) ?? false;
+                return NullabilityInfo.CanBeNull(nullabilityMode);
+
             return TypeSymbol.NullableAnnotation == NullableAnnotation.Annotated;
         }
 

@@ -8,11 +8,15 @@ using NUnit.Framework;
 
 using SkbKontur.TypeScript.ContractGenerator.Internals;
 using SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators;
+using SkbKontur.TypeScript.ContractGenerator.Tests.Helpers;
 using SkbKontur.TypeScript.ContractGenerator.Tests.Types;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests
 {
-    public class EndToEndTests : TestBase
+    [TestFixture(typeof(TypesProvider))]
+    [TestFixture(typeof(RoslynTypesProvider))]
+    public class EndToEndTests<TTypesProvider> : TestBase
+        where TTypesProvider : ITypesProvider
     {
         [TestCase(typeof(NamingRootType), "type-names")]
         [TestCase(typeof(SimpleRootType), "simple-types")]
@@ -27,7 +31,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [TestCase(typeof(IgnoreRootType), "ignore-type")]
         public void GenerateCodeTest(Type rootType, string expectedFileName)
         {
-            var generatedCode = GenerateCode(TypeScriptGenerationOptions.Default, CustomTypeGenerator.Null, rootType).Single();
+            var typesProvider = GetTypesProvider<TTypesProvider>(rootType);
+            var generatedCode = GenerateCode(TypeScriptGenerationOptions.Default, CustomTypeGenerator.Null, typesProvider).Single();
             var expectedCode = GetExpectedCode($"SimpleGenerator/{expectedFileName}");
             generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
@@ -36,7 +41,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [TestCase(typeof(AnnotatedEnumWithConstGetterContainingRootType), "annotated-const-getter-typescript-enum")]
         public void GenerateEnumWithConstGetterTest(Type type, string expectedFileName)
         {
-            var generatedCode = GenerateCode(TypeScriptGenerationOptions.Default, new TestCustomTypeGenerator(), type).Single();
+            var typesProvider = GetTypesProvider<TTypesProvider>(type);
+            var generatedCode = GenerateCode(TypeScriptGenerationOptions.Default, new TestCustomTypeGenerator(), typesProvider).Single();
             var expectedCode = GetExpectedCode($"Enums/{expectedFileName}");
             generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
@@ -45,8 +51,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [TestCase(typeof(SimpleStructureTypeLocator))]
         public void GenerateFilesTest(Type type)
         {
-            var rootTypes = new[] {typeof(CommonUsingRootType), typeof(CommonUsingRootType2), typeof(CommonUsingRootType3)};
-            GenerateFiles((ICustomTypeGenerator)Activator.CreateInstance(type), $"{type.Name}.Actual", rootTypes);
+            var typesProvider = GetTypesProvider<TTypesProvider>(typeof(CommonUsingRootType), typeof(CommonUsingRootType2), typeof(CommonUsingRootType3));
+            GenerateFiles((ICustomTypeGenerator)Activator.CreateInstance(type), $"{type.Name}.Actual", typesProvider);
             CheckDirectoriesEquivalence($"Files/{type.Name}.Expected", $"{type.Name}.Actual");
         }
 
@@ -58,22 +64,24 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [TestCase(typeof(AbstractClassRootType), typeof(TestCustomTypeGenerator), "abstract-class")]
         public void CustomGeneratorTest(Type rootType, Type type, string expectedFileName)
         {
-            var generatedCode = GenerateCode(TypeScriptGenerationOptions.Default, (ICustomTypeGenerator)Activator.CreateInstance(type), rootType).Single();
+            var typesProvider = GetTypesProvider<TTypesProvider>(rootType);
+            var generatedCode = GenerateCode(TypeScriptGenerationOptions.Default, (ICustomTypeGenerator)Activator.CreateInstance(type), typesProvider).Single();
             var expectedCode = GetExpectedCode($"CustomGenerator/{expectedFileName}");
             generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
 
-        [TestCase(typeof(MethodRootType), typeof(TestCustomTypeGenerator), NullabilityMode.Pessimistic, "method-class")]
-        [TestCase(typeof(MethodRootType), typeof(TestCustomTypeGenerator), NullabilityMode.Pessimistic | NullabilityMode.NullableReference, "method-class")]
-        [TestCase(typeof(MethodRootType), typeof(TestCustomTypeGenerator), NullabilityMode.NullableReference, "method-invalid-nullable-reference-class")]
-        [TestCase(typeof(NullableReferenceMethodType), typeof(TestCustomTypeGenerator), NullabilityMode.NullableReference, "method-nullable-reference-class")]
-        [TestCase(typeof(NullableReferenceMethodType), typeof(TestCustomTypeGenerator), NullabilityMode.Optimistic | NullabilityMode.NullableReference, "method-nullable-reference-class")]
-        [TestCase(typeof(NullableReferenceMethodType), typeof(TestCustomTypeGenerator), NullabilityMode.Optimistic, "method-no-nullable-reference-class")]
-        public void CustomGeneratorWithMethodsTest(Type rootType, Type type, NullabilityMode nullabilityMode, string expectedFileName)
+        [TestCase(typeof(MethodRootType), NullabilityMode.Pessimistic, "method-class")]
+        [TestCase(typeof(MethodRootType), NullabilityMode.Pessimistic | NullabilityMode.NullableReference, "method-class")]
+        [TestCase(typeof(MethodRootType), NullabilityMode.NullableReference, "method-invalid-nullable-reference-class")]
+        [TestCase(typeof(NullableReferenceMethodType), NullabilityMode.NullableReference, "method-nullable-reference-class")]
+        [TestCase(typeof(NullableReferenceMethodType), NullabilityMode.Optimistic | NullabilityMode.NullableReference, "method-nullable-reference-class")]
+        [TestCase(typeof(NullableReferenceMethodType), NullabilityMode.Optimistic, "method-no-nullable-reference-class")]
+        public void CustomGeneratorWithMethodsTest(Type rootType, NullabilityMode nullabilityMode, string expectedFileName)
         {
             var options = TypeScriptGenerationOptions.Default;
             options.NullabilityMode = nullabilityMode;
-            var generatedCode = GenerateCode(options, (ICustomTypeGenerator)Activator.CreateInstance(type), rootType).Single();
+            var typesProvider = GetTypesProvider<TTypesProvider>(rootType);
+            var generatedCode = GenerateCode(options, new TestCustomTypeGenerator(), typesProvider).Single();
             var expectedCode = GetExpectedCode($"CustomGenerator/{expectedFileName}");
             generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }

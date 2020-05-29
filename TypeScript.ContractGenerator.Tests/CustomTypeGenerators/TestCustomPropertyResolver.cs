@@ -1,9 +1,13 @@
 using System;
+using System.Linq;
+
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
+using SkbKontur.TypeScript.ContractGenerator.Roslyn;
 using SkbKontur.TypeScript.ContractGenerator.Tests.Types;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
 
@@ -21,19 +25,46 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
             return null;
         }
 
-        public TypeScriptTypeMemberDeclaration ResolveProperty(TypeScriptUnit unit, ITypeGenerator typeGenerator, ITypeInfo typeInfo, IPropertyInfo propertyInfo)
+        public TypeScriptTypeMemberDeclaration? ResolveProperty(TypeScriptUnit unit, ITypeGenerator typeGenerator, ITypeInfo typeInfo, IPropertyInfo propertyInfo)
+        {
+            var value = typeInfo is TypeInfo
+                            ? GetValueFromPropertyInfo(typeInfo, propertyInfo)
+                            : GetValueFromPropertySymbol(typeInfo, propertyInfo);
+            if (!string.IsNullOrEmpty(value))
+            {
+                return new TypeScriptTypeMemberDeclaration
+                    {
+                        Name = propertyInfo.Name.ToLowerCamelCase(),
+                        Optional = false,
+                        Type = new TypeScriptStringLiteralType(value),
+                    };
+            }
+
+            return null;
+        }
+
+        private static string? GetValueFromPropertyInfo(ITypeInfo typeInfo, IPropertyInfo propertyInfo)
         {
             var type = ((TypeInfo)typeInfo).Type;
             var property = ((PropertyWrapper)propertyInfo).Property;
             if (type == typeof(EnumWithConstGetterContainingRootType) && property.PropertyType.IsEnum && !property.CanWrite)
+                return property.GetMethod.Invoke(Activator.CreateInstance(type), null).ToString();
+            return null;
+        }
+
+        private static string? GetValueFromPropertySymbol(ITypeInfo typeInfo, IPropertyInfo propertyInfo)
+        {
+            var property = ((RoslynPropertyInfo)propertyInfo).PropertySymbol;
+            if (!typeInfo.Equals(TypeInfo.From<EnumWithConstGetterContainingRootType>()) || !propertyInfo.PropertyType.IsEnum || property.SetMethod != null)
+                return null;
+
+            var syntaxNode = property.GetMethod.DeclaringSyntaxReferences.Single().GetSyntax();
+            if (syntaxNode is ArrowExpressionClauseSyntax arrowExpression && arrowExpression.Expression is MemberAccessExpressionSyntax memberAccess)
             {
-                return new TypeScriptTypeMemberDeclaration
-                    {
-                        Name = property.Name.ToLowerCamelCase(),
-                        Optional = false,
-                        Type = new TypeScriptStringLiteralType(property.GetMethod.Invoke(Activator.CreateInstance(type), null).ToString()),
-                    };
+                if (memberAccess.Expression is IdentifierNameSyntax identifier && identifier.Identifier.Text == propertyInfo.PropertyType.Name)
+                    return memberAccess.Name.Identifier.ToString();
             }
+
             return null;
         }
     }

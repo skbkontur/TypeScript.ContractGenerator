@@ -23,6 +23,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             return typeDefinition.Equals(TypeInfo.From(typeof(Task<>))) || typeDefinition.Equals(TypeInfo.From(typeof(List<>)));
         }
 
+        public static bool NeverNull(this ITypeInfo type)
+        {
+            return !type.IsClass && !type.IsInterface || type.IsGenericTypeDefinition;
+        }
+
         public static bool IsAssignableFrom(ITypeInfo self, ITypeInfo other)
         {
             if (self == null || other == null)

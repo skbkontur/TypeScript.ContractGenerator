@@ -11,9 +11,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         private TypeInfo(Type type)
         {
             Type = type;
+            NullabilityInfo = NullabilityInfo.Empty;
         }
 
-        private TypeInfo(Type type, NullabilityInfo? nullabilityInfo)
+        private TypeInfo(Type type, NullabilityInfo nullabilityInfo)
         {
             Type = type;
             NullabilityInfo = nullabilityInfo;
@@ -37,7 +38,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         }
 
         public Type Type { get; }
-        public NullabilityInfo? NullabilityInfo { get; }
+        public NullabilityInfo NullabilityInfo { get; }
 
         public string Name => Type.Name;
         public string FullName => Type.FullName;
@@ -71,12 +72,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         public ITypeInfo[] GetGenericArguments()
         {
-            if (NullabilityInfo != null && this.HasItem())
+            if (!NullabilityInfo.IsEmpty() && this.HasItem())
                 return new ITypeInfo[] {new TypeInfo(Type.GetGenericArguments()[0], NullabilityInfo.ForItem())};
 
             var args = Type.GetGenericArguments();
-            var argsNullability = NullabilityInfo?.ForGenericArguments(NullabilityInfo, args);
-            return args.Select((x, i) => (ITypeInfo)new TypeInfo(x, argsNullability?[i])).ToArray();
+            var argsNullability = NullabilityInfo.ForGenericArguments(NullabilityInfo, args);
+            return args.Select((x, i) => (ITypeInfo)new TypeInfo(x, argsNullability[i])).ToArray();
         }
 
         public ITypeInfo[] GetInterfaces()
@@ -106,10 +107,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         public bool CanBeNull(NullabilityMode nullabilityMode)
         {
-            if (!IsClass && !IsInterface)
-                return false;
-
-            return NullabilityInfo?.CanBeNull(nullabilityMode) ?? false;
+            return !this.NeverNull() && NullabilityInfo.CanBeNull(nullabilityMode);
         }
 
         public bool IsAssignableFrom(ITypeInfo type)

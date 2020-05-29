@@ -7,34 +7,36 @@ using FluentAssertions;
 using NUnit.Framework;
 
 using SkbKontur.TypeScript.ContractGenerator.Internals;
+using SkbKontur.TypeScript.ContractGenerator.Tests.Helpers;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests
 {
     public abstract class TestBase
     {
-        protected TestBase()
+        protected string[] GenerateCode(TypeScriptGenerationOptions options, ICustomTypeGenerator customTypeGenerator, ITypesProvider typesProvider)
         {
-            filesGenerationContext = FilesGenerationContext.Create(LinterDisableMode.TsLint);
-        }
-
-        protected string[] GenerateCode(TypeScriptGenerationOptions options, ICustomTypeGenerator customTypeGenerator, Type rootType)
-        {
-            var generator = new TypeScriptGenerator(options, customTypeGenerator, new TypesProvider(rootType));
+            var generator = new TypeScriptGenerator(options, customTypeGenerator, typesProvider);
             return generator.Generate().Select(x => x.GenerateCode(new DefaultCodeGenerationContext()).Replace("\r\n", "\n")).ToArray();
         }
 
-        protected void GenerateFiles(ICustomTypeGenerator customTypeGenerator, string folderName, params Type[] rootTypes)
+        protected static ITypesProvider GetTypesProvider<TTypesProvider>(params Type[] rootTypes)
+            where TTypesProvider : ITypesProvider
+        {
+            return (ITypesProvider)Activator.CreateInstance(typeof(TTypesProvider), rootTypes);
+        }
+
+        protected static void GenerateFiles(ICustomTypeGenerator customTypeGenerator, string folderName, ITypesProvider typesProvider)
         {
             var path = $"{TestContext.CurrentContext.TestDirectory}/{folderName}";
             if (Directory.Exists(path))
                 Directory.Delete(path, recursive : true);
             Directory.CreateDirectory(path);
 
-            var generator = new TypeScriptGenerator(TypeScriptGenerationOptions.Default, customTypeGenerator, new TypesProvider(rootTypes));
+            var generator = new TypeScriptGenerator(TypeScriptGenerationOptions.Default, customTypeGenerator, typesProvider);
             generator.GenerateFiles(path);
         }
 
-        protected void CheckDirectoriesEquivalence(string expectedDirectory, string actualDirectory)
+        protected static void CheckDirectoriesEquivalence(string expectedDirectory, string actualDirectory)
         {
             expectedDirectory = $"{TestContext.CurrentContext.TestDirectory}/{expectedDirectory}";
             actualDirectory = $"{TestContext.CurrentContext.TestDirectory}/{actualDirectory}";
@@ -81,16 +83,14 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
                 CheckDirectoriesEquivalenceInner($"{expectedDirectory}/{directory}", $"{actualDirectory}/{directory}", generatedOnly);
         }
 
-        protected string GetExpectedCode(string expectedCodeFilePath)
+        protected static string GetExpectedCode(string expectedCodeFilePath)
         {
             return File.ReadAllText(GetFilePath(expectedCodeFilePath)).Replace("\r\n", "\n");
         }
 
-        private string GetFilePath(string filename)
+        private static string GetFilePath(string filename)
         {
-            return $"{TestContext.CurrentContext.TestDirectory}/Files/{filename}.{filesGenerationContext.FileExtension}";
+            return $"{TestContext.CurrentContext.TestDirectory}/Files/{filename}.ts";
         }
-
-        private readonly FilesGenerationContext filesGenerationContext;
     }
 }

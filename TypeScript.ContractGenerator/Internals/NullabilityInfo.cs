@@ -79,18 +79,18 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             return new NullabilityInfo(NullableContext, nullableInfo, HasItemNotNull, HasItemCanBeNull, false, false);
         }
 
-        public NullabilityInfo?[] ForGenericArguments(NullabilityInfo nullabilityInfo, Type[] args)
+        public static NullabilityInfo[] ForGenericArguments(NullabilityInfo nullabilityInfo, Type[] args)
         {
             if (nullabilityInfo.NullableInfo == null || nullabilityInfo.NullableInfo.Length < 2)
                 return args.Select(x => new NullabilityInfo(nullabilityInfo.NullableContext, nullabilityInfo.NullableInfo)).ToArray();
 
-            var result = new List<NullabilityInfo?>();
+            var result = new List<NullabilityInfo>();
             var index = 1;
             for (var i = 0; i < args.Length; i++)
             {
                 var argsLength = GetGenericArgumentsToSkip(args[i]);
                 result.Add(argsLength == 0
-                               ? null
+                               ? Empty
                                : new NullabilityInfo(
                                      nullabilityInfo.NullableContext,
                                      nullabilityInfo.NullableInfo.Skip(index).Take(argsLength).ToArray()
@@ -140,11 +140,21 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         {
             if (nullabilityMode == NullabilityMode.None)
                 return false;
+
+            var nullableByte = NullableInfo?[0] ?? NullableContext ?? 0;
             if (nullabilityMode == NullabilityMode.NullableReference ||
-                nullabilityMode.HasFlag(NullabilityMode.NullableReference) && (NullableContext != null || NullableInfo != null))
-                return (NullableInfo?[0] ?? NullableContext) == 2;
+                nullabilityMode.HasFlag(NullabilityMode.NullableReference) && nullableByte != 0)
+                return nullableByte == 2;
+
             return nullabilityMode == NullabilityMode.Pessimistic ? !HasNotNull : HasCanBeNull;
         }
+
+        public bool IsEmpty()
+        {
+            return NullableContext == null && NullableInfo == null && !HasNotNull && !HasCanBeNull && !HasItemNotNull && !HasItemCanBeNull;
+        }
+
+        public static NullabilityInfo Empty => new NullabilityInfo(null, null);
 
         public byte? NullableContext { get; }
         public byte[]? NullableInfo { get; }
