@@ -92,7 +92,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         public ITypeInfo GetElementType()
         {
-            return new TypeInfo(Type.GetElementType(), NullabilityInfo?.ForItem());
+            return new TypeInfo(Type.GetElementType(), NullabilityInfo.ForItem());
         }
 
         public ITypeInfo WithMemberInfo(IAttributeProvider memberInfo)

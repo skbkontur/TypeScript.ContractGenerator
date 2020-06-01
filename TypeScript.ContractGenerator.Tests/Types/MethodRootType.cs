@@ -35,5 +35,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
 
         [CanBeNull]
         public string NullableString { get; set; }
+
+        public string UnknownString { get; set; }
     }
 }

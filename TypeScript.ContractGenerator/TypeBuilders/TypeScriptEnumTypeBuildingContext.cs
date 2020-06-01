@@ -19,13 +19,14 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                 {
                     Name = Type.Name,
                     Definition = new JavaScriptEnumDefinition(
-                        values.Select(x => new JavaScriptEnumMember {Name = x, ValueLiteral = new TypeScriptStringLiteral(x)})),
+                        values.Select(x => new JavaScriptEnumMember
+                            {
+                                Name = x,
+                                ValueLiteral = new TypeScriptStringLiteral(x)
+                            })
+                        ),
                 };
-            Unit.Body.Add(
-                new TypeScriptExportTypeStatement
-                    {
-                        Declaration = enumResult
-                    });
+            Unit.Body.Add(new TypeScriptExportTypeStatement {Declaration = enumResult});
             Declaration = enumResult;
         }
     }

@@ -86,9 +86,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
             var result = new List<NullabilityInfo>();
             var index = 1;
-            for (var i = 0; i < args.Length; i++)
+            foreach (var arg in args)
             {
-                var argsLength = GetGenericArgumentsToSkip(args[i]);
+                var argsLength = GetGenericArgumentsToSkip(arg);
                 result.Add(argsLength == 0
                                ? Empty
                                : new NullabilityInfo(
@@ -146,7 +146,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
                 nullabilityMode.HasFlag(NullabilityMode.NullableReference) && nullableByte != 0)
                 return nullableByte == 2;
 
-            return nullabilityMode == NullabilityMode.Pessimistic ? !HasNotNull : HasCanBeNull;
+            return nullabilityMode.HasFlag(NullabilityMode.Pessimistic) ? !HasNotNull : HasCanBeNull;
         }
 
         public bool IsEmpty()
@@ -156,12 +156,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         public static NullabilityInfo Empty => new NullabilityInfo(null, null);
 
-        public byte? NullableContext { get; }
-        public byte[]? NullableInfo { get; }
+        private byte? NullableContext { get; }
+        private byte[]? NullableInfo { get; }
 
-        public bool HasNotNull { get; }
-        public bool HasCanBeNull { get; }
-        public bool HasItemNotNull { get; }
-        public bool HasItemCanBeNull { get; }
+        private bool HasNotNull { get; }
+        private bool HasCanBeNull { get; }
+        private bool HasItemNotNull { get; }
+        private bool HasItemCanBeNull { get; }
     }
 }

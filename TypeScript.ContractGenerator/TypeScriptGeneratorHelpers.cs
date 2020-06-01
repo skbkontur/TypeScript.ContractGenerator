@@ -10,6 +10,11 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return typeGenerator.ResolveType(type).ReferenceFrom(type, typeScriptUnit, typeGenerator);
         }
 
+        public static TypeScriptType NotNull(this TypeScriptType type)
+        {
+            return type is INullabilityWrapperType nullableType ? nullableType.InnerType : type;
+        }
+
         public static TypeScriptType BuildTargetNullableTypeByOptions(TypeScriptType innerType, bool isNullable, TypeScriptGenerationOptions options)
         {
             if (!(innerType is INullabilityWrapperType) && isNullable && options.NullabilityMode != NullabilityMode.None)

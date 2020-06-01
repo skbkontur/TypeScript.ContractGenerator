@@ -1,10 +1,10 @@
 
 export interface MethodRootType {
-    get(s: string, nns: string): object;
+    get(s: null | string, nns: string): null | object;
     getNotNull(s: string): object;
     getAsync(s: string): Promise<object>;
-    postAsync(s: string): Promise<void>;
+    postAsync(s: null | string): null | Promise<void>;
     string: string;
-    nullableString: string;
+    nullableString: null | string;
     unknownString: string;
 }

@@ -70,8 +70,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
 
-        [TestCase(typeof(MethodRootType), NullabilityMode.Pessimistic, "method-class")]
-        [TestCase(typeof(MethodRootType), NullabilityMode.Pessimistic | NullabilityMode.NullableReference, "method-class")]
+        [TestCase(typeof(MethodRootType), NullabilityMode.Pessimistic, "method-pessimistic-class")]
+        [TestCase(typeof(MethodRootType), NullabilityMode.Pessimistic | NullabilityMode.NullableReference, "method-pessimistic-class")]
+        [TestCase(typeof(MethodRootType), NullabilityMode.Optimistic | NullabilityMode.NullableReference, "method-optimistic-reference-class")]
         [TestCase(typeof(MethodRootType), NullabilityMode.NullableReference, "method-invalid-nullable-reference-class")]
         [TestCase(typeof(NullableReferenceMethodType), NullabilityMode.NullableReference, "method-nullable-reference-class")]
         [TestCase(typeof(NullableReferenceMethodType), NullabilityMode.Optimistic | NullabilityMode.NullableReference, "method-nullable-reference-class")]

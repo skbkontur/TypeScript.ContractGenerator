@@ -26,7 +26,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             var targetType = typeGenerator.BuildAndImportType(targetUnit, argument);
             if (typeGenerator.Options.NullabilityMode == NullabilityMode.NullableReference)
                 return targetType;
-            return targetType is INullabilityWrapperType nullabilityType ? nullabilityType.InnerType : targetType;
+            return targetType.NotNull();
         }
     }
 }

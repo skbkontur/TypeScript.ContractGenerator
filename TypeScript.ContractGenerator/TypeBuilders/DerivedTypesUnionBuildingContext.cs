@@ -30,7 +30,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             var types = typeGenerator.TypesProvider
                                      .GetAssemblyTypes(Type)
                                      .Where(x => !x.Equals(Type) && Type.IsAssignableFrom(x) && (useAbstractChildren || !x.IsAbstract))
-                                     .Select(x => typeGenerator.BuildAndImportType(Unit, x))
+                                     .Select(x => typeGenerator.BuildAndImportType(Unit, x).NotNull())
                                      .ToArray();
             Declaration.Definition = new TypeScriptUnionType(types);
         }

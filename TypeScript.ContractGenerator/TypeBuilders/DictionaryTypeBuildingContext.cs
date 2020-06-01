@@ -25,8 +25,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             var valueType = typeGenerator.BuildAndImportType(targetUnit, genericArgs[1]);
             if (typeGenerator.Options.NullabilityMode != NullabilityMode.NullableReference)
             {
-                keyType = keyType is INullabilityWrapperType keyWrapper ? keyWrapper.InnerType : keyType;
-                valueType = valueType is INullabilityWrapperType valueWrapper ? valueWrapper.InnerType : valueType;
+                keyType = keyType.NotNull();
+                valueType = valueType.NotNull();
             }
             return new TypeScriptTypeDefintion
                 {
