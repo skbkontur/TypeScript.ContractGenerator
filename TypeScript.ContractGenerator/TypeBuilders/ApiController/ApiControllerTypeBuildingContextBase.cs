@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -9,8 +8,6 @@ using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
 using SkbKontur.TypeScript.ContractGenerator.Internals;
-
-using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
 {
@@ -136,10 +133,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
 
         private TypeScriptType GetMethodResult(IMethodInfo methodInfo, Func<ITypeInfo, TypeScriptType> buildAndImportType)
         {
-            var method = ((MethodWrapper)methodInfo).Method;
-            if (methodResults.TryGetValue(method, out var result))
-                return result;
-            return methodResults[method] = ResolveReturnType(methodInfo, buildAndImportType) ?? new TypeScriptPromiseOfType(buildAndImportType(ResolveReturnType(methodInfo.ReturnType)));
+            return ResolveReturnType(methodInfo, buildAndImportType) ?? new TypeScriptPromiseOfType(buildAndImportType(ResolveReturnType(methodInfo.ReturnType)));
         }
 
         private TypeScriptReturnStatement CreateCall(IMethodInfo methodInfo, ITypeInfo controllerType)
@@ -233,7 +227,5 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                 );
             yield return result;
         }
-
-        private readonly Dictionary<MethodInfo, TypeScriptType> methodResults = new Dictionary<MethodInfo, TypeScriptType>();
     }
 }

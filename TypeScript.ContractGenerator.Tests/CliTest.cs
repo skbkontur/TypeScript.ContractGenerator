@@ -2,6 +2,8 @@
 
 using FluentAssertions;
 
+using Microsoft.AspNetCore.Mvc;
+
 using NUnit.Framework;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests
@@ -11,12 +13,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [Test]
         public void CliGenerated()
         {
-#if RELEASE
-            const string configuration = "Release";
-#elif DEBUG
-            const string configuration = "Debug";
-#endif
-
             RunCmdCommand($"dotnet {pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/netcoreapp3.1/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
                           $"-a {pathToSlnDirectory}/AspNetCoreExample.Generator/bin/{configuration}/netcoreapp3.1/AspNetCoreExample.Generator.dll " +
                           $"-o {TestContext.CurrentContext.TestDirectory}/cliOutput " +
@@ -26,6 +22,22 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
 
             var expectedDirectory = $"{pathToSlnDirectory}/AspNetCoreExample.Generator/output";
             var actualDirectory = $"{TestContext.CurrentContext.TestDirectory}/cliOutput";
+            TestBase.CheckDirectoriesEquivalenceInner(expectedDirectory, actualDirectory, generatedOnly : true);
+        }
+
+        [Test]
+        public void RoslynCliGenerated()
+        {
+            RunCmdCommand($"dotnet {pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/netcoreapp3.1/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
+                          $"-d {pathToSlnDirectory}/AspNetCoreExample.Api;{pathToSlnDirectory}/AspNetCoreExample.Generator " +
+                          $"-a {typeof(ControllerBase).Assembly.Location} " +
+                          $"-o {TestContext.CurrentContext.TestDirectory}/roslynCliOutput " +
+                          "--nullabilityMode Optimistic " +
+                          "--lintMode TsLint " +
+                          "--globalNullable true");
+
+            var expectedDirectory = $"{pathToSlnDirectory}/AspNetCoreExample.Generator/output";
+            var actualDirectory = $"{TestContext.CurrentContext.TestDirectory}/roslynCliOutput";
             TestBase.CheckDirectoriesEquivalenceInner(expectedDirectory, actualDirectory, generatedOnly : true);
         }
 
@@ -46,5 +58,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         }
 
         private static readonly string pathToSlnDirectory = $"{TestContext.CurrentContext.TestDirectory}/../../../../";
+
+#if RELEASE
+        const string configuration = "Release";
+#elif DEBUG
+        const string configuration = "Debug";
+#endif
     }
 }

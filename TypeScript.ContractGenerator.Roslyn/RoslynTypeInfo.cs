@@ -35,7 +35,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
 
         public static ITypeInfo From(ITypeSymbol typeSymbol)
         {
-            return typeSymbol == null ? null : new RoslynTypeInfo(typeSymbol);
+            if (typeSymbol == null)
+                return null;
+
+            if (typeSymbol is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.IsUnboundGenericType)
+                return new RoslynTypeInfo(namedTypeSymbol.OriginalDefinition);
+
+            return new RoslynTypeInfo(typeSymbol);
         }
 
         public IAttributeInfo[] GetAttributes(bool inherit)
@@ -47,7 +53,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         public NullabilityInfo NullabilityInfo { get; }
 
         public string Name => TypeSymbol.MetadataName;
-        public string FullName => TypeSymbol.Name;
+        public string FullName => Namespace + "." + Name;
         public string Namespace => IsArray ? "System" : TypeSymbol.ContainingNamespace?.ToString();
         public bool IsEnum => BaseType != null && BaseType.Equals(TypeInfo.From<Enum>());
         public bool IsValueType => IsEnum || TypeSymbol.IsValueType;

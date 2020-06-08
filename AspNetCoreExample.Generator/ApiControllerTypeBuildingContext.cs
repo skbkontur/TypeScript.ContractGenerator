@@ -71,7 +71,7 @@ namespace AspNetCoreExample.Generator
         protected override string BuildRoute(ITypeInfo controllerType, IMethodInfo methodInfo)
         {
             var routeTemplate = methodInfo.GetAttributes(false)
-                                          .Select(x => x.AttributeData.TryGetValue("Template", out var value) ? (string)value : null)
+                                          .Select(x => x.GetValue("Template", ""))
                                           .SingleOrDefault(x => !string.IsNullOrEmpty(x));
             return AppendRoutePrefix(routeTemplate ?? string.Empty, controllerType);
         }
@@ -106,7 +106,7 @@ namespace AspNetCoreExample.Generator
         private static string AppendRoutePrefix(string routeTemplate, IAttributeProvider controllerType)
         {
             var routeAttribute = controllerType.GetAttributes(TypeInfo.From<RouteAttribute>()).SingleOrDefault();
-            var fullRoute = (routeAttribute == null ? "" : routeAttribute.AttributeData["Template"] + "/") + routeTemplate;
+            var fullRoute = (routeAttribute == null ? "" : routeAttribute.GetValue("Template", "") + "/") + routeTemplate;
             if (IsUserScopedApi(controllerType))
                 return fullRoute.Substring("v1/user/{userId}/".Length);
             return fullRoute.Substring("v1/".Length);
@@ -115,7 +115,7 @@ namespace AspNetCoreExample.Generator
         private static bool IsUserScopedApi(IAttributeProvider controller)
         {
             var route = controller.GetAttributes(TypeInfo.From<RouteAttribute>()).SingleOrDefault();
-            var template = (string?)route?.AttributeData["Template"];
+            var template = route?.GetValue<string?>("Template", null);
             return template?.StartsWith("v1/user/{userId}") ?? false;
         }
     }

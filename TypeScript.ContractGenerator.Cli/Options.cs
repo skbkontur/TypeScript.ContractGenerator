@@ -1,11 +1,16 @@
+using System.Collections.Generic;
+
 using CommandLine;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Cli
 {
     public class Options
     {
-        [Option('a', "assembly", Required = true, HelpText = "Assembly to search for `ICustomTypeGenerator` and `IRootTypesProvider` implementations.")]
-        public string Assembly { get; set; }
+        [Option('d', "directory", Separator = ';')]
+        public IEnumerable<string> Directory { get; set; }
+
+        [Option('a', "assembly", Separator = ';', Required = true, HelpText = "Assembly to search for `ICustomTypeGenerator` and `IRootTypesProvider` implementations.")]
+        public IEnumerable<string> Assembly { get; set; }
 
         [Option('o', "outputDir", Required = false, HelpText = "Generated files output directory.", Default = "src")]
         public string OutputDirectory { get; set; }

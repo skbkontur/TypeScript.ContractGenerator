@@ -7,6 +7,7 @@ using FluentAssertions;
 using NUnit.Framework;
 
 using SkbKontur.TypeScript.ContractGenerator.Internals;
+using SkbKontur.TypeScript.ContractGenerator.Roslyn;
 using SkbKontur.TypeScript.ContractGenerator.Tests.Helpers;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests
@@ -19,10 +20,25 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             return generator.Generate().Select(x => x.GenerateCode(new DefaultCodeGenerationContext()).Replace("\r\n", "\n")).ToArray();
         }
 
-        protected static IRootTypesProvider GetTypesProvider<TTypesProvider>(params Type[] rootTypes)
+        protected static (ICustomTypeGenerator, IRootTypesProvider) GetCustomization<TTypesProvider>(Type? customGeneratorType, params Type[] rootTypes)
             where TTypesProvider : IRootTypesProvider
         {
-            return (IRootTypesProvider)Activator.CreateInstance(typeof(TTypesProvider), rootTypes);
+            ICustomTypeGenerator customTypeGenerator;
+            IRootTypesProvider rootTypesProvider;
+            if (typeof(TTypesProvider) == typeof(RoslynTypesProvider))
+            {
+                var compilation = AdhocProject.GetCompilationAsync($"{projectDir}/Types", $"{projectDir}/CustomTypeGenerators")
+                                              .GetAwaiter().GetResult();
+                rootTypesProvider = (IRootTypesProvider)Activator.CreateInstance(typeof(TTypesProvider), compilation, rootTypes)!;
+                customTypeGenerator = customGeneratorType == null ? CustomTypeGenerator.Null : RoslynCustomTypeGenerator.GetCustomTypeGenerator(compilation, customGeneratorType);
+            }
+            else
+            {
+                rootTypesProvider = (IRootTypesProvider)Activator.CreateInstance(typeof(TTypesProvider), new object[] {rootTypes})!;
+                customTypeGenerator = customGeneratorType == null ? CustomTypeGenerator.Null : (ICustomTypeGenerator)Activator.CreateInstance(customGeneratorType)!;
+            }
+
+            return (customTypeGenerator, rootTypesProvider);
         }
 
         protected static void GenerateFiles(ICustomTypeGenerator customTypeGenerator, string folderName, IRootTypesProvider typesProvider)
@@ -92,5 +108,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         {
             return $"{TestContext.CurrentContext.TestDirectory}/Files/{filename}.ts";
         }
+
+        private static readonly string projectDir = TestContext.CurrentContext.TestDirectory + "/../../..";
     }
 }

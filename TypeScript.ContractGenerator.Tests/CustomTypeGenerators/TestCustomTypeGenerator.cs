@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Reflection;
 
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -11,8 +10,6 @@ using SkbKontur.TypeScript.ContractGenerator.Internals;
 using SkbKontur.TypeScript.ContractGenerator.Roslyn;
 using SkbKontur.TypeScript.ContractGenerator.Tests.Types;
 using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
-
-using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 {
@@ -60,9 +57,14 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 
         private static bool TryGetGetOnlyEnumPropertyValue(ITypeInfo typeInfo, IPropertyInfo propertyInfo, out string? value)
         {
+            value = null;
+            var hasInferAttribute = propertyInfo.GetAttributes(TypeInfo.From<InferValueAttribute>()).Any();
+            if (!hasInferAttribute || !propertyInfo.PropertyType.IsEnum)
+                return false;
+
             value = typeInfo is TypeInfo
                         ? GetValueFromPropertyInfo(typeInfo, propertyInfo)
-                        : GetValueFromPropertySymbol(typeInfo, propertyInfo);
+                        : GetValueFromPropertySymbol(propertyInfo);
             return !string.IsNullOrEmpty(value);
         }
 
@@ -71,17 +73,15 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
             var property = ((PropertyWrapper)propertyInfo).Property;
             var type = ((TypeInfo)typeInfo).Type;
             var hasDefaultConstructor = type.GetConstructors().Any(x => x.GetParameters().Length == 0);
-            var hasInferAttribute = property.GetCustomAttributes<InferValueAttribute>(true).Any();
-            if (!property.PropertyType.IsEnum || property.CanWrite || !hasDefaultConstructor || !hasInferAttribute)
+            if (property.CanWrite || !hasDefaultConstructor)
                 return null;
             return property.GetMethod.Invoke(Activator.CreateInstance(type), null).ToString();
         }
 
-        private static string? GetValueFromPropertySymbol(ITypeInfo typeInfo, IPropertyInfo propertyInfo)
+        private static string? GetValueFromPropertySymbol(IPropertyInfo propertyInfo)
         {
             var property = ((RoslynPropertyInfo)propertyInfo).PropertySymbol;
-            var hasInferAttribute = propertyInfo.GetAttributes(TypeInfo.From<InferValueAttribute>()).Any();
-            if (!hasInferAttribute || !propertyInfo.PropertyType.IsEnum || property.SetMethod != null)
+            if (property.SetMethod != null)
                 return null;
 
             var syntaxNode = property.GetMethod.DeclaringSyntaxReferences.Single().GetSyntax();
