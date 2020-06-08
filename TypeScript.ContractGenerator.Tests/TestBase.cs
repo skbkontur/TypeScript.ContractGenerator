@@ -13,19 +13,19 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
 {
     public abstract class TestBase
     {
-        protected string[] GenerateCode(TypeScriptGenerationOptions options, ICustomTypeGenerator customTypeGenerator, ITypesProvider typesProvider)
+        protected string[] GenerateCode(TypeScriptGenerationOptions options, ICustomTypeGenerator customTypeGenerator, IRootTypesProvider typesProvider)
         {
             var generator = new TypeScriptGenerator(options, customTypeGenerator, typesProvider);
             return generator.Generate().Select(x => x.GenerateCode(new DefaultCodeGenerationContext()).Replace("\r\n", "\n")).ToArray();
         }
 
-        protected static ITypesProvider GetTypesProvider<TTypesProvider>(params Type[] rootTypes)
-            where TTypesProvider : ITypesProvider
+        protected static IRootTypesProvider GetTypesProvider<TTypesProvider>(params Type[] rootTypes)
+            where TTypesProvider : IRootTypesProvider
         {
-            return (ITypesProvider)Activator.CreateInstance(typeof(TTypesProvider), rootTypes);
+            return (IRootTypesProvider)Activator.CreateInstance(typeof(TTypesProvider), rootTypes);
         }
 
-        protected static void GenerateFiles(ICustomTypeGenerator customTypeGenerator, string folderName, ITypesProvider typesProvider)
+        protected static void GenerateFiles(ICustomTypeGenerator customTypeGenerator, string folderName, IRootTypesProvider typesProvider)
         {
             var path = $"{TestContext.CurrentContext.TestDirectory}/{folderName}";
             if (Directory.Exists(path))

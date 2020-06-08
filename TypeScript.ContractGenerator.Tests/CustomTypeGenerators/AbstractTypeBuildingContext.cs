@@ -15,10 +15,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 
         public override void Initialize(ITypeGenerator typeGenerator)
         {
-            var types = typeGenerator.TypesProvider
-                                     .GetAssemblyTypes(Type)
-                                     .Where(x => x.BaseType != null && x.BaseType.Equals(Type))
-                                     .ToArray();
+            var types = Type.Assembly
+                            .GetTypes()
+                            .Where(x => x.BaseType != null && x.BaseType.Equals(Type))
+                            .ToArray();
 
             Declaration = new TypeScriptTypeDeclaration
                 {

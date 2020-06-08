@@ -93,7 +93,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
             alcWeakRef = new WeakReference(alc, trackResurrection : true);
 
             var customTypeGenerator = GetSingleImplementation<ICustomTypeGenerator>(targetAssembly);
-            var typesProvider = GetSingleImplementation<ITypesProvider>(targetAssembly);
+            var typesProvider = GetSingleImplementation<IRootTypesProvider>(targetAssembly);
             if (customTypeGenerator == null || typesProvider == null)
                 return;
 

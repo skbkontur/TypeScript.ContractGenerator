@@ -25,7 +25,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         public static IEnumerable<INamedTypeSymbol> GetAllTypes(Compilation compilation) =>
             GetAllTypes(compilation.GlobalNamespace);
 
-        private static IEnumerable<INamedTypeSymbol> GetAllTypes(INamespaceSymbol @namespace)
+        public static IEnumerable<INamedTypeSymbol> GetAllTypes(INamespaceSymbol @namespace)
         {
             foreach (var type in @namespace.GetTypeMembers())
                 foreach (var nestedType in GetNestedTypes(type))

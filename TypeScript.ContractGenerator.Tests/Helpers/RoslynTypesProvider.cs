@@ -13,7 +13,7 @@ using SkbKontur.TypeScript.ContractGenerator.Roslyn;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests.Helpers
 {
-    public class RoslynTypesProvider : ITypesProvider
+    public class RoslynTypesProvider : IRootTypesProvider
     {
         public RoslynTypesProvider(params Type[] rootTypes)
         {
@@ -30,11 +30,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Helpers
         public ITypeInfo[] GetRootTypes()
         {
             return rootTypes.Select(x => RoslynTypeInfo.From(compilation.GetTypeByMetadataName(x.FullName))).ToArray();
-        }
-
-        public ITypeInfo[] GetAssemblyTypes(ITypeInfo type)
-        {
-            return AdhocProject.GetAllTypes(compilation).Select(RoslynTypeInfo.From).ToArray();
         }
 
         private readonly Project project;

@@ -60,6 +60,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         public bool IsGenericTypeDefinition => IsGenericType && TypeSymbol.IsDefinition;
         public ITypeInfo BaseType => From(TypeSymbol.BaseType);
         public IAttributeProvider? Member { get; }
+        public IAssemblyInfo Assembly => new RoslynAssemblyInfo(TypeSymbol.ContainingAssembly);
 
         public IMethodInfo[] GetMethods(BindingFlags bindingAttr)
         {

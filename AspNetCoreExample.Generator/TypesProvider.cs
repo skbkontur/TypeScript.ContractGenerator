@@ -10,23 +10,14 @@ using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace AspNetCoreExample.Generator
 {
-    public class TypesProvider : ITypesProvider
+    public class TypesProvider : IRootTypesProvider
     {
         public ITypeInfo[] GetRootTypes()
         {
-            return typeof(UsersController).Assembly
-                                          .GetTypes()
-                                          .Where(x => typeof(ControllerBase).IsAssignableFrom(x))
-                                          .Select(TypeInfo.From)
-                                          .ToArray();
-        }
-
-        public ITypeInfo[] GetAssemblyTypes(ITypeInfo type)
-        {
-            return typeof(UsersController).Assembly
-                                          .GetTypes()
-                                          .Select(TypeInfo.From)
-                                          .ToArray();
+            return TypeInfo.From<UsersController>().Assembly
+                           .GetTypes()
+                           .Where(x => TypeInfo.From<ControllerBase>().IsAssignableFrom(x))
+                           .ToArray();
         }
     }
 }

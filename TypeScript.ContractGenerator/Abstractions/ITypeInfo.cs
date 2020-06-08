@@ -19,6 +19,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Abstractions
         bool IsGenericTypeDefinition { get; }
         ITypeInfo? BaseType { get; }
         IAttributeProvider? Member { get; }
+        IAssemblyInfo Assembly { get; }
 
         IMethodInfo[] GetMethods(BindingFlags bindingAttr);
         IPropertyInfo[] GetProperties(BindingFlags bindingAttr);

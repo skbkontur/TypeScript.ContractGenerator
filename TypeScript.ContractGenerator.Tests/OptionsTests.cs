@@ -7,10 +7,10 @@ using SkbKontur.TypeScript.ContractGenerator.Tests.Types;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests
 {
-    [TestFixture(typeof(TypesProvider))]
+    [TestFixture(typeof(RootTypesProvider))]
     [TestFixture(typeof(RoslynTypesProvider))]
     public class OptionsTests<TTypesProvider> : TestBase
-        where TTypesProvider : ITypesProvider
+        where TTypesProvider : IRootTypesProvider
     {
         [TestCase(true, "optional-properties-enabled")]
         [TestCase(false, "optional-properties-disabled")]
