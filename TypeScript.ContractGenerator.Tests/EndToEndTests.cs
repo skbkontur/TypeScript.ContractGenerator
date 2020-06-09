@@ -13,10 +13,10 @@ using SkbKontur.TypeScript.ContractGenerator.Tests.Types;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests
 {
-    [TestFixture(typeof(TypesProvider))]
+    [TestFixture(typeof(RootTypesProvider))]
     [TestFixture(typeof(RoslynTypesProvider))]
     public class EndToEndTests<TTypesProvider> : TestBase
-        where TTypesProvider : ITypesProvider
+        where TTypesProvider : IRootTypesProvider
     {
         [TestCase(typeof(NamingRootType), "type-names")]
         [TestCase(typeof(SimpleRootType), "simple-types")]
@@ -96,7 +96,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
                 .WithTypeLocation(TypeInfo.From<HashSet<string>>(), x => "a/b")
                 .WithTypeBuildingContext(TypeInfo.From<HashSet<string>>(), x => new CollectionTypeBuildingContext(x));
 
-            var generator = new TypeScriptGenerator(TypeScriptGenerationOptions.Default, customGenerator, new TypesProvider(typeof(ArrayRootType)));
+            var typesProvider = GetTypesProvider<TTypesProvider>(typeof(ArrayRootType));
+            var generator = new TypeScriptGenerator(TypeScriptGenerationOptions.Default, customGenerator, typesProvider);
             var units = generator.Generate();
             var code = units.Select(x => x.GenerateCode(new DefaultCodeGenerationContext()).Replace("\r\n", "\n")).ToArray();
 

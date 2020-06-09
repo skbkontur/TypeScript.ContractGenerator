@@ -9,7 +9,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
         ITypeBuildingContext ResolveType(ITypeInfo type);
         TypeScriptTypeMemberDeclaration? ResolveProperty(TypeScriptUnit unit, ITypeInfo type, IPropertyInfo propertyInfo);
 
-        ITypesProvider TypesProvider { get; }
+        IRootTypesProvider TypesProvider { get; }
         TypeScriptGenerationOptions Options { get; }
     }
 }

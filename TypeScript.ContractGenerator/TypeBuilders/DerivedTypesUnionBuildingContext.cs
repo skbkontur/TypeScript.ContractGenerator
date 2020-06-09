@@ -27,11 +27,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         public override void BuildDefinition(ITypeGenerator typeGenerator)
         {
-            var types = typeGenerator.TypesProvider
-                                     .GetAssemblyTypes(Type)
-                                     .Where(x => !x.Equals(Type) && Type.IsAssignableFrom(x) && (useAbstractChildren || !x.IsAbstract))
-                                     .Select(x => typeGenerator.BuildAndImportType(Unit, x).NotNull())
-                                     .ToArray();
+            var types = Type.Assembly
+                            .GetTypes()
+                            .Where(x => !x.Equals(Type) && Type.IsAssignableFrom(x) && (useAbstractChildren || !x.IsAbstract))
+                            .Select(x => typeGenerator.BuildAndImportType(Unit, x).NotNull())
+                            .ToArray();
             Declaration.Definition = new TypeScriptUnionType(types);
         }
 

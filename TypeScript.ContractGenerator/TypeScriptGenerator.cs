@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
@@ -14,9 +13,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
 {
     public class TypeScriptGenerator : ITypeGenerator
     {
-        [SuppressMessage("ReSharper", "ConstantNullCoalescingCondition")]
-        [SuppressMessage("ReSharper", "ConstantConditionalAccessQualifier")]
-        public TypeScriptGenerator(TypeScriptGenerationOptions options, ICustomTypeGenerator customTypeGenerator, ITypesProvider typesProvider)
+        public TypeScriptGenerator(TypeScriptGenerationOptions options, ICustomTypeGenerator customTypeGenerator, IRootTypesProvider typesProvider, ITypeInfo[] types = null)
         {
             Options = options ?? throw new ArgumentNullException(nameof(options));
             TypesProvider = typesProvider ?? throw new ArgumentNullException(nameof(typesProvider));
@@ -121,7 +118,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
         }
 
         public TypeScriptGenerationOptions Options { get; }
-        public ITypesProvider TypesProvider { get; }
+        public IRootTypesProvider TypesProvider { get; }
 
         private readonly ITypeInfo[] rootTypes;
         private readonly DefaultTypeScriptGeneratorOutput typeUnitFactory;

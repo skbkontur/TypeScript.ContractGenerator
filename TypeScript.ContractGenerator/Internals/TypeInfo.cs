@@ -54,6 +54,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         public bool IsGenericTypeDefinition => Type.IsGenericTypeDefinition;
         public ITypeInfo? BaseType => From(Type.BaseType);
         public IAttributeProvider? Member { get; }
+        public IAssemblyInfo Assembly => new AssemblyWrapper(Type.Assembly);
 
         public IMethodInfo[] GetMethods(BindingFlags bindingAttr)
         {

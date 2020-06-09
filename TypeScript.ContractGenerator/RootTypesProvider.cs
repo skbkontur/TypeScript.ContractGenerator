@@ -6,9 +6,9 @@ using SkbKontur.TypeScript.ContractGenerator.Internals;
 
 namespace SkbKontur.TypeScript.ContractGenerator
 {
-    public class TypesProvider : ITypesProvider
+    public class RootTypesProvider : IRootTypesProvider
     {
-        public TypesProvider(params Type[] rootTypes)
+        public RootTypesProvider(params Type[] rootTypes)
         {
             this.rootTypes = rootTypes ?? new Type[0];
         }
@@ -17,13 +17,6 @@ namespace SkbKontur.TypeScript.ContractGenerator
         {
             return rootTypes.Select(TypeInfo.From).ToArray();
         }
-
-        public ITypeInfo[] GetAssemblyTypes(ITypeInfo type)
-        {
-            return ((TypeInfo)type).Type.Assembly.GetTypes().Select(TypeInfo.From).ToArray();
-        }
-
-        public static readonly ITypesProvider Default = new TypesProvider();
 
         private readonly Type[] rootTypes;
     }
