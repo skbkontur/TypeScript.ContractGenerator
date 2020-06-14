@@ -14,9 +14,16 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
 {
     public class TypeInfoRewriter : CSharpSyntaxRewriter
     {
-        public TypeInfoRewriter(SemanticModel semanticModel)
+        private TypeInfoRewriter(SemanticModel semanticModel)
         {
             this.semanticModel = semanticModel;
+        }
+
+        public static SyntaxTree Rewrite(Compilation compilation, SyntaxTree tree)
+        {
+            var result = new TypeInfoRewriter(compilation.GetSemanticModel(tree)).Visit(tree.GetRoot());
+            compilation = compilation.ReplaceSyntaxTree(tree, result.SyntaxTree);
+            return new RemoveUsingsRewriter(compilation.GetSemanticModel(result.SyntaxTree)).Visit(result).SyntaxTree;
         }
 
         public override SyntaxNode? VisitInvocationExpression(InvocationExpressionSyntax node)

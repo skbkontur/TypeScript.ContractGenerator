@@ -34,7 +34,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
 
             TypeInfoRewriter.Types.Clear();
             var tree = compilation.SyntaxTrees.Single(x => x.FilePath.Contains("ApiControllerTypeBuildingContext.cs"));
-            var result = AdhocProject.Rewrite(compilation, tree);
+            var result = TypeInfoRewriter.Rewrite(compilation, tree);
             var str = result.ToString();
 
             var expectedCode = File.ReadAllText(GetFilePath("ApiControllerTypeBuildingContext.Expected.txt")).Replace("\r\n", "\n");

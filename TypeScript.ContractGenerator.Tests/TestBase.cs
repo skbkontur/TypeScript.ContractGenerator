@@ -27,8 +27,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             IRootTypesProvider rootTypesProvider;
             if (typeof(TTypesProvider) == typeof(RoslynTypesProvider))
             {
-                var compilation = AdhocProject.GetCompilationAsync($"{projectDir}/Types", $"{projectDir}/CustomTypeGenerators")
-                                              .GetAwaiter().GetResult();
+                var compilation = AdhocProject.GetCompilation($"{projectDir}/Types", $"{projectDir}/CustomTypeGenerators");
                 rootTypesProvider = (IRootTypesProvider)Activator.CreateInstance(typeof(TTypesProvider), compilation, rootTypes)!;
                 customTypeGenerator = customGeneratorType == null ? CustomTypeGenerator.Null : RoslynCustomTypeGenerator.GetCustomTypeGenerator(compilation, customGeneratorType);
             }

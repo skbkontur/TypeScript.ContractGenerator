@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 using CommandLine;
 
+using SkbKontur.TypeScript.ContractGenerator.Roslyn;
+
 namespace SkbKontur.TypeScript.ContractGenerator.Cli
 {
     public static class Program
@@ -73,7 +75,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
 
             if (o.Assembly.Count() != 1 || o.Directory.Any())
             {
-                RoslynGenerator.Generate(o);
+                var (customTypeGenerator, typesProvider) = RoslynCustomizationProvider.GetCustomization(o.Directory.ToArray(), o.Assembly.ToArray());
+                var typeGenerator = new TypeScriptGenerator(o.ToTypeScriptGenerationOptions(), customTypeGenerator, typesProvider);
+                typeGenerator.GenerateFiles(o.OutputDirectory);
                 return;
             }
 

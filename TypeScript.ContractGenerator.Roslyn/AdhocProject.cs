@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -32,46 +32,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
             return project;
         }
 
-        public static async Task<Compilation> GetCompilationAsync(params string[] directories)
+        public static Compilation GetCompilation(params string[] directories)
         {
             var project = FromDirectory(directories);
-            var compilation = await project.GetCompilationAsync().ConfigureAwait(false);
+            var compilation = project.GetCompilationAsync().GetAwaiter().GetResult();
             return compilation.AddReferences(GetMetadataReferences());
-        }
-
-        public static SyntaxTree[] GetCustomGenerationTypes(Compilation compilation)
-        {
-            return GetNamespaceTypes(compilation, x => !Equals(x, typeof(RootTypesProvider)) &&
-                                                       x.Interfaces.Any(i => Equals(i, typeof(IRootTypesProvider))));
-        }
-
-        public static SyntaxTree[] GetNamespaceTypes(Compilation compilation, Func<ITypeSymbol, bool> func)
-        {
-            var providerType = GetAllTypes(compilation).Single(func);
-
-            return providerType.ContainingNamespace.Locations
-                               .Select(x => Rewrite(compilation, x.SourceTree))
-                               .ToArray();
-        }
-
-        public static SyntaxTree Rewrite(Compilation compilation, SyntaxTree tree)
-        {
-            var result = new TypeInfoRewriter(compilation.GetSemanticModel(tree)).Visit(tree.GetRoot());
-            compilation = compilation.ReplaceSyntaxTree(tree, result.SyntaxTree);
-            return new RemoveUsingsRewriter(compilation.GetSemanticModel(result.SyntaxTree)).Visit(result).SyntaxTree;
-        }
-
-        public static bool Equals(ITypeSymbol typeSymbol, Type type)
-        {
-            return typeSymbol.Name == type.Name && typeSymbol.ContainingNamespace?.ToString() == type.Namespace;
-        }
-
-        public static MetadataReference[] GetMetadataReferences()
-        {
-            var types = new[] {typeof(object), typeof(Enumerable), typeof(ImmutableArray), typeof(ISet<>), typeof(HashSet<>), typeof(FileInfo), typeof(TypeInfo), typeof(RoslynTypeInfo), typeof(ITypeSymbol), typeof(CSharpCompilation)};
-            var netstandardLocation = Path.Combine(Path.GetDirectoryName(typeof(object).Assembly.Location), "netstandard.dll");
-            var locations = types.Select(x => x.Assembly.Location).Concat(new[] {netstandardLocation}).Distinct();
-            return locations.Select(x => (MetadataReference)MetadataReference.CreateFromFile(x)).ToArray();
         }
 
         public static Assembly CompileAssembly(SyntaxTree[] tree)
@@ -91,25 +56,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
             return Assembly.Load(peStream.ToArray(), pdbStream.ToArray());
         }
 
-        public static IEnumerable<INamedTypeSymbol> GetAllTypes(Compilation compilation) =>
-            GetAllTypes(compilation.GlobalNamespace);
-
-        public static IEnumerable<INamedTypeSymbol> GetAllTypes(INamespaceSymbol @namespace)
+        public static MetadataReference[] GetMetadataReferences()
         {
-            foreach (var type in @namespace.GetTypeMembers())
-                foreach (var nestedType in GetNestedTypes(type))
-                    yield return nestedType;
-
-            foreach (var nestedNamespace in @namespace.GetNamespaceMembers())
-                foreach (var type in GetAllTypes(nestedNamespace))
-                    yield return type;
-        }
-
-        private static IEnumerable<INamedTypeSymbol> GetNestedTypes(INamedTypeSymbol type)
-        {
-            yield return type;
-            foreach (var nestedType in type.GetTypeMembers().SelectMany(GetNestedTypes))
-                yield return nestedType;
+            var types = new[] {typeof(object), typeof(Regex), typeof(Enumerable), typeof(ImmutableArray), typeof(ISet<>), typeof(HashSet<>), typeof(FileInfo), typeof(TypeInfo), typeof(RoslynTypeInfo), typeof(ITypeSymbol), typeof(CSharpCompilation)};
+            var netstandardLocation = Path.Combine(Path.GetDirectoryName(typeof(object).Assembly.Location), "netstandard.dll");
+            var locations = types.Select(x => x.Assembly.Location).Concat(new[] {netstandardLocation}).Distinct();
+            return locations.Select(x => (MetadataReference)MetadataReference.CreateFromFile(x)).ToArray();
         }
     }
 }
