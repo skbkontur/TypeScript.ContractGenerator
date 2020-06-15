@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -22,7 +22,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         public object Attribute { get; }
 
         public ITypeInfo AttributeType { get; }
-        public Dictionary<string, object> AttributeData { get; }
+        public Dictionary<string, object?> AttributeData { get; }
 
         private static object GetValue(MemberInfo memberInfo, object attribute)
         {
@@ -37,7 +37,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             }
         }
 
-        private static object Wrap(object value)
+        private static object? Wrap(object? value)
         {
             if (value is Type type)
                 return TypeInfo.From(type);

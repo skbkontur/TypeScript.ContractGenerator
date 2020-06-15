@@ -16,11 +16,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Extensions
             return attributeProvider.GetAttributes(true).Any(x => x.AttributeType.Name == name);
         }
 
-        public static T GetValue<T>(this IAttributeInfo attributeInfo, string key, T defaultValue = default)
+        public static T? GetValue<T>(this IAttributeInfo attributeInfo, string key, T? defaultValue = default)
+            where T : class
         {
             var data = attributeInfo.AttributeData;
             if (data.TryGetValue(key, out var value) || data.TryGetValue(key.ToLowerCamelCase(), out value))
-                return (T)value;
+                return (T?)value;
             return defaultValue;
         }
     }

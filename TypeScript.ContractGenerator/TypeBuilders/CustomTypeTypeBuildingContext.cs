@@ -51,7 +51,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             var result = new TypeScriptTypeDefintion();
             result.Members.AddRange(Type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
                                         .Select(x => typeGenerator.ResolveProperty(Unit, Type, x))
-                                        .Where(x => x != null));
+                                        .Where(x => x != null)
+                                        .Select(x => x!));
             return result;
         }
     }

@@ -15,10 +15,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
             var implementations = assembly.DefinedTypes
                                           .Where(t => t.ImplementedInterfaces.Contains(interfaceType) && !t.IsGenericType && !t.IsAbstract && t.IsPublic)
                                           .ToArray();
-            return implementations.Select(CreateInstance<T>).Where(i => i != null).ToArray();
+            return implementations.Select(CreateInstance<T>).Where(x => x != null).Select(x => x!).ToArray();
         }
 
-        private static T CreateInstance<T>(TypeInfo typeInfo) where T : class
+        private static T? CreateInstance<T>(TypeInfo typeInfo) where T : class
         {
             var constructorInfo = typeInfo.DeclaredConstructors.SingleOrDefault(c => c.IsPublic && !c.GetParameters().Any());
             if (constructorInfo == null)

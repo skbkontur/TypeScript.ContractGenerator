@@ -34,7 +34,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         public static ITypeInfo From(Type type)
         {
-            return type == null ? null : new TypeInfo(type);
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+            return new TypeInfo(type);
         }
 
         public Type Type { get; }
@@ -52,7 +54,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         public bool IsGenericType => Type.IsGenericType;
         public bool IsGenericParameter => Type.IsGenericParameter;
         public bool IsGenericTypeDefinition => Type.IsGenericTypeDefinition;
-        public ITypeInfo? BaseType => From(Type.BaseType);
+        public ITypeInfo? BaseType => Type.BaseType == null ? null : From(Type.BaseType);
         public IAttributeProvider? Member { get; }
         public IAssemblyInfo Assembly => new AssemblyWrapper(Type.Assembly);
 

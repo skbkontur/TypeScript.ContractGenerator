@@ -13,7 +13,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
 {
     public class TypeScriptGenerator : ITypeGenerator
     {
-        public TypeScriptGenerator(TypeScriptGenerationOptions options, ICustomTypeGenerator customTypeGenerator, IRootTypesProvider typesProvider, ITypeInfo[] types = null)
+        public TypeScriptGenerator(TypeScriptGenerationOptions options, ICustomTypeGenerator customTypeGenerator, IRootTypesProvider typesProvider)
         {
             Options = options ?? throw new ArgumentNullException(nameof(options));
             TypesProvider = typesProvider ?? throw new ArgumentNullException(nameof(typesProvider));

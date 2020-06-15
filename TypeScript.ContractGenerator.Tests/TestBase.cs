@@ -84,8 +84,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
                 actual.Diff(expected).ShouldBeEmpty();
             }
 
-            var expectedDirectories = new string[0];
-            var actualDirectories = new string[0];
+            var expectedDirectories = new string?[0];
+            var actualDirectories = new string?[0];
             if (Directory.Exists(expectedDirectory))
                 expectedDirectories = Directory.EnumerateDirectories(expectedDirectory).Select(Path.GetFileName).ToArray();
             if (Directory.Exists(actualDirectory))

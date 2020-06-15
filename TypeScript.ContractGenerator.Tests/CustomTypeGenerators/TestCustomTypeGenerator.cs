@@ -46,7 +46,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
                 {
                     Name = propertyInfo.Name.ToLowerCamelCase(),
                     Optional = false,
-                    Type = GetConstEnumType(typeGenerator, unit, propertyInfo, value),
+                    Type = GetConstEnumType(typeGenerator, unit, propertyInfo, value!),
                 };
         }
 
@@ -75,7 +75,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
             var hasDefaultConstructor = type.GetConstructors().Any(x => x.GetParameters().Length == 0);
             if (property.CanWrite || !hasDefaultConstructor)
                 return null;
-            return property.GetMethod.Invoke(Activator.CreateInstance(type), null).ToString();
+            return property.GetMethod?.Invoke(Activator.CreateInstance(type), null)?.ToString();
         }
 
         private static string? GetValueFromPropertySymbol(IPropertyInfo propertyInfo)
@@ -84,7 +84,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
             if (property.SetMethod != null)
                 return null;
 
-            var syntaxNode = property.GetMethod.DeclaringSyntaxReferences.Single().GetSyntax();
+            var syntaxNode = property.GetMethod?.DeclaringSyntaxReferences.Single().GetSyntax();
             if (syntaxNode is ArrowExpressionClauseSyntax arrowExpression && arrowExpression.Expression is MemberAccessExpressionSyntax memberAccess)
             {
                 if (memberAccess.Expression is IdentifierNameSyntax identifier && identifier.Identifier.Text == propertyInfo.PropertyType.Name)

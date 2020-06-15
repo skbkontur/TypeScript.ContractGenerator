@@ -2,7 +2,7 @@
 import { ApiError } from "./ApiError";
 import "whatwg-fetch";
 
-interface ParamsMap {
+interface IParamsMap {
     [key: string]: null | undefined | number | string | any[] | boolean;
 }
 
@@ -45,7 +45,7 @@ export class ApiBase {
         }
     }
 
-    public async post(url: string, queryParams: ParamsMap, body: any): Promise<any> {
+    public async post(url: string, queryParams: IParamsMap, body: any): Promise<any> {
         const response = await fetch(this.getUrl(url, queryParams), {
             ...ApiBase.additionalHeaders,
             method: "POST",
@@ -59,7 +59,7 @@ export class ApiBase {
         return undefined;
     }
 
-    public async put(url: string, queryParams: ParamsMap, body: any): Promise<any> {
+    public async put(url: string, queryParams: IParamsMap, body: any): Promise<any> {
         const response = await fetch(this.getUrl(url, queryParams), {
             ...ApiBase.additionalHeaders,
             method: "PUT",
@@ -73,7 +73,7 @@ export class ApiBase {
         return undefined;
     }
 
-    public createQueryString(params: null | undefined | ParamsMap): string {
+    public createQueryString(params: null | undefined | IParamsMap): string {
         if (params == null) {
             return "";
         }
@@ -109,7 +109,7 @@ export class ApiBase {
         return result;
     }
 
-    public async get(url: string, queryParams: ParamsMap, _body: any): Promise<any> {
+    public async get(url: string, queryParams: IParamsMap, body: any): Promise<any> {
         const response = await fetch(this.getUrl(url, queryParams), {
             ...ApiBase.additionalHeaders,
             method: "GET",
@@ -118,12 +118,12 @@ export class ApiBase {
         return await response.json();
     }
 
-    public async download(url: string, queryParams: ParamsMap, _body: any) {
+    public async download(url: string, queryParams: IParamsMap, body: any) {
         const requestUrl = this.getUrl(url, queryParams);
         window.open(requestUrl);
     }
 
-    public async delete(url: string, queryParams: ParamsMap, body: any): Promise<any> {
+    public async delete(url: string, queryParams: IParamsMap, body: any): Promise<any> {
         const response = await fetch(this.getUrl(url, queryParams), {
             ...ApiBase.additionalHeaders,
             method: "DELETE",
@@ -137,7 +137,7 @@ export class ApiBase {
         return undefined;
     }
 
-    public getUrl(url: string, params?: ParamsMap): string {
+    public getUrl(url: string, params?: IParamsMap): string {
         return this.prefix + url + this.createQueryString(params);
     }
 
@@ -150,7 +150,7 @@ export class ApiBase {
             };
         } catch (e) {
             if (e instanceof ApiError) {
-                if (e.statusCode == 400) {
+                if (e.statusCode === 400) {
                     return {
                         success: false,
                         error: JSON.parse(e.responseAsText),
