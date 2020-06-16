@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 using FluentAssertions;
@@ -31,8 +30,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [TestCase(typeof(IgnoreRootType), "ignore-type")]
         public void GenerateCodeTest(Type rootType, string expectedFileName)
         {
-            var typesProvider = GetTypesProvider<TTypesProvider>(rootType);
-            var generatedCode = GenerateCode(TypeScriptGenerationOptions.Default, CustomTypeGenerator.Null, typesProvider).Single();
+            var (customGenerator, typesProvider) = GetCustomization<TTypesProvider>(null, rootType);
+            var generatedCode = GenerateCode(TypeScriptGenerationOptions.Default, customGenerator, typesProvider).Single();
             var expectedCode = GetExpectedCode($"SimpleGenerator/{expectedFileName}");
             generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
@@ -41,8 +40,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [TestCase(typeof(AnnotatedEnumWithConstGetterContainingRootType), "annotated-const-getter-typescript-enum")]
         public void GenerateEnumWithConstGetterTest(Type type, string expectedFileName)
         {
-            var typesProvider = GetTypesProvider<TTypesProvider>(type);
-            var generatedCode = GenerateCode(TypeScriptGenerationOptions.Default, new TestCustomTypeGenerator(), typesProvider).Single();
+            var (customGenerator, typesProvider) = GetCustomization<TTypesProvider>(typeof(TestCustomTypeGenerator), type);
+            var generatedCode = GenerateCode(TypeScriptGenerationOptions.Default, customGenerator, typesProvider).Single();
             var expectedCode = GetExpectedCode($"Enums/{expectedFileName}");
             generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
@@ -51,8 +50,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [TestCase(typeof(SimpleStructureTypeLocator))]
         public void GenerateFilesTest(Type type)
         {
-            var typesProvider = GetTypesProvider<TTypesProvider>(typeof(CommonUsingRootType), typeof(CommonUsingRootType2), typeof(CommonUsingRootType3));
-            GenerateFiles((ICustomTypeGenerator)Activator.CreateInstance(type), $"{type.Name}.Actual", typesProvider);
+            var (customGenerator, typesProvider) = GetCustomization<TTypesProvider>(type, typeof(CommonUsingRootType), typeof(CommonUsingRootType2), typeof(CommonUsingRootType3));
+            GenerateFiles(customGenerator, $"{type.Name}.Actual", typesProvider);
             CheckDirectoriesEquivalence($"Files/{type.Name}.Expected", $"{type.Name}.Actual");
         }
 
@@ -64,8 +63,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [TestCase(typeof(AbstractClassRootType), typeof(TestCustomTypeGenerator), "abstract-class")]
         public void CustomGeneratorTest(Type rootType, Type type, string expectedFileName)
         {
-            var typesProvider = GetTypesProvider<TTypesProvider>(rootType);
-            var generatedCode = GenerateCode(TypeScriptGenerationOptions.Default, (ICustomTypeGenerator)Activator.CreateInstance(type), typesProvider).Single();
+            var (customGenerator, typesProvider) = GetCustomization<TTypesProvider>(type, rootType);
+            var generatedCode = GenerateCode(TypeScriptGenerationOptions.Default, customGenerator, typesProvider).Single();
             var expectedCode = GetExpectedCode($"CustomGenerator/{expectedFileName}");
             generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
@@ -81,8 +80,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         {
             var options = TypeScriptGenerationOptions.Default;
             options.NullabilityMode = nullabilityMode;
-            var typesProvider = GetTypesProvider<TTypesProvider>(rootType);
-            var generatedCode = GenerateCode(options, new TestCustomTypeGenerator(), typesProvider).Single();
+            var (customGenerator, typesProvider) = GetCustomization<TTypesProvider>(typeof(TestCustomTypeGenerator), rootType);
+            var generatedCode = GenerateCode(options, customGenerator, typesProvider).Single();
             var expectedCode = GetExpectedCode($"CustomGenerator/{expectedFileName}");
             generatedCode.Diff(expectedCode).ShouldBeEmpty();
         }
@@ -90,13 +89,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [Test]
         public void CustomGeneratorBuilderTest()
         {
-            var customGenerator = new CustomTypeGenerator()
-                .WithTypeLocation(TypeInfo.From<AnotherCustomType>(), x => "a/b/c")
-                .WithTypeRedirect(TypeInfo.From<byte[]>(), "ByteArray", @"DataTypes\ByteArray")
-                .WithTypeLocation(TypeInfo.From<HashSet<string>>(), x => "a/b")
-                .WithTypeBuildingContext(TypeInfo.From<HashSet<string>>(), x => new CollectionTypeBuildingContext(x));
-
-            var typesProvider = GetTypesProvider<TTypesProvider>(typeof(ArrayRootType));
+            var (customGenerator, typesProvider) = GetCustomization<TTypesProvider>(typeof(BuilderCustomGenerator), typeof(ArrayRootType));
             var generator = new TypeScriptGenerator(TypeScriptGenerationOptions.Default, customGenerator, typesProvider);
             var units = generator.Generate();
             var code = units.Select(x => x.GenerateCode(new DefaultCodeGenerationContext()).Replace("\r\n", "\n")).ToArray();

@@ -1,9 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Text;
+
+using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
 {
@@ -16,31 +24,60 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
             foreach (var path in files)
             {
                 var fileInfo = new FileInfo(path);
-                project = project.AddDocument(fileInfo.Name, File.ReadAllText(fileInfo.FullName)).Project;
+                var text = File.ReadAllText(fileInfo.FullName);
+
+                project = project.AddDocument(fileInfo.Name, SourceText.From(text, Encoding.UTF8)).Project;
             }
 
             return project;
         }
 
-        public static IEnumerable<INamedTypeSymbol> GetAllTypes(Compilation compilation) =>
-            GetAllTypes(compilation.GlobalNamespace);
-
-        public static IEnumerable<INamedTypeSymbol> GetAllTypes(INamespaceSymbol @namespace)
+        public static Compilation GetCompilation(params string[] directories)
         {
-            foreach (var type in @namespace.GetTypeMembers())
-                foreach (var nestedType in GetNestedTypes(type))
-                    yield return nestedType;
-
-            foreach (var nestedNamespace in @namespace.GetNamespaceMembers())
-                foreach (var type in GetAllTypes(nestedNamespace))
-                    yield return type;
+            var project = FromDirectory(directories);
+            var compilation = project.GetCompilationAsync().GetAwaiter().GetResult();
+            return compilation.AddReferences(GetMetadataReferences());
         }
 
-        private static IEnumerable<INamedTypeSymbol> GetNestedTypes(INamedTypeSymbol type)
+        public static Assembly CompileAssembly(SyntaxTree[] tree)
         {
-            yield return type;
-            foreach (var nestedType in type.GetTypeMembers().SelectMany(GetNestedTypes))
-                yield return nestedType;
+            var options = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
+            var compilation = CSharpCompilation.Create("TypeScript.CustomGenerator.Customization", tree, GetMetadataReferences(), options);
+            var peStream = new MemoryStream();
+            var pdbStream = new MemoryStream();
+            var emitResult = compilation.Emit(peStream, pdbStream);
+            if (!emitResult.Success)
+            {
+                foreach (var diagnostic in emitResult.Diagnostics)
+                    Console.WriteLine(diagnostic);
+                throw new InvalidOperationException("Failed to compile");
+            }
+
+            return Assembly.Load(peStream.ToArray(), pdbStream.ToArray());
+        }
+
+        public static MetadataReference[] GetMetadataReferences()
+        {
+            var coreLibReferenceType = typeof(object);
+            var regexReferenceType = typeof(Regex);
+            var linqReferenceType = typeof(Enumerable);
+            var immutableCollectionsReferenceType = typeof(ImmutableArray);
+            var systemRuntimeReferenceType = typeof(ISet<>);
+            var collectionsReferenceType = typeof(HashSet<>);
+            var systemIoReferenceType = typeof(FileInfo);
+            var codeAnalysisReferenceType = typeof(ITypeSymbol);
+            var csharpSymbolsReferenceType = typeof(CSharpCompilation);
+            var contractGeneratorReferenceType = typeof(TypeInfo);
+            var contractGeneratorRoslynReferenceType = typeof(RoslynTypeInfo);
+
+            var types = new[]
+                {
+                    coreLibReferenceType, regexReferenceType, linqReferenceType, immutableCollectionsReferenceType, systemRuntimeReferenceType, collectionsReferenceType, systemIoReferenceType,
+                    codeAnalysisReferenceType, csharpSymbolsReferenceType, contractGeneratorReferenceType, contractGeneratorRoslynReferenceType,
+                };
+            var netstandardLocation = Path.Combine(Path.GetDirectoryName(coreLibReferenceType.Assembly.Location), "netstandard.dll");
+            var locations = types.Select(x => x.Assembly.Location).Concat(new[] {netstandardLocation}).Distinct();
+            return locations.Select(x => (MetadataReference)MetadataReference.CreateFromFile(x)).ToArray();
         }
     }
 }

@@ -17,7 +17,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
 
         public ITypeInfo[] GetTypes()
         {
-            return AdhocProject.GetAllTypes(AssemblySymbol.GlobalNamespace).Select(RoslynTypeInfo.From).ToArray();
+            return AssemblySymbol.GlobalNamespace.GetAllTypes().Select(RoslynTypeInfo.From).ToArray();
         }
     }
 }

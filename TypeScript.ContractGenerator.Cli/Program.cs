@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 using CommandLine;
 
+using SkbKontur.TypeScript.ContractGenerator.Roslyn;
+
 namespace SkbKontur.TypeScript.ContractGenerator.Cli
 {
     public static class Program
@@ -22,10 +24,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
         {
             GenerateByOptions(options);
 
-            if (!options.Watch)
+            if (!options.Watch || options.Directory.Any() || options.Assembly.Count() != 1)
                 return;
 
-            WatchDirectory(Path.GetDirectoryName(options.Assembly), Debounce((source, e) => GenerateByOptions(options), 1000));
+            WatchDirectory(Path.GetDirectoryName(options.Assembly.Single()), Debounce((source, e) => GenerateByOptions(options), 1000));
         }
 
         private static FileSystemEventHandler Debounce(FileSystemEventHandler func, int milliseconds = 1000)
@@ -71,7 +73,15 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
         {
             Console.WriteLine("Generating TypeScript");
 
-            ExecuteAndUnload(Path.GetFullPath(o.Assembly), out var testAlcWeakRef, o);
+            if (o.Assembly.Count() != 1 || o.Directory.Any())
+            {
+                var (customTypeGenerator, typesProvider) = RoslynCustomizationProvider.GetCustomization(o.Directory.ToArray(), o.Assembly.ToArray());
+                var typeGenerator = new TypeScriptGenerator(o.ToTypeScriptGenerationOptions(), customTypeGenerator, typesProvider);
+                typeGenerator.GenerateFiles(o.OutputDirectory);
+                return;
+            }
+
+            ExecuteAndUnload(Path.GetFullPath(o.Assembly.Single()), out var testAlcWeakRef, o);
 
             // это нужно для того чтобы сборка из AssemblyLoadContext была выгруженна
             // https://docs.microsoft.com/en-us/dotnet/standard/assembly/unloadability?view=netcore-3.1

@@ -27,6 +27,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
 
         public TypeScriptTypeMemberDeclaration? ResolveProperty(TypeScriptUnit unit, ITypeGenerator typeGenerator, ITypeInfo typeInfo, IPropertyInfo propertyInfo)
         {
+            if (!typeInfo.Equals(TypeInfo.From<EnumWithConstGetterContainingRootType>()) || !propertyInfo.PropertyType.IsEnum)
+                return null;
+
             var value = typeInfo is TypeInfo
                             ? GetValueFromPropertyInfo(typeInfo, propertyInfo)
                             : GetValueFromPropertySymbol(typeInfo, propertyInfo);
@@ -47,7 +50,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
         {
             var type = ((TypeInfo)typeInfo).Type;
             var property = ((PropertyWrapper)propertyInfo).Property;
-            if (type == typeof(EnumWithConstGetterContainingRootType) && property.PropertyType.IsEnum && !property.CanWrite)
+            if (!property.CanWrite)
                 return property.GetMethod.Invoke(Activator.CreateInstance(type), null).ToString();
             return null;
         }
@@ -55,7 +58,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
         private static string? GetValueFromPropertySymbol(ITypeInfo typeInfo, IPropertyInfo propertyInfo)
         {
             var property = ((RoslynPropertyInfo)propertyInfo).PropertySymbol;
-            if (!typeInfo.Equals(TypeInfo.From<EnumWithConstGetterContainingRootType>()) || !propertyInfo.PropertyType.IsEnum || property.SetMethod != null)
+            if (property.SetMethod != null)
                 return null;
 
             var syntaxNode = property.GetMethod.DeclaringSyntaxReferences.Single().GetSyntax();
