@@ -58,8 +58,24 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
 
         public static MetadataReference[] GetMetadataReferences()
         {
-            var types = new[] {typeof(object), typeof(Regex), typeof(Enumerable), typeof(ImmutableArray), typeof(ISet<>), typeof(HashSet<>), typeof(FileInfo), typeof(TypeInfo), typeof(RoslynTypeInfo), typeof(ITypeSymbol), typeof(CSharpCompilation)};
-            var netstandardLocation = Path.Combine(Path.GetDirectoryName(typeof(object).Assembly.Location), "netstandard.dll");
+            var coreLibReferenceType = typeof(object);
+            var regexReferenceType = typeof(Regex);
+            var linqReferenceType = typeof(Enumerable);
+            var immutableCollectionsReferenceType = typeof(ImmutableArray);
+            var systemRuntimeReferenceType = typeof(ISet<>);
+            var collectionsReferenceType = typeof(HashSet<>);
+            var systemIoReferenceType = typeof(FileInfo);
+            var codeAnalysisReferenceType = typeof(ITypeSymbol);
+            var csharpSymbolsReferenceType = typeof(CSharpCompilation);
+            var contractGeneratorReferenceType = typeof(TypeInfo);
+            var contractGeneratorRoslynReferenceType = typeof(RoslynTypeInfo);
+
+            var types = new[]
+                {
+                    coreLibReferenceType, regexReferenceType, linqReferenceType, immutableCollectionsReferenceType, systemRuntimeReferenceType, collectionsReferenceType, systemIoReferenceType,
+                    codeAnalysisReferenceType, csharpSymbolsReferenceType, contractGeneratorReferenceType, contractGeneratorRoslynReferenceType,
+                };
+            var netstandardLocation = Path.Combine(Path.GetDirectoryName(coreLibReferenceType.Assembly.Location), "netstandard.dll");
             var locations = types.Select(x => x.Assembly.Location).Concat(new[] {netstandardLocation}).Distinct();
             return locations.Select(x => (MetadataReference)MetadataReference.CreateFromFile(x)).ToArray();
         }
