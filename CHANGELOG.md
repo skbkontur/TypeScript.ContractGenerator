@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.0.xx - 2020.06.xx
+- Remove deprecated options (See [MIGRATION](MIGRATION.md))
+- Use abstractions instead of reflection types in public api (See [MIGRATION](MIGRATION.md))
+- Fix nullability issues with Nullable Reference Types
+- Add Roslyn support
+- Add dotnet tool
+
 ## v1.10.3 - 2020.05.28
 - Fix eslint-ignore comment
 - Add public modifier to function definition

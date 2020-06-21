@@ -15,10 +15,15 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
             return symbol.GetAttributes().Select(x => (IAttributeInfo)new RoslynAttributeInfo(x)).ToArray();
         }
 
-        public static SyntaxTree[] GetCustomGenerationTypes(this Compilation compilation)
+        public static (ICustomTypeGenerator, IRootTypesProvider) GetCustomization(this Compilation compilation)
         {
-            return GetNamespaceTypes(compilation, x => !x.IsEqualTo<RootTypesProvider>() &&
-                                                       x.Interfaces.Any(i => i.IsEqualTo<IRootTypesProvider>()));
+            var customGenerationTypes = GetCustomGenerationTypes(compilation);
+            var assembly = AdhocProject.CompileAssembly(customGenerationTypes);
+
+            var customTypeGenerator = assembly.GetImplementations<ICustomTypeGenerator>().Single();
+            var typesProvider = assembly.GetImplementations<IRootTypesProvider>().Single();
+
+            return (customTypeGenerator, typesProvider);
         }
 
         public static bool IsEqualTo<T>(this ITypeSymbol typeSymbol)
@@ -52,6 +57,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
             yield return type;
             foreach (var nestedType in type.GetTypeMembers().SelectMany(GetNestedTypes))
                 yield return nestedType;
+        }
+
+        private static SyntaxTree[] GetCustomGenerationTypes(Compilation compilation)
+        {
+            return GetNamespaceTypes(compilation, x => !x.IsEqualTo<RootTypesProvider>() &&
+                                                       x.Interfaces.Any(i => i.IsEqualTo<IRootTypesProvider>()));
         }
     }
 }
