@@ -32,11 +32,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
             return project;
         }
 
-        public static Compilation GetCompilation(params string[] directories)
+        public static Compilation GetCompilation(string[] directories, string[] assemblies)
         {
             var project = FromDirectory(directories);
             var compilation = project.GetCompilationAsync().GetAwaiter().GetResult()!;
-            return compilation.AddReferences(GetMetadataReferences());
+            return compilation.AddReferences(GetMetadataReferences())
+                              .AddReferences(assemblies.Select(x => MetadataReference.CreateFromFile(x)));
         }
 
         public static Assembly CompileAssembly(SyntaxTree[] tree)

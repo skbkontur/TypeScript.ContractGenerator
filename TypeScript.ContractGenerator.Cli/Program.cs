@@ -77,7 +77,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
 
             if (o.Assembly.Count() != 1 || o.Directory.Any())
             {
-                var (customTypeGenerator, typesProvider) = RoslynCustomizationProvider.GetCustomization(o.Directory.ToArray(), o.Assembly.ToArray());
+                var (customTypeGenerator, typesProvider) = AdhocProject.GetCompilation(o.Directory.ToArray(), o.Assembly.ToArray()).GetCustomization();
                 var typeGenerator = new TypeScriptGenerator(o.ToTypeScriptGenerationOptions(), customTypeGenerator, typesProvider);
                 typeGenerator.GenerateFiles(o.OutputDirectory);
                 return;

@@ -55,3 +55,11 @@ public static class TypeScriptGeneratorHelpers
 +   }
 }
 ```
+
+## Roslyn
+
+When using Roslyn to generate TypeScript, Customization code is preprocessed, replacing `TypeInfo.From<T>()` and `TypeInfo.From(typeof(T))` invocations with `RoslynTypeInfo` instances and then compiled to in-memory assembly. Therefore, several changes to customization code are required to use Roslyn:
+
+- There should be no `typeof(T)` invocations not wrapped with `TypeInfo.From()`
+- All customization-related code should be in the same namespace
+- Customization-related code should not depend on any third party packages
