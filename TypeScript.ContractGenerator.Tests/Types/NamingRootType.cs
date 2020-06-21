@@ -1,3 +1,4 @@
+// ReSharper disable InconsistentNaming
 namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
 {
     public class NamingRootType

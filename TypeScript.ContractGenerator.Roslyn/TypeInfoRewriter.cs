@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -36,7 +36,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
                 return base.VisitInvocationExpression(node);
 
             var foundType = GetSingleType(node.Expression, node.ArgumentList);
-            Types.Add(RoslynTypeInfo.From(semanticModel.GetTypeInfo(foundType).Type));
+            var foundTypeSymbol = semanticModel.GetTypeInfo(foundType).Type;
+            if (foundTypeSymbol != null)
+                Types.Add(RoslynTypeInfo.From(foundTypeSymbol));
             return ArrayElement(Types.Count - 1);
         }
 

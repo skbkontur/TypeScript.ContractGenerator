@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -13,7 +13,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
             resolver = new AssemblyDependencyResolver(mainAssemblyToLoadPath);
         }
 
-        protected override Assembly Load(AssemblyName name)
+        protected override Assembly? Load(AssemblyName name)
         {
             var assembly = AppDomain.CurrentDomain.GetAssemblies().SingleOrDefault(a => AssemblyNameEqual(name, a));
             if (assembly != null)
@@ -24,6 +24,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
 
         private static bool AssemblyNameEqual(AssemblyName name, Assembly a)
         {
+            if (a.FullName == null)
+                return name.Name == null;
             return a.FullName.Split(',')[0].Equals(name.Name, StringComparison.OrdinalIgnoreCase);
         }
 

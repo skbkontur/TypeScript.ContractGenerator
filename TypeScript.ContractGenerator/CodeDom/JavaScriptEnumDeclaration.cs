@@ -8,7 +8,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.CodeDom
         {
             var result = new StringBuilder();
             result.AppendFormat("enum {0} ", Name);
-            result.Append(Definition.GenerateCode(context));
+            result.Append(Definition!.GenerateCode(context));
             return result.ToString();
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Microsoft.CodeAnalysis;
@@ -11,6 +12,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
     {
         public RoslynAttributeInfo(AttributeData attributeData)
         {
+            if (attributeData.AttributeClass == null)
+                throw new InvalidOperationException($"Expected AttributeClass to be not null for AttributeData: {attributeData}");
+
             Attribute = attributeData;
             AttributeType = RoslynTypeInfo.From(attributeData.AttributeClass);
             AttributeData = attributeData.NamedArguments
@@ -23,9 +27,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         public AttributeData Attribute { get; }
 
         public ITypeInfo AttributeType { get; }
-        public Dictionary<string, object> AttributeData { get; }
+        public Dictionary<string, object?> AttributeData { get; }
 
-        private static object GetValue(TypedConstant argument)
+        private static object? GetValue(TypedConstant argument)
         {
             if (argument.Kind == TypedConstantKind.Array)
                 return argument.Values.Select(GetValue).ToArray();

@@ -18,7 +18,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Helpers
 
         public ITypeInfo[] GetRootTypes()
         {
-            return rootTypes.Select(x => RoslynTypeInfo.From(compilation.GetTypeByMetadataName(x.FullName))).ToArray();
+            return rootTypes.Select(x => RoslynTypeInfo.From(compilation.GetTypeByMetadataName(x.FullName!)!)).ToArray();
         }
 
         private readonly Compilation compilation;

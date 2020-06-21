@@ -20,7 +20,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Extensions
         {
             var data = attributeInfo.AttributeData;
             if (data.TryGetValue(key, out var value) || data.TryGetValue(key.ToLowerCamelCase(), out value))
-                return (T)value;
+                return (T)value!;
             return defaultValue;
         }
     }

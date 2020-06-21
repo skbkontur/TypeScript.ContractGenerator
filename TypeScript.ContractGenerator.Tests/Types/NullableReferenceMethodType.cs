@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 
 // note (p.vostretsov, 27.05.2020): без nullable enable тест RoslynTests.CustomGeneratorWithMethodsTest не проходит,
 // так как мы скормили рослину отдельные файлы и про настройки проекта он не знает
@@ -17,7 +17,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
         [CanBeNull]
         public object GetNotNull([CanBeNull] string s)
         {
-            return null;
+            return null!;
         }
 
         [CanBeNull, ItemCanBeNull]

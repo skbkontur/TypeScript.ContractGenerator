@@ -33,7 +33,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Helpers
 
     public class DiffResult
     {
-        public DiffResult(IEnumerable<DiffPiece> lines = null)
+        public DiffResult(IEnumerable<DiffPiece>? lines = null)
         {
             this.lines = lines;
         }
@@ -67,7 +67,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Helpers
             return s;
         }
 
-        private readonly IEnumerable<DiffPiece> lines;
+        private readonly IEnumerable<DiffPiece>? lines;
 
         public static readonly DiffResult Equivalent = new DiffResult();
     }
