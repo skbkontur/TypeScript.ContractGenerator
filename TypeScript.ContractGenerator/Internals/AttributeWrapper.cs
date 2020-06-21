@@ -24,7 +24,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
         public ITypeInfo AttributeType { get; }
         public Dictionary<string, object?> AttributeData { get; }
 
-        private static object GetValue(MemberInfo memberInfo, object attribute)
+        private static object? GetValue(MemberInfo memberInfo, object attribute)
         {
             switch (memberInfo)
             {

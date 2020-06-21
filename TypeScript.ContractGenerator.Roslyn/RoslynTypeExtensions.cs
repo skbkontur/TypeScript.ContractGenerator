@@ -17,11 +17,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
 
         public static SyntaxTree[] GetCustomGenerationTypes(this Compilation compilation)
         {
-            return GetNamespaceTypes(compilation, x => !x.Equals<RootTypesProvider>() &&
-                                                       x.Interfaces.Any(i => i.Equals<IRootTypesProvider>()));
+            return GetNamespaceTypes(compilation, x => !x.IsEqualTo<RootTypesProvider>() &&
+                                                       x.Interfaces.Any(i => i.IsEqualTo<IRootTypesProvider>()));
         }
 
-        public static bool Equals<T>(this ITypeSymbol typeSymbol)
+        public static bool IsEqualTo<T>(this ITypeSymbol typeSymbol)
         {
             var type = typeof(T);
             return typeSymbol.Name == type.Name && typeSymbol.ContainingNamespace?.ToString() == type.Namespace;
@@ -32,7 +32,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
             var providerType = compilation.GlobalNamespace.GetAllTypes().Single(func);
 
             return providerType.ContainingNamespace.Locations
-                               .Select(x => TypeInfoRewriter.Rewrite(compilation, x.SourceTree))
+                               .Select(x => TypeInfoRewriter.Rewrite(compilation, x.SourceTree!))
                                .ToArray();
         }
 

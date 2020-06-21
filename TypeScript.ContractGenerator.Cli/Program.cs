@@ -27,7 +27,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
             if (!options.Watch || options.Directory.Any() || options.Assembly.Count() != 1)
                 return;
 
-            WatchDirectory(Path.GetDirectoryName(options.Assembly.Single()), Debounce((source, e) => GenerateByOptions(options), 1000));
+            WatchDirectory(Path.GetDirectoryName(options.Assembly.Single())!, Debounce((source, e) => GenerateByOptions(options), 1000));
         }
 
         private static FileSystemEventHandler Debounce(FileSystemEventHandler func, int milliseconds = 1000)

@@ -35,7 +35,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         public static Compilation GetCompilation(params string[] directories)
         {
             var project = FromDirectory(directories);
-            var compilation = project.GetCompilationAsync().GetAwaiter().GetResult();
+            var compilation = project.GetCompilationAsync().GetAwaiter().GetResult()!;
             return compilation.AddReferences(GetMetadataReferences());
         }
 

@@ -13,7 +13,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         public RoslynAttributeInfo(AttributeData attributeData)
         {
             if (attributeData.AttributeClass == null)
-                throw new NotSupportedException();
+                throw new InvalidOperationException($"Expected AttributeClass to be not null for AttributeData: {attributeData}");
 
             Attribute = attributeData;
             AttributeType = RoslynTypeInfo.From(attributeData.AttributeClass);
