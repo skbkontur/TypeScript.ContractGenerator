@@ -1,6 +1,6 @@
 # TypeScript.ContractGenerator
 
-A tool that can generate TypeScript or Flow types from C# classes
+A tool that can generate TypeScript types from C# classes
 
 |              | Build Status
 |--------------|:--------------:
@@ -35,7 +35,7 @@ Then generate TypeScript files with:
 
 ```csharp
 var generator = new TypeScriptGenerator(TypeScriptGenerationOptions.Default, CustomTypeGenerator.Null, new RootTypesProvider(typeof(SecondType)));
-generator.GenerateFiles("./output", JavaScriptTypeChecker.TypeScript);
+generator.GenerateFiles("./output");
 ```
 
 By default, this will generate file with name `.ts` with following content:
@@ -58,36 +58,9 @@ If you want generated files to have different name or to generate some typings d
 
 ## Generation options
 
-### EnumGenerationMode
+### LinterDisableMode
 
-This options is set to `FixedStringsAndDictionary` by default.
-
-```csharp
-public enum EnumGenerationMode
-{
-    FixedStringsAndDictionary = 0,
-    TypeScriptEnum = 1,
-}
-```
-
-Setting option value equal to `FixedStringsAndDictionary` produces following output:
-
-```ts
-export type SomeEnum = 'A' | 'B';
-export const SomeEnums = {
-    ['A']: ('A') as SomeEnum,
-    ['B']: ('B') as SomeEnum,
-};
-```
-
-Option value `TypeScriptEnum` produces following:
-
-```ts
-export enum SomeEnum {
-    A = 'A',
-    B = 'B',
-}
-```
+Use `/* eslint-disable */` or `// tslint:disable` comment in generated files. `EsLint` is default option.
 
 ### EnableOptionalProperties
 
@@ -102,27 +75,44 @@ export type SomeType = {
 ```
 When **disabled**, all properties produced as required.
 
-### EnableExplicitNullability
-
-This option is **enabled** by default. When **enabled** produces nullable types for members which may contain nulls.
-
-```ts
-export type SomeType = {
-    nullablePropertyDefinition: null | string;
-    nonNullablePropertyDefinition: string;
-};
-```
-
-When **disabled** produces all types as-is.
-
 ### UseGlobalNullable
 
 This option is **disabled** by default. When **enabled**, global `Nullable<T>` is used instead of union `null | T`
 
 ### NullabilityMode
 
-This option is set to `Pessimistic` by default. When set to `Pessimistic`, generates `Nullable` property for properties that have no nullability attributes. When set to `Optimistic`, generates not null property for properties that have no nullability attributes.
+NullabilityMode has 4 options:
+- None - all generated properties are not null
+- Pessimistic (default) - generates `Nullable` property for properties that have no JetBrains nullability attributes
+- Optimistic - generates not null property for properties that have no JetBrains nullability attributes
+- NullableReference - generates not null properties based on C# 8 Nullable Reference Type attributes
+
+Options `Pessimistic` or `Optimistic` can be combined with `NullableReference` option, this way generator first looks for C# 8 Nullable Reference Type attributes, then JetBrains nullability attributes
 
 ## Attributes
 
 There is `ContractGeneratorIgnore` attribute that can be applied to properties and makes generator skip current property.
+
+## Roslyn usage
+
+To use Roslyn you should get a `Compilation` object of your project. It can be done with helper method `AdhocProject.GetCompilation(string[] directories, string[] assemblies)`.
+You can then get customization info from this compilation by calling extension method `compilation.GetCustomization()` and call `TypeScriptGenerator` with this customization:
+```csharp
+var (customTypeGenerator, typesProvider) = AdhocProject.GetCompilation(directories, assemblies).GetCustomization();
+var typeGenerator = new TypeScriptGenerator(options, customTypeGenerator, typesProvider);
+typeGenerator.GenerateFiles(outputDirectory);
+```
+
+## dotnet tool usage
+
+Install tool with command:
+
+`dotnet tool install -g SkbKontur.TypeScript.ContractGenerator.Cli`
+
+Use tool with command:
+
+`dotnet ts-gen --assembly ./Api/bin/Api.dll --outputDir ./src/Api`
+
+dotnet tool also supports Roslyn:
+
+`dotnet ts-gen --directory ./Api;./Core --assembly ./External/Dependency.dll --outputDir ./src/Api`

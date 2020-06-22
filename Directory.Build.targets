@@ -9,7 +9,7 @@
 
   <Target Name="SetNuSpecProperties" BeforeTargets="GenerateNuspec" DependsOnTargets="GetBuildVersion">
     <PropertyGroup>
-      <Authors>Eugene Tihonov</Authors>
+      <Authors>Eugene Tihonov, Pavel Vostretsov</Authors>
       <PackageDescription>A tool that can generate TypeScript types from C# classes</PackageDescription>
       <PackageTags>TypeScript CodeGenerator</PackageTags>
       <RepositoryType>git</RepositoryType>
