@@ -1,6 +1,6 @@
 # Changelog
 
-## v2.0.xx - 2020.06.xx
+## v2.0.81 - 2020.06.22
 - Remove deprecated options (See [MIGRATION](MIGRATION.md))
 - Use abstractions instead of reflection types in public api (See [MIGRATION](MIGRATION.md))
 - Fix nullability issues with Nullable Reference Types
