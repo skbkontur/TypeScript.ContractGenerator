@@ -25,7 +25,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
                     Name = Type.Name,
                     Definition = new TypeScriptUnionType(
                         types.Select(x => typeGenerator.BuildAndImportType(Unit, x).NotNull()).ToArray()
-                        )
+                    )
                 };
             base.Initialize(typeGenerator);
         }

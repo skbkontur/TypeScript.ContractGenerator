@@ -18,7 +18,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             return new TypeScriptGenericTypeReference(
                 (TypeScriptTypeReference)typeReference,
                 type.GetGenericArguments().Select(x => GetArgumentType(x, typeGenerator, targetUnit)).ToArray()
-                );
+            );
         }
 
         private static TypeScriptType GetArgumentType(ITypeInfo argument, ITypeGenerator typeGenerator, TypeScriptUnit targetUnit)

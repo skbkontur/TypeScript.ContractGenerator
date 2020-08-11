@@ -44,12 +44,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
         public static IEnumerable<INamedTypeSymbol> GetAllTypes(this INamespaceSymbol @namespace)
         {
             foreach (var type in @namespace.GetTypeMembers())
-                foreach (var nestedType in GetNestedTypes(type))
-                    yield return nestedType;
+            foreach (var nestedType in GetNestedTypes(type))
+                yield return nestedType;
 
             foreach (var nestedNamespace in @namespace.GetNamespaceMembers())
-                foreach (var type in GetAllTypes(nestedNamespace))
-                    yield return type;
+            foreach (var type in GetAllTypes(nestedNamespace))
+                yield return type;
         }
 
         private static IEnumerable<INamedTypeSymbol> GetNestedTypes(INamedTypeSymbol type)

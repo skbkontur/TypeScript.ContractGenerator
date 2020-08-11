@@ -92,10 +92,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
                 result.Add(argsLength == 0
                                ? Empty
                                : new NullabilityInfo(
-                                     nullabilityInfo.NullableContext,
-                                     nullabilityInfo.NullableInfo.Skip(index).Take(argsLength).ToArray()
-                                     )
-                    );
+                                   nullabilityInfo.NullableContext,
+                                   nullabilityInfo.NullableInfo.Skip(index).Take(argsLength).ToArray()
+                               )
+                );
                 index += argsLength;
             }
             return result.ToArray();

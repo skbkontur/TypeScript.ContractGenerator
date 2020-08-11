@@ -24,7 +24,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                                 Name = x,
                                 ValueLiteral = new TypeScriptStringLiteral(x)
                             })
-                        ),
+                    ),
                 };
             Unit.Body.Add(new TypeScriptExportTypeStatement {Declaration = enumResult});
             Declaration = enumResult;
