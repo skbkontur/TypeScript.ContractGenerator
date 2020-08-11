@@ -35,7 +35,7 @@ build_script:
   - cmd: dotnet pack --no-build --configuration Release ./TypeScript.ContractGenerator.sln
 
 test_script:
-  - cmd: dotnet jb cleanupcode TypeScript.ContractGenerator.sln --profile=CatalogueCleanup --exclude=**/*.ts
+  - cmd: dotnet jb cleanupcode TypeScript.ContractGenerator.sln --profile=CatalogueCleanup --exclude=**/*.ts --verbosity=WARN
   - cmd: git diff --exit-code
   - cmd: dotnet test --no-build --configuration Release ./TypeScript.ContractGenerator.Tests/TypeScript.ContractGenerator.Tests.csproj
 
