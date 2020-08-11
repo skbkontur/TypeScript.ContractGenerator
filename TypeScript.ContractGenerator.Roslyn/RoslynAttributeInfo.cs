@@ -19,8 +19,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
             AttributeType = RoslynTypeInfo.From(attributeData.AttributeClass);
             AttributeData = attributeData.NamedArguments
                                          .Concat((attributeData.AttributeConstructor?.Parameters ?? (IEnumerable<IParameterSymbol>)new IParameterSymbol[0])
-                                                     .Select(x => x.Name)
-                                                     .Zip(attributeData.ConstructorArguments, (name, value) => new KeyValuePair<string, TypedConstant>(name, value)))
+                                                 .Select(x => x.Name)
+                                                 .Zip(attributeData.ConstructorArguments, (name, value) => new KeyValuePair<string, TypedConstant>(name, value)))
                                          .ToDictionary(x => x.Key, x => GetValue(x.Value));
         }
 

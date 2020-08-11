@@ -122,7 +122,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                         Name = x.Name,
                         Type = buildAndImportType(x.ParameterType)
                     })
-                );
+            );
             yield return
                 new TypeScriptClassMemberDefinition
                     {
@@ -169,9 +169,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                     GenerateConstructGetParams(
                         GetQueryParameters(methodInfo.GetParameters(), controllerType),
                         route
-                        ),
+                    ),
                     GetBodyExpression(methodInfo, methodName, controllerType)
-                    ));
+                ));
         }
 
         private TypeScriptExpression GetBodyExpression(IMethodInfo methodInfo, string methodName, ITypeInfo controllerType)
@@ -190,7 +190,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
 
             return new TypeScriptObjectLiteral(
                 new TypeScriptObjectLiteralSpread(new TypeScriptVariableReference(parameter.Name))
-                );
+            );
         }
 
         protected virtual TypeScriptExpression? GenerateCustomBody(IMethodInfo methodInfo, string methodName, ITypeInfo controllerType)
@@ -201,11 +201,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
         private static TypeScriptExpression GenerateConstructGetParams(IParameterInfo[] parameters, string routeTemplate)
         {
             var literalProperties = parameters
-                .Where(x => !routeTemplate.Contains("{" + x.Name + "}"))
-                .Select(parameter => (TypeScriptObjectLiteralInitializer)new TypeScriptObjectLiteralProperty(
-                                                                             new TypeScriptStringLiteral(parameter.Name),
-                                                                             new TypeScriptVariableReference(parameter.Name)))
-                .ToArray();
+                                    .Where(x => !routeTemplate.Contains("{" + x.Name + "}"))
+                                    .Select(parameter => (TypeScriptObjectLiteralInitializer)new TypeScriptObjectLiteralProperty(
+                                                new TypeScriptStringLiteral(parameter.Name),
+                                                new TypeScriptVariableReference(parameter.Name)))
+                                    .ToArray();
             var result = new TypeScriptObjectLiteral(literalProperties);
             return result;
         }
@@ -215,7 +215,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             var result = new TypeScriptInterfaceFunctionMember(
                 methodInfo.Name.ToLowerCamelCase(),
                 GetMethodResult(methodInfo, buildAndImportType)
-                );
+            );
             result.Arguments.AddRange(
                 methodInfo.GetParameters()
                           .Where(x => PassParameterToCall(x, controllerType))
@@ -224,7 +224,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                                   Name = x.Name,
                                   Type = buildAndImportType(x.ParameterType)
                               })
-                );
+            );
             yield return result;
         }
     }
