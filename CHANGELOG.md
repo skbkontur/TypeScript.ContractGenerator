@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.0.92 - 2021.03.10
+- Fix Roslyn custom type generator compilation in net5.0
+
 ## v2.0.81 - 2020.06.22
 - Remove deprecated options (See [MIGRATION](MIGRATION.md))
 - Use abstractions instead of reflection types in public api (See [MIGRATION](MIGRATION.md))
