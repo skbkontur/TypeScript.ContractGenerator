@@ -76,8 +76,14 @@ namespace SkbKontur.TypeScript.ContractGenerator.Roslyn
                     coreLibReferenceType, regexReferenceType, linqReferenceType, immutableCollectionsReferenceType, systemRuntimeReferenceType, collectionsReferenceType, systemIoReferenceType,
                     codeAnalysisReferenceType, csharpSymbolsReferenceType, contractGeneratorReferenceType, contractGeneratorRoslynReferenceType,
                 };
-            var netstandardLocation = Path.Combine(Path.GetDirectoryName(coreLibReferenceType.Assembly.Location), "netstandard.dll");
-            var locations = types.Select(x => x.Assembly.Location).Concat(new[] {netstandardLocation}).Distinct();
+
+            var coreTypesLocation = Path.GetDirectoryName(coreLibReferenceType.Assembly.Location)!;
+            var netstandardLocation = Path.Combine(coreTypesLocation, "netstandard.dll");
+            var systemRuntimeLocation = Path.Combine(coreTypesLocation, "System.Runtime.dll");
+            var systemCollectionsLocation = Path.Combine(coreTypesLocation, "System.Collections.dll");
+
+            var locations = types.Select(x => x.Assembly.Location).Concat(new[] {netstandardLocation, systemRuntimeLocation, systemCollectionsLocation}).Distinct().ToArray();
+
             return locations.Select(x => (MetadataReference)MetadataReference.CreateFromFile(x)).ToArray();
         }
     }
