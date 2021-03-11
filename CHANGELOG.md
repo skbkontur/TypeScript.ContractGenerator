@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.0.94 - 2021.03.11
+- Use net5.0 in cli tool
+- Add FrameworkReference to `Microsoft.AspNetCore.App` in cli tool
+- Update dependencies
+
 ## v2.0.92 - 2021.03.10
 - Fix Roslyn custom type generator compilation in net5.0
 
