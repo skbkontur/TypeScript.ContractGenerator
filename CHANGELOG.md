@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.0.98 - 2021.09.01
+- Added types in variable and constant definition
+
 ## v2.0.94 - 2021.03.11
 - Use net5.0 in cli tool
 - Add FrameworkReference to `Microsoft.AspNetCore.App` in cli tool
