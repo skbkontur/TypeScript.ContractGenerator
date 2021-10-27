@@ -1,7 +1,7 @@
 
 export type SimpleRootType = {
-    long: string;
-    uLong: string;
+    long: number;
+    uLong: number;
     int: number;
     uInt: number;
     short: number;
