@@ -1,7 +1,7 @@
 
 export type SimpleNullableRootType = {
-    long?: null | string;
-    uLong?: null | string;
+    long?: null | number;
+    uLong?: null | number;
     int?: null | number;
     uInt?: null | number;
     short?: null | number;

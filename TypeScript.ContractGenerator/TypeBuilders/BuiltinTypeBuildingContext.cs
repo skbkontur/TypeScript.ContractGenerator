@@ -21,9 +21,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         protected override TypeScriptType ReferenceFromInternal(ITypeInfo type, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
-            if (builtinTypes.ContainsKey(type))
-                return new TypeScriptBuildInType(builtinTypes[type]);
-            throw new ArgumentOutOfRangeException();
+            if (builtinTypes.TryGetValue(type, out var typeScriptType))
+                return new TypeScriptBuildInType(typeScriptType);
+            throw new ArgumentOutOfRangeException(nameof(type), $"Type '{type}' is not found");
         }
 
         private static readonly Dictionary<ITypeInfo, string> builtinTypes = new Dictionary<ITypeInfo, string>
@@ -41,8 +41,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                 {TypeInfo.From<DateTime>(), "(Date | string)"},
                 {TypeInfo.From<TimeSpan>(), "(number | string)"},
                 {TypeInfo.From<string>(), "string"},
-                {TypeInfo.From<long>(), "string"},
-                {TypeInfo.From<ulong>(), "string"},
+                {TypeInfo.From<long>(), "number"},
+                {TypeInfo.From<ulong>(), "number"},
                 {TypeInfo.From<byte[]>(), "string"},
                 {TypeInfo.From<Guid>(), "string"},
                 {TypeInfo.From<char>(), "string"},
