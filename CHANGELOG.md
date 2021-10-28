@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.0.104 - 2021.10.28
+- treat long type as number in javascript according to serializers' behavior (e.g. JSON.NET & Netwonsoft.JSON)
+
 ## v2.0.98 - 2021.09.01
 - Added types in variable and constant definition
 
