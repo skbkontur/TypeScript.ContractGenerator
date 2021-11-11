@@ -29,8 +29,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
                              .Project;
 
             var compilation = project.GetCompilationAsync().GetAwaiter().GetResult()!
-                              .AddReferences(AdhocProject.GetMetadataReferences())
-                              .AddReferences(MetadataReference.CreateFromFile(typeof(ControllerBase).Assembly.Location));
+                                     .AddReferences(AdhocProject.GetMetadataReferences())
+                                     .AddReferences(MetadataReference.CreateFromFile(typeof(ControllerBase).Assembly.Location));
 
             TypeInfoRewriter.Types.Clear();
             var tree = compilation.SyntaxTrees.Single(x => x.FilePath.Contains("ApiControllerTypeBuildingContext.cs"));

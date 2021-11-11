@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.0.105 - 2021.11.11
+- Use net6.0 in cli tool
+- Update Roslyn dependencies
+
 ## v2.0.104 - 2021.10.28
 - treat long type as number in javascript according to serializers' behavior (e.g. JSON.NET & Netwonsoft.JSON)
 

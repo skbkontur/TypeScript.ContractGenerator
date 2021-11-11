@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>SkbKontur.TypeScript.ContractGenerator.Cli</AssemblyName>
     <RootNamespace>SkbKontur.TypeScript.ContractGenerator.Cli</RootNamespace>
     <PackageId>SkbKontur.TypeScript.ContractGenerator.Cli</PackageId>

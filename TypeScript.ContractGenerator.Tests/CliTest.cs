@@ -13,8 +13,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [Test]
         public void CliGenerated()
         {
-            RunCmdCommand($"dotnet {pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/net5.0/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
-                          $"-a {pathToSlnDirectory}/AspNetCoreExample.Generator/bin/{configuration}/net5.0/AspNetCoreExample.Generator.dll " +
+            RunCmdCommand($"dotnet {pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/net6.0/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
+                          $"-a {pathToSlnDirectory}/AspNetCoreExample.Generator/bin/{configuration}/net6.0/AspNetCoreExample.Generator.dll " +
                           $"-o {TestContext.CurrentContext.TestDirectory}/cliOutput " +
                           "--nullabilityMode Optimistic " +
                           "--lintMode TsLint " +
@@ -28,7 +28,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [Test]
         public void RoslynCliGenerated()
         {
-            RunCmdCommand($"dotnet {pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/net5.0/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
+            RunCmdCommand($"dotnet {pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/net6.0/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
                           $"-d {pathToSlnDirectory}/AspNetCoreExample.Api;{pathToSlnDirectory}/AspNetCoreExample.Generator " +
                           $"-a {typeof(ControllerBase).Assembly.Location} " +
                           $"-o {TestContext.CurrentContext.TestDirectory}/roslynCliOutput " +
