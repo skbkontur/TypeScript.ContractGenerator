@@ -26,14 +26,18 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 
         private static object? GetValue(MemberInfo memberInfo, object attribute)
         {
-            switch (memberInfo)
+            try
             {
-            case FieldInfo field:
-                return field.GetValue(attribute);
-            case PropertyInfo property:
-                return property.GetValue(attribute);
-            default:
-                throw new InvalidOperationException($"Expected memberInfo to be FieldInfo or PropertyInfo, but got: {memberInfo.GetType().Name}");
+                return memberInfo switch
+                    {
+                        FieldInfo field => field.GetValue(attribute),
+                        PropertyInfo property => property.GetValue(attribute),
+                        _ => null
+                    };
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
 
