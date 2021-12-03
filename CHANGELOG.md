@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.0.106 - 2021.12.03
+- Fix attributes data extraction
+
 ## v2.0.105 - 2021.11.11
 - Use net6.0 in cli tool
 - Update Roslyn dependencies
