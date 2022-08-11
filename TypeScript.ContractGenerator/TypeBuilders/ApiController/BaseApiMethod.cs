@@ -7,6 +7,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
         Put,
         Delete,
         Download,
-        Upload
+        Upload,
+        Patch
     }
 }

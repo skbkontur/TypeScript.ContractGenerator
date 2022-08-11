@@ -65,6 +65,9 @@ namespace AspNetCoreExample.Generator
             if (methodInfo.GetAttributes(TypeInfo.From<HttpDeleteAttribute>()).Any())
                 return BaseApiMethod.Delete;
 
+            if (methodInfo.GetAttributes(TypeInfo.From<HttpPatchAttribute>()).Any())
+                return BaseApiMethod.Patch;
+
             throw new NotSupportedException($"Unresolved http verb for method {methodInfo.Name} at controller {methodInfo.DeclaringType?.Name}");
         }
 

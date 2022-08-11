@@ -139,23 +139,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
         private TypeScriptReturnStatement CreateCall(IMethodInfo methodInfo, ITypeInfo controllerType)
         {
             var verb = ResolveBaseApiMethod(methodInfo);
-            switch (verb)
-            {
-            case BaseApiMethod.Get:
-                return GenerateMethodCallWithBody(methodInfo, "get", controllerType);
-            case BaseApiMethod.Post:
-                return GenerateMethodCallWithBody(methodInfo, "post", controllerType);
-            case BaseApiMethod.Put:
-                return GenerateMethodCallWithBody(methodInfo, "put", controllerType);
-            case BaseApiMethod.Delete:
-                return GenerateMethodCallWithBody(methodInfo, "delete", controllerType);
-            case BaseApiMethod.Download:
-                return GenerateMethodCallWithBody(methodInfo, "download", controllerType);
-            case BaseApiMethod.Upload:
-                return GenerateMethodCallWithBody(methodInfo, "upload", controllerType);
-            default:
-                throw new ArgumentOutOfRangeException();
-            }
+            return GenerateMethodCallWithBody(methodInfo, $"make{verb}Request", controllerType);
         }
 
         private TypeScriptReturnStatement GenerateMethodCallWithBody(IMethodInfo methodInfo, string methodName, ITypeInfo controllerType)
