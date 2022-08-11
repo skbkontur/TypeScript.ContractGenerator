@@ -5,13 +5,13 @@ import { ApiBase } from './../apiBase/ApiBase';
 
 export class UsersApi extends ApiBase implements IUsersApi {
     async createUsers(users: User[]): Promise<void> {
-        return this.post(`users/`, {
+        return this.makePostRequest(`users/`, {
             
         }, users);
     }
 
     async searchUsers(name: string): Promise<User[]> {
-        return this.get(`users/`, {
+        return this.makeGetRequest(`users/`, {
             ['name']: name,
         }, {
             

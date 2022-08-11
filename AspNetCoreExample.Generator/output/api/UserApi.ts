@@ -6,7 +6,7 @@ import { ApiBase } from './../apiBase/ApiBase';
 
 export class UserApi extends ApiBase implements IUserApi {
     async createUser(user: User): Promise<void> {
-        return this.post(`user/`, {
+        return this.makePostRequest(`user/`, {
             
         }, {
             ...user,
@@ -14,7 +14,7 @@ export class UserApi extends ApiBase implements IUserApi {
     }
 
     async deleteUser(userId: Guid): Promise<void> {
-        return this.delete(`user/${userId}`, {
+        return this.makeDeleteRequest(`user/${userId}`, {
             
         }, {
             
@@ -22,7 +22,7 @@ export class UserApi extends ApiBase implements IUserApi {
     }
 
     async getUser(userId: Guid): Promise<User> {
-        return this.get(`user/${userId}`, {
+        return this.makeGetRequest(`user/${userId}`, {
             
         }, {
             
