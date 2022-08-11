@@ -5,7 +5,7 @@ import { UserApiBase } from './../apiBase/UserApiBase';
 
 export class NotesApi extends UserApiBase implements INotesApi {
     async addEntry(entry: BlogEntry): Promise<void> {
-        return this.post(`blog/`, {
+        return this.makePostRequest(`blog/`, {
             
         }, {
             ...entry,
@@ -13,7 +13,7 @@ export class NotesApi extends UserApiBase implements INotesApi {
     }
 
     async addEntries(entries: BlogEntry[]): Promise<void> {
-        return this.post(`blog/batch`, {
+        return this.makePostRequest(`blog/batch`, {
             
         }, entries);
     }
