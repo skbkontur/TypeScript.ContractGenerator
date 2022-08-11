@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.0.110 - 2022.08.11
+- Add Patch method to ApiControllerTypeBuildingContextBase
+
 ## v2.0.106 - 2021.12.03
 - Fix attributes data extraction
 
