@@ -14,6 +14,7 @@ export type SimpleNullableRootType = {
     sByte?: null | number;
     char?: null | string;
     dateTime?: null | (Date | string);
+    dateTimeOffset?: null | (Date | string);
     timeSpan?: null | string;
     guid?: null | string;
 };
