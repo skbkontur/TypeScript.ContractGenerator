@@ -15,6 +15,7 @@ export type SimpleRootType = {
     char: string;
     string?: null | string;
     dateTime: (Date | string);
+    dateTimeOffset: (Date | string);
     timeSpan: (number | string);
     guid: string;
 };

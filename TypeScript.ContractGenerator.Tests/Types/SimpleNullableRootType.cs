@@ -18,6 +18,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
         public sbyte? SByte { get; set; }
         public char? Char { get; set; }
         public DateTime? DateTime { get; set; }
+        public DateTimeOffset? DateTimeOffset { get; set; }
         public TimeSpan? TimeSpan { get; set; }
         public Guid? Guid { get; set; }
     }

@@ -39,6 +39,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
                 {TypeInfo.From<double>(), "number"},
                 {TypeInfo.From<decimal>(), "number"},
                 {TypeInfo.From<DateTime>(), "(Date | string)"},
+                {TypeInfo.From<DateTimeOffset>(), "(Date | string)"},
                 {TypeInfo.From<TimeSpan>(), "(number | string)"},
                 {TypeInfo.From<string>(), "string"},
                 {TypeInfo.From<long>(), "number"},
