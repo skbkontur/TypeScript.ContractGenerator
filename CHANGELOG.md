@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.0.114 - 2022.11.18
+- Add DateTimeOffset support
+
 ## v2.0.110 - 2022.08.11
 - Add Patch method to ApiControllerTypeBuildingContextBase
 
