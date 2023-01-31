@@ -13,10 +13,16 @@ namespace SkbKontur.TypeScript.ContractGenerator
 {
     public class TypeScriptGenerator : ITypeGenerator
     {
-        public TypeScriptGenerator(TypeScriptGenerationOptions options, ICustomTypeGenerator customTypeGenerator, IRootTypesProvider typesProvider)
+        public TypeScriptGenerator(
+            TypeScriptGenerationOptions options,
+            ICustomTypeGenerator customTypeGenerator,
+            IRootTypesProvider typesProvider,
+            string? projectId = null
+        )
         {
             Options = options ?? throw new ArgumentNullException(nameof(options));
             TypesProvider = typesProvider ?? throw new ArgumentNullException(nameof(typesProvider));
+            this.projectId = projectId;
             this.customTypeGenerator = customTypeGenerator ?? throw new ArgumentNullException(nameof(customTypeGenerator));
             rootTypes = typesProvider?.GetRootTypes() ?? throw new ArgumentNullException(nameof(typesProvider));
             typeUnitFactory = new DefaultTypeScriptGeneratorOutput();
@@ -32,7 +38,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
         public void GenerateFiles(string targetPath)
         {
             BuildAllDefinitions();
-            FilesGenerator.GenerateFiles(targetPath, typeUnitFactory, Options.LinterDisableMode);
+            FilesGenerator.GenerateFiles(targetPath, typeUnitFactory, Options.LinterDisableMode, projectId);
         }
 
         private void BuildAllDefinitions()
@@ -124,5 +130,6 @@ namespace SkbKontur.TypeScript.ContractGenerator
         private readonly DefaultTypeScriptGeneratorOutput typeUnitFactory;
         private readonly ICustomTypeGenerator customTypeGenerator;
         private readonly Dictionary<ITypeInfo, ITypeBuildingContext> typeDeclarations;
+        private readonly string? projectId;
     }
 }
