@@ -8,10 +8,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             string targetDir,
             DefaultTypeScriptGeneratorOutput output,
             LinterDisableMode linterDisableMode,
-            string? customContentMarker = null
+            string? customContentMarker
         )
         {
-            DeleteFiles(targetDir, "*.ts");
+            DeleteFiles(targetDir, "*.ts", customContentMarker);
             Directory.CreateDirectory(targetDir);
             foreach (var unit in output.Units)
             {
@@ -38,7 +38,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
                 Directory.CreateDirectory(targetDirectoryName);
         }
 
-        private static void DeleteFiles(string targetDir, string searchPattern, string? customContentMarker = null)
+        private static void DeleteFiles(string targetDir, string searchPattern, string? customContentMarker)
         {
             if (!Directory.Exists(targetDir))
                 return;
@@ -50,11 +50,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
             }
         }
 
-        private static string GetContentMarker(string? customContentMarker) =>
-            customContentMarker == null
-                ? defaultContentMarkerString
-                : $"// {customContentMarker.Replace("//", "")}";
+        private static string GetContentMarker(string? customContentMarker) => $"// {customContentMarker ?? defaultContentMarkerString}";
 
-        private const string defaultContentMarkerString = "// TypeScriptContractGenerator's generated content";
+        private const string defaultContentMarkerString = "TypeScriptContractGenerator's generated content";
     }
 }

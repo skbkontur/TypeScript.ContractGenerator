@@ -47,7 +47,9 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
                 Directory.Delete(path, recursive : true);
             Directory.CreateDirectory(path);
 
-            var generator = new TypeScriptGenerator(TypeScriptGenerationOptions.Default, customTypeGenerator, typesProvider, customMarker);
+            var options = TypeScriptGenerationOptions.Default;
+            options.CustomContentMarker = customMarker;
+            var generator = new TypeScriptGenerator(options, customTypeGenerator, typesProvider);
             generator.GenerateFiles(path);
         }
 
@@ -56,7 +58,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             expectedDirectory = $"{TestContext.CurrentContext.TestDirectory}/{expectedDirectory}";
             actualDirectory = $"{TestContext.CurrentContext.TestDirectory}/{actualDirectory}";
 
-            CheckDirectoriesEquivalenceInner(expectedDirectory, actualDirectory, customMarker: customMarker);
+            CheckDirectoriesEquivalenceInner(expectedDirectory, actualDirectory, customMarker : customMarker);
         }
 
         public static void CheckDirectoriesEquivalenceInner(string expectedDirectory, string actualDirectory, bool generatedOnly = false, string? customMarker = null)
@@ -65,9 +67,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
                 Assert.Fail("Both directories should exist");
 
             const string defaultMarkerPrefix = "// TypeScriptContractGenerator's generated content";
-            var marker = customMarker == null
-                                      ? defaultMarkerPrefix
-                                      : $"// {customMarker.Replace("//", "")}";
+            var marker = $"// {customMarker ?? defaultMarkerPrefix}";
 
             var expectedDirectoryFiles = new string[0];
             var actualDirectoryFiles = new string[0];
