@@ -1,5 +1,5 @@
 /* eslint-disable */
-// TypeScriptContractGenerator's generated content for OneProject
+// My custom content marker
 
 export type CommonType = {
     count: number;

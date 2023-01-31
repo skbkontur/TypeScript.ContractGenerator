@@ -1,5 +1,5 @@
 /* eslint-disable */
-// TypeScriptContractGenerator's generated content for AnotherProject
+// My custom content marker
 import { CommonType } from './CommonType';
 
 export type CommonUsingRootType = {

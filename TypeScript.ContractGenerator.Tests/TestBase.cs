@@ -40,34 +40,34 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             return (customTypeGenerator, rootTypesProvider);
         }
 
-        protected static void GenerateFiles(ICustomTypeGenerator customTypeGenerator, string folderName, IRootTypesProvider typesProvider, string? projectId = null)
+        protected static void GenerateFiles(ICustomTypeGenerator customTypeGenerator, string folderName, IRootTypesProvider typesProvider, string? customMarker = null)
         {
             var path = $"{TestContext.CurrentContext.TestDirectory}/{folderName}";
             if (Directory.Exists(path))
                 Directory.Delete(path, recursive : true);
             Directory.CreateDirectory(path);
 
-            var generator = new TypeScriptGenerator(TypeScriptGenerationOptions.Default, customTypeGenerator, typesProvider, projectId);
+            var generator = new TypeScriptGenerator(TypeScriptGenerationOptions.Default, customTypeGenerator, typesProvider, customMarker);
             generator.GenerateFiles(path);
         }
 
-        protected static void CheckDirectoriesEquivalence(string expectedDirectory, string actualDirectory, string? projectId = null)
+        protected static void CheckDirectoriesEquivalence(string expectedDirectory, string actualDirectory, string? customMarker = null)
         {
             expectedDirectory = $"{TestContext.CurrentContext.TestDirectory}/{expectedDirectory}";
             actualDirectory = $"{TestContext.CurrentContext.TestDirectory}/{actualDirectory}";
 
-            CheckDirectoriesEquivalenceInner(expectedDirectory, actualDirectory, projectId: projectId);
+            CheckDirectoriesEquivalenceInner(expectedDirectory, actualDirectory, customMarker: customMarker);
         }
 
-        public static void CheckDirectoriesEquivalenceInner(string expectedDirectory, string actualDirectory, bool generatedOnly = false, string? projectId = null)
+        public static void CheckDirectoriesEquivalenceInner(string expectedDirectory, string actualDirectory, bool generatedOnly = false, string? customMarker = null)
         {
             if (!generatedOnly && (!Directory.Exists(expectedDirectory) || !Directory.Exists(actualDirectory)))
                 Assert.Fail("Both directories should exist");
 
-            const string markerPrefix = "// TypeScriptContractGenerator's generated content";
-            var marker = projectId == null
-                                      ? markerPrefix
-                                      : $"{markerPrefix} for {projectId}";
+            const string defaultMarkerPrefix = "// TypeScriptContractGenerator's generated content";
+            var marker = customMarker == null
+                                      ? defaultMarkerPrefix
+                                      : $"// {customMarker.Replace("//", "")}";
 
             var expectedDirectoryFiles = new string[0];
             var actualDirectoryFiles = new string[0];
