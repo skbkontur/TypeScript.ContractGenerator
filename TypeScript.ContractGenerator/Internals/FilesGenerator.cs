@@ -4,9 +4,14 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
 {
     internal static class FilesGenerator
     {
-        public static void GenerateFiles(string targetDir, DefaultTypeScriptGeneratorOutput output, LinterDisableMode linterDisableMode)
+        public static void GenerateFiles(
+            string targetDir,
+            DefaultTypeScriptGeneratorOutput output,
+            LinterDisableMode linterDisableMode,
+            string? customContentMarker
+        )
         {
-            DeleteFiles(targetDir, "*.ts");
+            DeleteFiles(targetDir, "*.ts", customContentMarker);
             Directory.CreateDirectory(targetDir);
             foreach (var unit in output.Units)
             {
@@ -15,7 +20,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
                 EnsureDirectoryExists(targetFileName);
 
                 var linterDisable = linterDisableMode == LinterDisableMode.TsLint ? "// tslint:disable" : "/* eslint-disable */";
-                File.WriteAllText(targetFileName, $"{linterDisable}\n{generatedContentMarkerString}\n");
+                File.WriteAllText(targetFileName, $"{linterDisable}\n{GetContentMarker(customContentMarker)}\n");
                 File.AppendAllText(targetFileName, unit.GenerateCode(new DefaultCodeGenerationContext()));
             }
         }
@@ -33,18 +38,20 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
                 Directory.CreateDirectory(targetDirectoryName);
         }
 
-        private static void DeleteFiles(string targetDir, string searchPattern)
+        private static void DeleteFiles(string targetDir, string searchPattern, string? customContentMarker)
         {
             if (!Directory.Exists(targetDir))
                 return;
 
             foreach (var file in Directory.GetFiles(targetDir, searchPattern, SearchOption.AllDirectories))
             {
-                if (File.ReadAllText(file).Contains(generatedContentMarkerString))
+                if (File.ReadAllText(file).Contains(GetContentMarker(customContentMarker)))
                     File.Delete(file);
             }
         }
 
-        private const string generatedContentMarkerString = "// TypeScriptContractGenerator's generated content";
+        private static string GetContentMarker(string? customContentMarker) => $"// {customContentMarker ?? defaultContentMarkerString}";
+
+        private const string defaultContentMarkerString = "TypeScriptContractGenerator's generated content";
     }
 }

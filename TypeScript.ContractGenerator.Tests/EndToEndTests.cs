@@ -55,6 +55,15 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             CheckDirectoriesEquivalence($"Files/{type.Name}.Expected", $"{type.Name}.Actual");
         }
 
+        [Test]
+        public void GenerateFilesWithCustomContentMarker()
+        {
+            const string marker = "My custom content marker";
+            var (customGenerator, typesProvider) = GetCustomization<TTypesProvider>(typeof(FlatTypeLocator), typeof(CommonUsingRootType));
+            GenerateFiles(customGenerator, "Actual", typesProvider, marker);
+            CheckDirectoriesEquivalence("Files/WithProjectIds", "Actual", marker);
+        }
+
         [TestCase(typeof(SimpleRootType), typeof(TestCustomTypeGenerator), "simple-types")]
         [TestCase(typeof(SimpleNullableRootType), typeof(TestCustomTypeGenerator), "nullable-types")]
         [TestCase(typeof(ArrayRootType), typeof(TestCustomTypeGenerator), "array-types")]

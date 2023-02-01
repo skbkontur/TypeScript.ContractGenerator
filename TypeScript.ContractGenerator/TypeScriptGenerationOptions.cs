@@ -6,6 +6,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
         public LinterDisableMode LinterDisableMode { get; set; } = LinterDisableMode.EsLint;
         public bool EnableOptionalProperties { get; set; } = true;
         public bool UseGlobalNullable { get; set; }
+        public string? CustomContentMarker { get; set; }
 
         public static TypeScriptGenerationOptions Default => new TypeScriptGenerationOptions();
     }

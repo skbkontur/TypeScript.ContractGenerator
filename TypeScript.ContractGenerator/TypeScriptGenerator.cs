@@ -32,7 +32,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
         public void GenerateFiles(string targetPath)
         {
             BuildAllDefinitions();
-            FilesGenerator.GenerateFiles(targetPath, typeUnitFactory, Options.LinterDisableMode);
+            FilesGenerator.GenerateFiles(targetPath, typeUnitFactory, Options.LinterDisableMode, Options.CustomContentMarker);
         }
 
         private void BuildAllDefinitions()
