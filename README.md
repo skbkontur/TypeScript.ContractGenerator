@@ -35,7 +35,7 @@ Then generate TypeScript files with:
 
 ```csharp
 var generator = new TypeScriptGenerator(TypeScriptGenerationOptions.Default, CustomTypeGenerator.Null, new RootTypesProvider(typeof(SecondType)));
-generator.GenerateFiles("./output");
+generatorGenerateFiles(Path.Combine(Directory.GetCurrentDirectory(), "output"));
 ```
 
 By default, this will generate file with name `.ts` with following content:
