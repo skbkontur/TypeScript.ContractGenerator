@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.0.126 - 2023.05.03
+- Update dependencies
+- Test against net7.0 tfm
+
 ## v2.0.121 - 2023.02.01
 - Add `CustomContentMarker` option for custom header text in generated files
 - Switch to `github-actions` for tests and releases
