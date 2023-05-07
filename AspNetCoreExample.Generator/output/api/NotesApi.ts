@@ -1,25 +1,26 @@
 // tslint:disable
 // TypeScriptContractGenerator's generated content
-import { BlogEntry } from './../dto/BlogEntry';
-import { UserApiBase } from './../apiBase/UserApiBase';
+import { Guid } from './../DataTypes/Guid';
+import { BlogEntry } from './../DataTypes/BlogEntry';
+import { ApiBase } from './../ApiBase/ApiBase';
 
-export class NotesApi extends UserApiBase implements INotesApi {
-    async addEntry(entry: BlogEntry): Promise<void> {
-        return this.makePostRequest(`blog/`, {
+export class NotesApi extends ApiBase implements INotesApi {
+    async addEntry(userId: Guid, entry: BlogEntry): Promise<void> {
+        return this.makePostRequest(`/v1/user/${userId}/blog`, {
             
         }, {
             ...entry,
         });
     }
 
-    async addEntries(entries: BlogEntry[]): Promise<void> {
-        return this.makePostRequest(`blog/batch`, {
+    async addEntries(userId: Guid, entries: BlogEntry[]): Promise<void> {
+        return this.makePostRequest(`/v1/user/${userId}/blog/batch`, {
             
         }, entries);
     }
 
 };
 export interface INotesApi {
-    addEntry(entry: BlogEntry): Promise<void>;
-    addEntries(entries: BlogEntry[]): Promise<void>;
+    addEntry(userId: Guid, entry: BlogEntry): Promise<void>;
+    addEntries(userId: Guid, entries: BlogEntry[]): Promise<void>;
 }

@@ -13,12 +13,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [Test]
         public void CliGenerated()
         {
-            RunCmdCommand($"dotnet {pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/net6.0/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
-                          $"-a {pathToSlnDirectory}/AspNetCoreExample.Generator/bin/{configuration}/net6.0/AspNetCoreExample.Generator.dll " +
+            RunCmdCommand($"dotnet {pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/net7.0/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
+                          $"-a {pathToSlnDirectory}/AspNetCoreExample.Api/bin/{configuration}/net7.0/AspNetCoreExample.Api.dll " +
                           $"-o {TestContext.CurrentContext.TestDirectory}/cliOutput " +
-                          "--nullabilityMode Optimistic " +
-                          "--lintMode TsLint " +
-                          "--globalNullable true");
+                          "--nullabilityMode NullableReference " +
+                          "--lintMode TsLint");
 
             var expectedDirectory = $"{pathToSlnDirectory}/AspNetCoreExample.Generator/output";
             var actualDirectory = $"{TestContext.CurrentContext.TestDirectory}/cliOutput";
@@ -28,13 +27,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [Test]
         public void RoslynCliGenerated()
         {
-            RunCmdCommand($"dotnet {pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/net6.0/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
-                          $"-d {pathToSlnDirectory}/AspNetCoreExample.Api;{pathToSlnDirectory}/AspNetCoreExample.Generator " +
+            RunCmdCommand($"dotnet {pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/net7.0/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
+                          $"-d {pathToSlnDirectory}/AspNetCoreExample.Api " +
                           $"-a {typeof(ControllerBase).Assembly.Location} " +
                           $"-o {TestContext.CurrentContext.TestDirectory}/roslynCliOutput " +
-                          "--nullabilityMode Optimistic " +
-                          "--lintMode TsLint " +
-                          "--globalNullable true");
+                          "--nullabilityMode NullableReference " +
+                          "--lintMode TsLint");
 
             var expectedDirectory = $"{pathToSlnDirectory}/AspNetCoreExample.Generator/output";
             var actualDirectory = $"{TestContext.CurrentContext.TestDirectory}/roslynCliOutput";

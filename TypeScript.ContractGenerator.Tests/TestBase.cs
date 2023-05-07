@@ -66,7 +66,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             if (!generatedOnly && (!Directory.Exists(expectedDirectory) || !Directory.Exists(actualDirectory)))
                 Assert.Fail("Both directories should exist");
 
-            const string defaultMarkerPrefix = "// TypeScriptContractGenerator's generated content";
+            const string defaultMarkerPrefix = "TypeScriptContractGenerator's generated content";
             var marker = $"// {customMarker ?? defaultMarkerPrefix}";
 
             var expectedDirectoryFiles = new string[0];

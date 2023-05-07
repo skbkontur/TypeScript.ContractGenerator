@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-      <TargetFramework>netstandard2.0</TargetFramework>
-      <AssemblyName>SkbKontur.TypeScript.ContractGenerator.Roslyn</AssemblyName>
-      <RootNamespace>SkbKontur.TypeScript.ContractGenerator.Roslyn</RootNamespace>
-      <PackageId>SkbKontur.TypeScript.ContractGenerator.Roslyn</PackageId>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>SkbKontur.TypeScript.ContractGenerator.Roslyn</AssemblyName>
+    <RootNamespace>SkbKontur.TypeScript.ContractGenerator.Roslyn</RootNamespace>
+    <PackageId>SkbKontur.TypeScript.ContractGenerator.Roslyn</PackageId>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\TypeScript.ContractGenerator\TypeScript.ContractGenerator.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TypeScript.ContractGenerator\TypeScript.ContractGenerator.csproj" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.5.0" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.5.0" />
+  </ItemGroup>
 
 </Project>

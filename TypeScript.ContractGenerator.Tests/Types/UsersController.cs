@@ -1,9 +1,15 @@
-﻿using AspNetCoreExample.Api.Models;
+﻿using System;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace AspNetCoreExample.Api.Controllers
+namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
 {
+    public class User
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+    }
+
     [Route("v1/users")]
     public class UsersController : ControllerBase
     {

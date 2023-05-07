@@ -51,6 +51,16 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             return null;
         }
 
+        protected virtual string GetMethodName(IMethodInfo methodInfo)
+        {
+            return methodInfo.Name.ToLowerCamelCase();
+        }
+
+        protected virtual bool IsAsyncMethod(IMethodInfo methodInfo)
+        {
+            return true;
+        }
+
         protected virtual bool PassParameterToCall(IParameterInfo parameterInfo, ITypeInfo controllerType) => true;
 
         protected virtual TypeScriptStatement WrapCall(IMethodInfo methodInfo, TypeScriptReturnStatement call) => call;
@@ -112,7 +122,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
         {
             var functionDefinition = new TypeScriptFunctionDefinition
                 {
-                    IsAsync = true,
+                    IsAsync = IsAsyncMethod(methodInfo),
                     Result = GetMethodResult(methodInfo, buildAndImportType),
                     Body = {WrapCall(methodInfo, CreateCall(methodInfo, controllerType))}
                 };
@@ -126,7 +136,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             yield return
                 new TypeScriptClassMemberDefinition
                     {
-                        Name = methodInfo.Name.ToLowerCamelCase(),
+                        Name = GetMethodName(methodInfo),
                         Definition = functionDefinition
                     };
         }
@@ -136,7 +146,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             return ResolveReturnType(methodInfo, buildAndImportType) ?? new TypeScriptPromiseOfType(buildAndImportType(ResolveReturnType(methodInfo.ReturnType)));
         }
 
-        private TypeScriptReturnStatement CreateCall(IMethodInfo methodInfo, ITypeInfo controllerType)
+        protected virtual TypeScriptReturnStatement CreateCall(IMethodInfo methodInfo, ITypeInfo controllerType)
         {
             var verb = ResolveBaseApiMethod(methodInfo);
             return GenerateMethodCallWithBody(methodInfo, $"make{verb}Request", controllerType);
@@ -197,7 +207,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
         private IEnumerable<TypeScriptInterfaceFunctionMember> BuildApiInterfaceMember(IMethodInfo methodInfo, Func<ITypeInfo, TypeScriptType> buildAndImportType, ITypeInfo controllerType)
         {
             var result = new TypeScriptInterfaceFunctionMember(
-                methodInfo.Name.ToLowerCamelCase(),
+                GetMethodName(methodInfo),
                 GetMethodResult(methodInfo, buildAndImportType)
             );
             result.Arguments.AddRange(

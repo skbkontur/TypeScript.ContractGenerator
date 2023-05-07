@@ -1,7 +1,7 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
-
-#nullable enable
 
 #pragma warning disable 8618, 8714
 

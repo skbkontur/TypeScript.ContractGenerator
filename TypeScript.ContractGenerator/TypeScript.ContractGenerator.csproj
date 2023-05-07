@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-      <TargetFramework>netstandard2.0</TargetFramework>
-      <AssemblyName>SkbKontur.TypeScript.ContractGenerator</AssemblyName>
-      <RootNamespace>SkbKontur.TypeScript.ContractGenerator</RootNamespace>
-      <PackageId>SkbKontur.TypeScript.ContractGenerator</PackageId>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>SkbKontur.TypeScript.ContractGenerator</AssemblyName>
+    <RootNamespace>SkbKontur.TypeScript.ContractGenerator</RootNamespace>
+    <PackageId>SkbKontur.TypeScript.ContractGenerator</PackageId>
+  </PropertyGroup>
 
 </Project>

@@ -1,25 +1,20 @@
-using System;
-using System.IO;
+using AspNetCoreExample.Api.TypeScriptConfiguration;
 
 using SkbKontur.TypeScript.ContractGenerator;
 
-namespace AspNetCoreExample.Generator
-{
-    public static class EntryPoint
-    {
-        public static void Main(params string[] args)
-        {
-            var targetPath = Path.Combine(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).FullName, "../../../output");
-            var options = new TypeScriptGenerationOptions
-                {
-                    EnableOptionalProperties = false,
-                    LinterDisableMode = LinterDisableMode.TsLint,
-                    UseGlobalNullable = true,
-                    NullabilityMode = NullabilityMode.Optimistic,
-                };
+namespace AspNetCoreExample.Generator;
 
-            var typeScriptCodeGenerator = new TypeScriptGenerator(options, new AspNetCoreExampleCustomGenerator(), new TypesProvider());
-            typeScriptCodeGenerator.GenerateFiles(targetPath);
-        }
+public static class EntryPoint
+{
+    public static void Main(params string[] args)
+    {
+        var targetPath = Path.Combine(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).FullName, "../../../output");
+        var options = new TypeScriptGenerationOptions
+            {
+                NullabilityMode = NullabilityMode.NullableReference,
+                LinterDisableMode = LinterDisableMode.TsLint
+            };
+        var typeScriptCodeGenerator = new TypeScriptGenerator(options, new CustomGenerator(), new TypesProvider());
+        typeScriptCodeGenerator.GenerateFiles(targetPath);
     }
 }

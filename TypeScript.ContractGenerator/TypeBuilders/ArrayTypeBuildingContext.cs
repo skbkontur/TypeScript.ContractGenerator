@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
@@ -16,7 +17,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         public static bool Accept(ITypeInfo type)
         {
-            return type.IsArray || type.IsGenericType && type.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(List<>)));
+            return type.IsArray || type.IsGenericType && enumerableTypes.Contains(type.GetGenericTypeDefinition());
         }
 
         protected override TypeScriptType ReferenceFromInternal(ITypeInfo type, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
@@ -29,10 +30,12 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
             if (arrayType.IsArray)
                 return arrayType.GetElementType() ?? throw new ArgumentNullException($"Array type's {arrayType.Name} element type is not defined");
 
-            if (arrayType.IsGenericType && arrayType.GetGenericTypeDefinition().Equals(TypeInfo.From(typeof(List<>))))
+            if (arrayType.IsGenericType && enumerableTypes.Contains(arrayType.GetGenericTypeDefinition()))
                 return arrayType.GetGenericArguments()[0];
 
             throw new ArgumentException("arrayType should be either Array or List<T>", nameof(arrayType));
         }
+
+        private static readonly ITypeInfo[] enumerableTypes = {TypeInfo.From(typeof(List<>)), TypeInfo.From(typeof(IEnumerable<>))};
     }
 }
