@@ -1,4 +1,8 @@
 # Changelog
+## v2.0.131 - 2023.05.09
+- Use net7.0 in `TypeScript.ContractGenerator.Cli`
+- Add `ApiControllerTypeBuildingContext`
+- Update AspNetCoreExample to use latest web api template
 
 ## v2.0.126 - 2023.05.03
 - Update dependencies
