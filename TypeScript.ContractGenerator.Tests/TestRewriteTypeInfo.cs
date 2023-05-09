@@ -1,8 +1,7 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
-using AspNetCoreExample.Api.Controllers;
 
 using FluentAssertions;
 
@@ -13,6 +12,7 @@ using NUnit.Framework;
 
 using SkbKontur.TypeScript.ContractGenerator.Roslyn;
 using SkbKontur.TypeScript.ContractGenerator.Tests.Helpers;
+using SkbKontur.TypeScript.ContractGenerator.Tests.Types;
 
 using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 
@@ -23,9 +23,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [Test]
         public void Rewrite()
         {
-            var project = AdhocProject.FromDirectory($"{TestContext.CurrentContext.TestDirectory}/../../../../AspNetCoreExample.Generator");
-            project = project.RemoveDocument(project.Documents.Single(x => x.Name == "ApiControllerTypeBuildingContext.cs").Id)
-                             .AddDocument("ApiControllerTypeBuildingContext.cs", File.ReadAllText(GetFilePath("ApiControllerTypeBuildingContext.txt")))
+            var project = new AdhocWorkspace().AddProject(Guid.NewGuid().ToString(), LanguageNames.CSharp);
+            project = project.AddDocument("ApiControllerTypeBuildingContext.cs", File.ReadAllText(GetFilePath("ApiControllerTypeBuildingContext.txt")))
                              .Project;
 
             var compilation = project.GetCompilationAsync().GetAwaiter().GetResult()!

@@ -1,27 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-      <TargetFrameworks>net48;net6.0;net7.0</TargetFrameworks>
-      <AssemblyName>SkbKontur.TypeScript.ContractGenerator.Tests</AssemblyName>
-      <RootNamespace>SkbKontur.TypeScript.ContractGenerator.Tests</RootNamespace>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFrameworks>net48;net6.0;net7.0</TargetFrameworks>
+    <AssemblyName>SkbKontur.TypeScript.ContractGenerator.Tests</AssemblyName>
+    <RootNamespace>SkbKontur.TypeScript.ContractGenerator.Tests</RootNamespace>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\AspNetCoreExample.Api\AspNetCoreExample.Api.csproj" />
-      <ProjectReference Include="..\TypeScript.ContractGenerator.Roslyn\TypeScript.ContractGenerator.Roslyn.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TypeScript.ContractGenerator.Roslyn\TypeScript.ContractGenerator.Roslyn.csproj" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="DiffPlex" Version="1.7.1" />
-      <PackageReference Include="FluentAssertions" Version="6.11.0" />
-      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
-      <PackageReference Include="NUnit" Version="3.13.3" />
-      <PackageReference Include="NUnit3TestAdapter" Version="4.4.2" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="DiffPlex" Version="1.7.1" />
+    <PackageReference Include="FluentAssertions" Version="6.11.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.4.2" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <None Update="Files\**\*.ts" CopyToOutputDirectory="Always" />
-      <None Update="Files\*.txt" CopyToOutputDirectory="Always" />
-    </ItemGroup>
+  <ItemGroup>
+    <None Update="Files\**\*.ts" CopyToOutputDirectory="Always" />
+    <None Update="Files\*.txt" CopyToOutputDirectory="Always" />
+  </ItemGroup>
 
 </Project>

@@ -1,30 +1,38 @@
-using System;
-
-using AspNetCoreExample.Api.Models;
+﻿using AspNetCoreExample.Api.Models;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace AspNetCoreExample.Api.Controllers
+namespace AspNetCoreExample.Api.Controllers;
+
+[Route("v1/users")]
+public class UserController : ControllerBase
 {
-    [Route("v1/user")]
-    public class UserController : ControllerBase
+    [HttpPost]
+    public ActionResult CreateUser([FromBody] User user)
     {
-        [HttpPost]
-        public ActionResult CreateUser([FromBody] User user)
-        {
-            return Ok();
-        }
+        return Ok();
+    }
 
-        [HttpDelete("{userId}")]
-        public ActionResult DeleteUser(Guid userId)
-        {
-            return Ok();
-        }
+    [HttpDelete("{userId:guid}")]
+    public ActionResult DeleteUser(Guid userId)
+    {
+        return Ok();
+    }
 
-        [HttpGet("{userId}")]
-        public ActionResult<User> GetUser(Guid userId)
-        {
-            return Ok(null);
-        }
+    [HttpGet("{userId:guid}")]
+    public ActionResult<User> GetUser(Guid userId)
+    {
+        return Ok(null);
+    }
+
+    [HttpGet]
+    public ActionResult<User[]> SearchUsers([FromQuery] string name)
+    {
+        return Ok(TotallyNotHttpMethod(name));
+    }
+
+    private User[] TotallyNotHttpMethod(string name)
+    {
+        return Array.Empty<User>();
     }
 }

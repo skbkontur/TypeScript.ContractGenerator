@@ -1,8 +1,7 @@
-namespace AspNetCoreExample.Api.Models
+﻿namespace AspNetCoreExample.Api.Models;
+
+public class BlogEntry
 {
-    public class BlogEntry
-    {
-        public string Title { get; set; }
-        public string Content { get; set; }
-    }
+    public string Title { get; set; }
+    public string Content { get; set; }
 }

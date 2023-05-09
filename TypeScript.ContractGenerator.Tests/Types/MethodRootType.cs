@@ -1,6 +1,6 @@
-using System.Threading.Tasks;
-
 #nullable disable
+
+using System.Threading.Tasks;
 
 namespace SkbKontur.TypeScript.ContractGenerator.Tests.Types
 {

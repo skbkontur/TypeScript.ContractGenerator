@@ -6,7 +6,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Cli
 {
     public class Options
     {
-        [Option('d', "directory", Separator = ';')]
+        [Option('d', "directory", Separator = ';', HelpText = "Directory with CSharp code, if specified, Roslyn generator is used instead of reflection")]
         public IEnumerable<string> Directory { get; set; }
 
         [Option('a', "assembly", Separator = ';', Required = true, HelpText = "Assembly to search for `ICustomTypeGenerator` and `IRootTypesProvider` implementations.")]
