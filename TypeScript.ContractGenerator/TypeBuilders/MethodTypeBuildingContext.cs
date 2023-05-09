@@ -4,9 +4,8 @@ using System.Reflection;
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
 using SkbKontur.TypeScript.ContractGenerator.Extensions;
-using SkbKontur.TypeScript.ContractGenerator.TypeBuilders;
 
-namespace SkbKontur.TypeScript.ContractGenerator.Tests.CustomTypeGenerators
+namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 {
     public class MethodTypeBuildingContext : TypeBuildingContext
     {
