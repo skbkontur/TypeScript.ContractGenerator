@@ -1,4 +1,7 @@
 # Changelog
+## v2.0.135 - 2023.09.19
+- Update `Microsoft.CodeAnalysis.CSharp.Workspaces`
+
 ## v2.0.131 - 2023.05.09
 - Use net7.0 in `TypeScript.ContractGenerator.Cli`
 - Add `ApiControllerTypeBuildingContext`
