@@ -22,7 +22,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders
 
         protected override TypeScriptType ReferenceFromInternal(ITypeInfo type, TypeScriptUnit targetUnit, ITypeGenerator typeGenerator)
         {
-            return targetUnit.AddTypeImport(type, Declaration, Unit);
+            return targetUnit.AddTypeImport(type, Declaration, Unit, typeGenerator.Options.UseTypeImports);
         }
     }
 }

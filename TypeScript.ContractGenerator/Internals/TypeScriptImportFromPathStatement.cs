@@ -6,11 +6,13 @@ namespace SkbKontur.TypeScript.ContractGenerator.Internals
     {
         public override string GenerateCode(ICodeGenerationContext context)
         {
-            return $"import {{ {TypeName} }} from '{context.GetReferenceFromUnitToAnother(CurrentUnit.Path, PathToUnit)}';";
+            var typeKeyword = UseTypeKeyword ? "type " : "";
+            return $"import {typeKeyword}{{ {TypeName} }} from '{context.GetReferenceFromUnitToAnother(CurrentUnit.Path, PathToUnit)}';";
         }
 
         public string TypeName { get; set; }
         public TypeScriptUnit CurrentUnit { get; set; }
         public string PathToUnit { get; set; }
+        public bool UseTypeKeyword { get; set; }
     }
 }

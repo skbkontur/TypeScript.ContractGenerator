@@ -15,7 +15,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         public List<TypeScriptStatement> Body { get; } = new List<TypeScriptStatement>();
 
-        public TypeScriptTypeReference AddTypeImport(ITypeInfo sourceType, TypeScriptTypeDeclaration typeDeclaration, TypeScriptUnit sourceUnit)
+        public TypeScriptTypeReference AddTypeImport(ITypeInfo sourceType, TypeScriptTypeDeclaration typeDeclaration, TypeScriptUnit sourceUnit, bool useTypeKeyword=false)
         {
             if (sourceUnit != this && !imports.ContainsKey(sourceType))
             {
@@ -24,6 +24,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
                         TypeName = typeDeclaration.Name,
                         CurrentUnit = this,
                         TargetUnit = sourceUnit,
+                        UseTypeKeyword = useTypeKeyword
                     });
             }
             return new TypeScriptTypeReference(typeDeclaration.Name);
@@ -39,12 +40,13 @@ namespace SkbKontur.TypeScript.ContractGenerator
                         TypeName = symbolName,
                         CurrentUnit = this,
                         PathToUnit = path,
+                        UseTypeKeyword = false,
                     });
             }
             return new TypeScriptVariableReference(symbolName);
         }
 
-        public TypeScriptVariableReference AddDefaultSymbolImport(string localName, string path)
+        public TypeScriptVariableReference AddDefaultSymbolImport(string localName, string path, bool useTypeKeyword=false)
         {
             var importedSymbol = new ImportedSymbol("default", localName, path);
             if (!symbolImports.ContainsKey(importedSymbol))
@@ -54,6 +56,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
                         TypeName = localName,
                         CurrentUnit = this,
                         PathToUnit = path,
+                        UseTypeKeyword = useTypeKeyword,
                     });
             }
             return new TypeScriptVariableReference(localName);
