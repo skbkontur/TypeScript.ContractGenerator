@@ -40,7 +40,6 @@ namespace SkbKontur.TypeScript.ContractGenerator
                         TypeName = symbolName,
                         CurrentUnit = this,
                         PathToUnit = path,
-                        UseTypeKeyword = false,
                     });
             }
             return new TypeScriptVariableReference(symbolName);
