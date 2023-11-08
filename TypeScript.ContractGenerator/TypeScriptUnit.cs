@@ -15,7 +15,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         public List<TypeScriptStatement> Body { get; } = new List<TypeScriptStatement>();
 
-        public TypeScriptTypeReference AddTypeImport(ITypeInfo sourceType, TypeScriptTypeDeclaration typeDeclaration, TypeScriptUnit sourceUnit, bool useTypeKeyword=false)
+        public TypeScriptTypeReference AddTypeImport(ITypeInfo sourceType, TypeScriptTypeDeclaration typeDeclaration, TypeScriptUnit sourceUnit, bool useTypeKeyword)
         {
             if (sourceUnit != this && !imports.ContainsKey(sourceType))
             {
