@@ -46,22 +46,6 @@ namespace SkbKontur.TypeScript.ContractGenerator
             return new TypeScriptVariableReference(symbolName);
         }
 
-        public TypeScriptVariableReference AddDefaultSymbolImport(string localName, string path, bool useTypeKeyword=false)
-        {
-            var importedSymbol = new ImportedSymbol("default", localName, path);
-            if (!symbolImports.ContainsKey(importedSymbol))
-            {
-                symbolImports.Add(importedSymbol, new TypeScriptImportDefaultFromPathStatement
-                    {
-                        TypeName = localName,
-                        CurrentUnit = this,
-                        PathToUnit = path,
-                        UseTypeKeyword = useTypeKeyword,
-                    });
-            }
-            return new TypeScriptVariableReference(localName);
-        }
-
         public string GenerateCode(DefaultCodeGenerationContext context)
         {
             var result = new StringBuilder();
