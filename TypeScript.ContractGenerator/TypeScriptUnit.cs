@@ -15,7 +15,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
 
         public List<TypeScriptStatement> Body { get; } = new List<TypeScriptStatement>();
 
-        public TypeScriptTypeReference AddTypeImport(ITypeInfo sourceType, TypeScriptTypeDeclaration typeDeclaration, TypeScriptUnit sourceUnit)
+        public TypeScriptTypeReference AddTypeImport(ITypeInfo sourceType, TypeScriptTypeDeclaration typeDeclaration, TypeScriptUnit sourceUnit, bool useTypeKeyword)
         {
             if (sourceUnit != this && !imports.ContainsKey(sourceType))
             {
@@ -24,6 +24,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
                         TypeName = typeDeclaration.Name,
                         CurrentUnit = this,
                         TargetUnit = sourceUnit,
+                        UseTypeKeyword = useTypeKeyword
                     });
             }
             return new TypeScriptTypeReference(typeDeclaration.Name);
@@ -42,21 +43,6 @@ namespace SkbKontur.TypeScript.ContractGenerator
                     });
             }
             return new TypeScriptVariableReference(symbolName);
-        }
-
-        public TypeScriptVariableReference AddDefaultSymbolImport(string localName, string path)
-        {
-            var importedSymbol = new ImportedSymbol("default", localName, path);
-            if (!symbolImports.ContainsKey(importedSymbol))
-            {
-                symbolImports.Add(importedSymbol, new TypeScriptImportDefaultFromPathStatement
-                    {
-                        TypeName = localName,
-                        CurrentUnit = this,
-                        PathToUnit = path,
-                    });
-            }
-            return new TypeScriptVariableReference(localName);
         }
 
         public string GenerateCode(DefaultCodeGenerationContext context)
