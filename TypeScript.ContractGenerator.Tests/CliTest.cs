@@ -1,4 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 using FluentAssertions;
 
@@ -13,7 +16,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [Test]
         public void CliGenerated()
         {
-            RunCmdCommand($"dotnet {pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/net7.0/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
+            RunCmdCommand($"dotnet {pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/{targetFramework}/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
                           $"-a {pathToSlnDirectory}/AspNetCoreExample.Api/bin/{configuration}/net7.0/AspNetCoreExample.Api.dll " +
                           $"-o {TestContext.CurrentContext.TestDirectory}/cliOutput " +
                           "--nullabilityMode NullableReference " +
@@ -27,7 +30,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [Test]
         public void RoslynCliGenerated()
         {
-            RunCmdCommand($"dotnet {pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/net7.0/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
+            RunCmdCommand($"dotnet {pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/{targetFramework}/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
                           $"-d {pathToSlnDirectory}/AspNetCoreExample.Api " +
                           $"-a {typeof(ControllerBase).Assembly.Location} " +
                           $"-o {TestContext.CurrentContext.TestDirectory}/roslynCliOutput " +
@@ -41,26 +44,47 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
 
         private static void RunCmdCommand(string command)
         {
-            var process = new Process
+            ProcessStartInfo processStartInfo;
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                var commandParts = command.Split(new[] {' '}, 2, StringSplitOptions.RemoveEmptyEntries);
+                processStartInfo = new ProcessStartInfo(commandParts.First(), commandParts.Last());
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                processStartInfo = new ProcessStartInfo("cmd.exe", "/C " + command)
+                    {
+                        WindowStyle = ProcessWindowStyle.Hidden
+                    };
+            }
+            else
+            {
+                throw new NotSupportedException($"The current platform {RuntimeInformation.OSDescription} is not supported.");
+            }
+
+            processStartInfo.RedirectStandardOutput = true;
+            processStartInfo.RedirectStandardError = true;
+            var testProcess = new Process
                 {
-                    StartInfo =
-                        {
-                            FileName = "cmd.exe",
-                            WindowStyle = ProcessWindowStyle.Hidden,
-                            Arguments = "/C " + command,
-                        }
+                    StartInfo = processStartInfo
                 };
-            process.Start();
-            process.WaitForExit();
-            process.ExitCode.Should().Be(0);
+
+            testProcess.Start();
+            testProcess.WaitForExit();
+            TestContext.Out.WriteLine(testProcess.StandardOutput.ReadToEnd());
+            TestContext.Error.WriteLine(testProcess.StandardError.ReadToEnd());
+            testProcess.ExitCode.Should().Be(0);
         }
 
         private static readonly string pathToSlnDirectory = $"{TestContext.CurrentContext.TestDirectory}/../../../../";
 
+        private const string targetFramework = "net8.0";
+
 #if RELEASE
-        const string configuration = "Release";
+        private const string configuration = "Release";
 #elif DEBUG
-        const string configuration = "Debug";
+        private const string configuration = "Debug";
 #endif
     }
 }
