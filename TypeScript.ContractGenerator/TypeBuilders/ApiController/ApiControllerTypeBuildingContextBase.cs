@@ -118,7 +118,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             return interfaceDeclaration;
         }
 
-        private IEnumerable<TypeScriptClassMemberDefinition> BuildApiImplMember(IMethodInfo methodInfo, Func<ITypeInfo, TypeScriptType> buildAndImportType, ITypeInfo controllerType)
+        protected virtual IEnumerable<TypeScriptClassMemberDefinition> BuildApiImplMember(IMethodInfo methodInfo, Func<ITypeInfo, TypeScriptType> buildAndImportType, ITypeInfo controllerType)
         {
             var functionDefinition = new TypeScriptFunctionDefinition
                 {
@@ -204,7 +204,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             return result;
         }
 
-        private IEnumerable<TypeScriptInterfaceFunctionMember> BuildApiInterfaceMember(IMethodInfo methodInfo, Func<ITypeInfo, TypeScriptType> buildAndImportType, ITypeInfo controllerType)
+        protected virtual IEnumerable<TypeScriptInterfaceFunctionMember> BuildApiInterfaceMember(IMethodInfo methodInfo, Func<ITypeInfo, TypeScriptType> buildAndImportType, ITypeInfo controllerType)
         {
             var result = new TypeScriptInterfaceFunctionMember(
                 GetMethodName(methodInfo),
