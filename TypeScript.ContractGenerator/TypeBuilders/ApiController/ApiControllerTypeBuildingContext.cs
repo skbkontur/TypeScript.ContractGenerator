@@ -83,7 +83,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                              .ToArray();
         }
 
-        protected override IParameterInfo GetBody(IParameterInfo[] parameters, ITypeInfo controllerType)
+        protected override IParameterInfo? GetBody(IParameterInfo[] parameters, ITypeInfo controllerType)
         {
             return parameters.SingleOrDefault(x => PassParameterToCall(x, controllerType) && IsFromBody(x));
         }
