@@ -17,7 +17,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         public void CliGenerated()
         {
             RunCmdCommand($"dotnet {pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/{targetFramework}/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
-                          $"-a {pathToSlnDirectory}/AspNetCoreExample.Api/bin/{configuration}/net7.0/AspNetCoreExample.Api.dll " +
+                          $"-a {pathToSlnDirectory}/AspNetCoreExample.Api/bin/{configuration}/{targetFramework}/AspNetCoreExample.Api.dll " +
                           $"-o {TestContext.CurrentContext.TestDirectory}/cliOutput " +
                           "--nullabilityMode NullableReference " +
                           "--lintMode TsLint");
