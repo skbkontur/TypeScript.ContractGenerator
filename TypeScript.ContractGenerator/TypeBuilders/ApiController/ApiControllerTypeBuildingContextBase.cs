@@ -70,7 +70,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
         protected abstract BaseApiMethod ResolveBaseApiMethod(IMethodInfo methodInfo);
         protected abstract string BuildRoute(ITypeInfo controllerType, IMethodInfo methodInfo);
         protected abstract IParameterInfo[] GetQueryParameters(IParameterInfo[] parameters, ITypeInfo controllerType);
-        protected abstract IParameterInfo GetBody(IParameterInfo[] parameters, ITypeInfo controllerType);
+        protected abstract IParameterInfo? GetBody(IParameterInfo[] parameters, ITypeInfo controllerType);
         protected abstract IMethodInfo[] GetMethodsToImplement(ITypeInfo controllerType);
 
         public override void Initialize(ITypeGenerator typeGenerator)
@@ -118,7 +118,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             return interfaceDeclaration;
         }
 
-        private IEnumerable<TypeScriptClassMemberDefinition> BuildApiImplMember(IMethodInfo methodInfo, Func<ITypeInfo, TypeScriptType> buildAndImportType, ITypeInfo controllerType)
+        protected virtual IEnumerable<TypeScriptClassMemberDefinition> BuildApiImplMember(IMethodInfo methodInfo, Func<ITypeInfo, TypeScriptType> buildAndImportType, ITypeInfo controllerType)
         {
             var functionDefinition = new TypeScriptFunctionDefinition
                 {
@@ -174,7 +174,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                    GenerateConstructBody(GetBody(methodInfo.GetParameters(), controllerType));
         }
 
-        private static TypeScriptExpression GenerateConstructBody(IParameterInfo parameter)
+        private static TypeScriptExpression GenerateConstructBody(IParameterInfo? parameter)
         {
             if (parameter == null)
                 return new TypeScriptObjectLiteral();
@@ -204,7 +204,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             return result;
         }
 
-        private IEnumerable<TypeScriptInterfaceFunctionMember> BuildApiInterfaceMember(IMethodInfo methodInfo, Func<ITypeInfo, TypeScriptType> buildAndImportType, ITypeInfo controllerType)
+        protected virtual IEnumerable<TypeScriptInterfaceFunctionMember> BuildApiInterfaceMember(IMethodInfo methodInfo, Func<ITypeInfo, TypeScriptType> buildAndImportType, ITypeInfo controllerType)
         {
             var result = new TypeScriptInterfaceFunctionMember(
                 GetMethodName(methodInfo),
