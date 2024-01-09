@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
 
 using FluentAssertions;
 
@@ -16,11 +13,11 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [Test]
         public void CliGenerated()
         {
-            RunCmdCommand($"dotnet {pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/{targetFramework}/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
-                          $"-a {pathToSlnDirectory}/AspNetCoreExample.Api/bin/{configuration}/{targetFramework}/AspNetCoreExample.Api.dll " +
-                          $"-o {TestContext.CurrentContext.TestDirectory}/cliOutput " +
-                          "--nullabilityMode NullableReference " +
-                          "--lintMode TsLint");
+            RunDotnetCommand($"{pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/{targetFramework}/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
+                             $"-a {pathToSlnDirectory}/AspNetCoreExample.Api/bin/{configuration}/{targetFramework}/AspNetCoreExample.Api.dll " +
+                             $"-o {TestContext.CurrentContext.TestDirectory}/cliOutput " +
+                             "--nullabilityMode NullableReference " +
+                             "--lintMode TsLint");
 
             var expectedDirectory = $"{pathToSlnDirectory}/AspNetCoreExample.Generator/output";
             var actualDirectory = $"{TestContext.CurrentContext.TestDirectory}/cliOutput";
@@ -30,51 +27,37 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [Test]
         public void RoslynCliGenerated()
         {
-            RunCmdCommand($"dotnet {pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/{targetFramework}/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
-                          $"-d {pathToSlnDirectory}/AspNetCoreExample.Api " +
-                          $"-a {typeof(ControllerBase).Assembly.Location} " +
-                          $"-o {TestContext.CurrentContext.TestDirectory}/roslynCliOutput " +
-                          "--nullabilityMode NullableReference " +
-                          "--lintMode TsLint");
+            RunDotnetCommand($"{pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/{targetFramework}/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
+                             $"-d {pathToSlnDirectory}/AspNetCoreExample.Api " +
+                             $"-a {typeof(ControllerBase).Assembly.Location} " +
+                             $"-o {TestContext.CurrentContext.TestDirectory}/roslynCliOutput " +
+                             "--nullabilityMode NullableReference " +
+                             "--lintMode TsLint");
 
             var expectedDirectory = $"{pathToSlnDirectory}/AspNetCoreExample.Generator/output";
             var actualDirectory = $"{TestContext.CurrentContext.TestDirectory}/roslynCliOutput";
             TestBase.CheckDirectoriesEquivalenceInner(expectedDirectory, actualDirectory, generatedOnly : true);
         }
 
-        private static void RunCmdCommand(string command)
+        private static void RunDotnetCommand(string command)
         {
-            ProcessStartInfo processStartInfo;
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                var commandParts = command.Split(new[] {' '}, 2, StringSplitOptions.RemoveEmptyEntries);
-                processStartInfo = new ProcessStartInfo(commandParts.First(), commandParts.Last());
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                processStartInfo = new ProcessStartInfo("cmd.exe", "/C " + command)
-                    {
-                        WindowStyle = ProcessWindowStyle.Hidden
-                    };
-            }
-            else
-            {
-                throw new NotSupportedException($"The current platform {RuntimeInformation.OSDescription} is not supported.");
-            }
-
-            processStartInfo.RedirectStandardOutput = true;
-            processStartInfo.RedirectStandardError = true;
-            var testProcess = new Process
+            var process = new Process
                 {
-                    StartInfo = processStartInfo
+                    StartInfo = new ProcessStartInfo("dotnet", command)
+                        {
+                            WindowStyle = ProcessWindowStyle.Hidden,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
+                            UseShellExecute = false
+                        },
                 };
 
-            testProcess.Start();
-            testProcess.WaitForExit();
-            TestContext.Out.WriteLine(testProcess.StandardOutput.ReadToEnd());
-            TestContext.Error.WriteLine(testProcess.StandardError.ReadToEnd());
-            testProcess.ExitCode.Should().Be(0);
+            process.Start();
+            process.WaitForExit();
+
+            process.ExitCode.Should().Be(0);
+            process.StandardOutput.ReadToEnd().Trim().Should().Be("Generating TypeScript");
+            process.StandardError.ReadToEnd().Trim().Should().BeEmpty();
         }
 
         private static readonly string pathToSlnDirectory = $"{TestContext.CurrentContext.TestDirectory}/../../../../";
