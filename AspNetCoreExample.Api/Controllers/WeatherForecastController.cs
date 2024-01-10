@@ -4,8 +4,6 @@ using AspNetCoreExample.Api.Models;
 
 using Microsoft.AspNetCore.Mvc;
 
-using SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController;
-
 namespace AspNetCoreExample.Api.Controllers;
 
 [ApiController]
@@ -36,11 +34,11 @@ public class WeatherForecastController : ControllerBase
     }
 
     [HttpPost("~/[action]")]
-    public void Reset(int seed)
+    public IActionResult Reset(int seed)
     {
+        return Ok();
     }
 
-    [UrlOnly]
     [HttpGet("{city}")]
     public ActionResult Download(string city)
     {
@@ -51,6 +49,19 @@ public class WeatherForecastController : ControllerBase
                 Summary = summaries[Random.Shared.Next(summaries.Length)]
             };
         return File(JsonSerializer.SerializeToUtf8Bytes(forecast), "application/json");
+    }
+
+    [HttpGet("{street}/view")]
+    public async Task<ActionResult> GetStreetView(string street, bool useGoogleImages)
+    {
+        await Task.Delay(100);
+        return File(Array.Empty<byte>(), "image/jpeg");
+    }
+
+    [HttpGet("none")]
+    public Task<ActionResult<Guid>> NewGuid()
+    {
+        return Task.FromResult((ActionResult<Guid>)Ok(Guid.NewGuid()));
     }
 
     private static readonly string[] summaries =

@@ -6,6 +6,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
     {
         public const string ActionResultOfT = "ActionResult`1";
         public const string ActionResult = "ActionResult";
+        public const string IActionResult = "IActionResult";
 
         public static readonly HashSet<string> HttpAttributeNames = new HashSet<string>
             {

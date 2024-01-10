@@ -3,20 +3,15 @@
 import { Guid } from './../DataTypes/Guid';
 import { BlogEntry } from './../DataTypes/BlogEntry';
 import { ApiBase } from './../ApiBase/ApiBase';
+import { url } from './../ApiBase/ApiBase';
 
 export class NotesApi extends ApiBase implements INotesApi {
-    async addEntry(userId: Guid, entry: BlogEntry): Promise<void> {
-        return this.makePostRequest(`/v1/user/${userId}/blog`, {
-            
-        }, {
-            ...entry,
-        });
+    addEntry(userId: Guid, entry: BlogEntry): Promise<void> {
+        return this.makePostRequest(url`/v1/user/${userId}/blog`, entry);
     }
 
-    async addEntries(userId: Guid, entries: BlogEntry[]): Promise<void> {
-        return this.makePostRequest(`/v1/user/${userId}/blog/batch`, {
-            
-        }, entries);
+    addEntries(userId: Guid, entries: BlogEntry[]): Promise<void> {
+        return this.makePostRequest(url`/v1/user/${userId}/blog/batch`, entries);
     }
 
 };

@@ -1,21 +1,19 @@
 /* eslint-disable */
 
-interface IParamsMap {
-    [key: string]: null | undefined | number | string | any[] | boolean;
-}
+export const url = String.raw;
 
 export class ApiBase {
-    public async makeGetRequest(url: string, queryParams: IParamsMap, body: any): Promise<any> {
-        const response = await fetch(this.getUrl(url, queryParams), {
+    public async makeGetRequest(url: string, body?: any): Promise<any> {
+        const response = await fetch(url, {
             method: "GET",
         });
         return await response.json();
     }
 
-    public async makePostRequest(url: string, queryParams: IParamsMap, body: any): Promise<any> {
-        const response = await fetch(this.getUrl(url, queryParams), {
+    public async makePostRequest(url: string, body?: any): Promise<any> {
+        const response = await fetch(url, {
             method: "POST",
-            body: JSON.stringify(body),
+            body: body && JSON.stringify(body),
         });
         const textResult = await response.text();
         if (textResult !== "") {
@@ -23,10 +21,10 @@ export class ApiBase {
         }
     }
 
-    public async makePutRequest(url: string, queryParams: IParamsMap, body: any): Promise<any> {
-        const response = await fetch(this.getUrl(url, queryParams), {
+    public async makePutRequest(url: string, body?: any): Promise<any> {
+        const response = await fetch(url, {
             method: "PUT",
-            body: JSON.stringify(body),
+            body: body && JSON.stringify(body),
         });
         const textResult = await response.text();
         if (textResult !== "") {
@@ -34,25 +32,14 @@ export class ApiBase {
         }
     }
 
-    public async makeDeleteRequest(url: string, queryParams: IParamsMap, body: any): Promise<any> {
-        const response = await fetch(this.getUrl(url, queryParams), {
+    public async makeDeleteRequest(url: string, body?: any): Promise<any> {
+        const response = await fetch(url, {
             method: "DELETE",
-            body: JSON.stringify(body),
+            body: body && JSON.stringify(body),
         });
         const textResult = await response.text();
         if (textResult !== "") {
             return JSON.parse(textResult);
         }
-    }
-
-    public getUrl(url: string, params?: IParamsMap): string {
-        return url + this.createQueryString(params);
-    }
-
-    public createQueryString(params: any): string {
-        if (params == null) {
-            return "";
-        }
-        return `${new URLSearchParams(params)}`;
     }
 }

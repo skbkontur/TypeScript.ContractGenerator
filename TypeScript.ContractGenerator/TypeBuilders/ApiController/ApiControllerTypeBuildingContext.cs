@@ -1,138 +1,140 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
 using SkbKontur.TypeScript.ContractGenerator.Abstractions;
 using SkbKontur.TypeScript.ContractGenerator.CodeDom;
-using SkbKontur.TypeScript.ContractGenerator.Extensions;
-
-using TypeInfo = SkbKontur.TypeScript.ContractGenerator.Internals.TypeInfo;
 
 namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
 {
-    public class ApiControllerTypeBuildingContext : ApiControllerTypeBuildingContextBase
+    public class ApiControllerTypeBuildingContext : TypeBuildingContext
     {
-        public ApiControllerTypeBuildingContext(TypeScriptUnit unit, ITypeInfo type)
+        public ApiControllerTypeBuildingContext(TypeScriptUnit unit, ITypeInfo type, IApiCustomization? apiCustomization = null)
             : base(unit, type)
         {
+            ApiCustomization = apiCustomization ?? new DefaultApiCustomization();
         }
 
-        protected override TypeLocation GetApiBase(ITypeInfo controllerType)
+        protected IApiCustomization ApiCustomization { get; }
+        protected Func<ITypeInfo, TypeScriptType> BuildAndImportType { get; private set; }
+
+        public override void Initialize(ITypeGenerator typeGenerator)
         {
-            return new TypeLocation
+            BuildAndImportType = t => typeGenerator.BuildAndImportType(Unit, t);
+
+            var baseApi = ApiCustomization.GetApiBase(Type);
+            var urlTag = ApiCustomization.GetUrlTag(Type);
+
+            Unit.AddSymbolImport(baseApi.Name, baseApi.Location);
+            Unit.AddSymbolImport(urlTag.Name, urlTag.Location);
+
+            var apiName = ApiCustomization.GetApiClassName(Type);
+            var interfaceName = ApiCustomization.GetApiInterfaceName(Type);
+            var apiMethods = ApiCustomization.GetApiMethods(Type);
+
+            var apiInterfaceDefinition = new TypeScriptInterfaceDefinition();
+            apiInterfaceDefinition.Members.AddRange(apiMethods.SelectMany(BuildApiInterfaceMember));
+
+            var apiClassDefinition = new TypeScriptClassDefinition
                 {
-                    Name = "ApiBase",
-                    Location = "ApiBase/ApiBase",
+                    BaseClass = new TypeScriptTypeReference(baseApi.Name),
+                    ImplementedInterfaces = new TypeScriptType[] {new TypeScriptTypeReference(interfaceName)},
+                };
+
+            apiClassDefinition.Members.AddRange(apiMethods.SelectMany(BuildApiImplMember));
+
+            Unit.Body.Add(new TypeScriptExportStatement
+                {
+                    Declaration = new TypeScriptClassDeclaration
+                        {
+                            Name = apiName,
+                            Defintion = apiClassDefinition
+                        }
+                });
+
+            foreach (var statement in BuildAdditionalStatements())
+            {
+                Unit.Body.Add(statement);
+            }
+
+            Declaration = new TypeScriptInterfaceDeclaration
+                {
+                    Name = interfaceName,
+                    Definition = apiInterfaceDefinition
+                };
+
+            base.Initialize(typeGenerator);
+        }
+
+        protected virtual IEnumerable<TypeScriptClassMemberDefinition> BuildApiImplMember(IMethodInfo methodInfo)
+        {
+            var functionDefinition = new TypeScriptFunctionDefinition
+                {
+                    IsAsync = ApiCustomization.IsAsyncMethod(methodInfo),
+                    Result = ApiCustomization.GetMethodResultType(methodInfo, BuildAndImportType),
+                    Body = {CreateCall(methodInfo)}
+                };
+
+            functionDefinition.Arguments.AddRange(
+                ApiCustomization
+                    .GetMethodParameters(methodInfo)
+                    .Select(x => new TypeScriptArgumentDeclaration
+                        {
+                            Name = x.Name,
+                            Type = BuildAndImportType(x.ParameterType)
+                        })
+            );
+
+            yield return new TypeScriptClassMemberDefinition
+                {
+                    Name = ApiCustomization.GetMethodName(methodInfo),
+                    Definition = functionDefinition
                 };
         }
 
-        protected override ITypeInfo ResolveReturnType(ITypeInfo typeInfo)
+        protected virtual TypeScriptReturnStatement CreateCall(IMethodInfo methodInfo)
         {
-            if (typeInfo.IsGenericType)
+            var route = ApiCustomization.GetMethodRoute(methodInfo);
+            var routeExpression = new TypeScriptTemplateStringLiteral(route.Replace("{", "${"), new TypeScriptVariableReference("url"));
+
+            if (ApiCustomization.IsUrlMethod(methodInfo))
             {
-                var genericTypeDefinition = typeInfo.GetGenericTypeDefinition();
-                if (genericTypeDefinition.Equals(TypeInfo.From(typeof(Task<>))) ||
-                    genericTypeDefinition.Name == KnownTypeNames.ActionResultOfT ||
-                    genericTypeDefinition.Name == KnownTypeNames.ActionResult)
-                    return ResolveReturnType(typeInfo.GetGenericArguments()[0]);
+                return new TypeScriptReturnStatement(routeExpression);
             }
 
-            if (typeInfo.Equals(TypeInfo.From<Task>()) || typeInfo.Name == KnownTypeNames.ActionResult)
-                return TypeInfo.From(typeof(void));
+            var bodyExpression = ApiCustomization.GetMethodBodyExpression(methodInfo);
+            var arguments = bodyExpression == null
+                                ? new[] {routeExpression}
+                                : new[] {routeExpression, bodyExpression};
 
-            return typeInfo;
+            return new TypeScriptReturnStatement(
+                new TypeScriptMethodCallExpression(new TypeScriptThisReference(), ApiCustomization.GetMethodVerb(methodInfo), arguments)
+            );
         }
 
-        protected override BaseApiMethod ResolveBaseApiMethod(IMethodInfo methodInfo)
+        protected virtual IEnumerable<TypeScriptInterfaceFunctionMember> BuildApiInterfaceMember(IMethodInfo methodInfo)
         {
-            var attributes = methodInfo.GetAttributes(inherit : false);
+            var result = new TypeScriptInterfaceFunctionMember(
+                ApiCustomization.GetMethodName(methodInfo),
+                ApiCustomization.GetMethodResultType(methodInfo, BuildAndImportType)
+            );
 
-            if (attributes.Any(x => x.HasName(KnownTypeNames.Attributes.HttpGet)))
-                return BaseApiMethod.Get;
+            result.Arguments.AddRange(
+                ApiCustomization
+                    .GetMethodParameters(methodInfo)
+                    .Select(x => new TypeScriptArgumentDeclaration
+                        {
+                            Name = x.Name,
+                            Type = BuildAndImportType(x.ParameterType)
+                        })
+            );
 
-            if (attributes.Any(x => x.HasName(KnownTypeNames.Attributes.HttpPost)))
-                return BaseApiMethod.Post;
-
-            if (attributes.Any(x => x.HasName(KnownTypeNames.Attributes.HttpPut)))
-                return BaseApiMethod.Put;
-
-            if (attributes.Any(x => x.HasName(KnownTypeNames.Attributes.HttpDelete)))
-                return BaseApiMethod.Delete;
-
-            if (attributes.Any(x => x.HasName(KnownTypeNames.Attributes.HttpPatch)))
-                return BaseApiMethod.Patch;
-
-            throw new NotSupportedException(
-                $"Unresolved http verb for method {methodInfo.Name} at controller {methodInfo.DeclaringType?.Name}");
+            yield return result;
         }
 
-        protected override string BuildRoute(ITypeInfo controllerType, IMethodInfo methodInfo)
+        protected virtual IEnumerable<TypeScriptStatement> BuildAdditionalStatements()
         {
-            var fullRoute = RouteTemplateHelper.FindFullRouteTemplate(controllerType, methodInfo)?.ValueWithoutConstraints ?? "";
-            if (fullRoute.StartsWith("/"))
-                return fullRoute;
-
-            return "/" + fullRoute;
-        }
-
-        protected override IParameterInfo[] GetQueryParameters(IParameterInfo[] parameters, ITypeInfo controllerType)
-        {
-            return parameters.Where(x => PassParameterToCall(x, controllerType) && !IsFromBody(x))
-                             .ToArray();
-        }
-
-        protected override IParameterInfo? GetBody(IParameterInfo[] parameters, ITypeInfo controllerType)
-        {
-            return parameters.SingleOrDefault(x => PassParameterToCall(x, controllerType) && IsFromBody(x));
-        }
-
-        protected override IMethodInfo[] GetMethodsToImplement(ITypeInfo controllerType)
-        {
-            return controllerType.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
-                                 .Where(m => m.GetAttributes(inherit : false)
-                                              .Any(a => KnownTypeNames.HttpAttributeNames.Any(a.HasName)))
-                                 .ToArray();
-        }
-
-        protected override bool PassParameterToCall(IParameterInfo parameterInfo, ITypeInfo controllerType)
-        {
-            return !parameterInfo.ParameterType.Equals(TypeInfo.From<CancellationToken>());
-        }
-
-        protected override string GetMethodName(IMethodInfo methodInfo)
-        {
-            return IsUrlMethod(methodInfo) ? $"get{methodInfo.Name}Url" : methodInfo.Name.ToLowerCamelCase();
-        }
-
-        protected override TypeScriptReturnStatement CreateCall(IMethodInfo methodInfo, ITypeInfo controllerType)
-        {
-            if (!IsUrlMethod(methodInfo))
-                return base.CreateCall(methodInfo, controllerType);
-
-            var routeTemplate = BuildRoute(controllerType, methodInfo);
-            return new TypeScriptReturnStatement(new TypeScriptTemplateStringLiteral(routeTemplate.Replace("{", "${")));
-        }
-
-        protected override bool IsAsyncMethod(IMethodInfo methodInfo)
-        {
-            return !IsUrlMethod(methodInfo);
-        }
-
-        protected override TypeScriptType? ResolveReturnType(IMethodInfo methodInfo, Func<ITypeInfo, TypeScriptType> buildAndImportType)
-        {
-            return IsUrlMethod(methodInfo) ? new TypeScriptTypeReference("string") : null;
-        }
-
-        private static bool IsFromBody(IParameterInfo parameterInfo)
-        {
-            return parameterInfo.GetAttributes(inherit : false).Any(x => x.HasName(KnownTypeNames.Attributes.FromBody));
-        }
-
-        private static bool IsUrlMethod(IMethodInfo methodInfo)
-        {
-            return methodInfo.GetAttributes(TypeInfo.From<UrlOnlyAttribute>()).Any();
+            yield break;
         }
     }
 }
