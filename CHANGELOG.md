@@ -1,5 +1,5 @@
 # Changelog
-## v2.1 - 2024.01.11
+## v2.1.2 - 2024.01.11
 - refactor ApiControllerTypeBuildingContext
 - use string templates with custom tag for urls in generated apis
 

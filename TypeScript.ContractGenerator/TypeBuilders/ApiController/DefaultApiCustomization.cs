@@ -16,43 +16,43 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
 {
     public class DefaultApiCustomization : IApiCustomization
     {
-        public TypeLocation GetApiBase(ITypeInfo type) => new TypeLocation
+        public virtual TypeLocation GetApiBase(ITypeInfo type) => new TypeLocation
             {
                 Name = "ApiBase",
                 Location = "ApiBase/ApiBase",
             };
 
-        public TypeLocation GetUrlTag(ITypeInfo type) => new TypeLocation
+        public virtual TypeLocation GetUrlTag(ITypeInfo type) => new TypeLocation
             {
                 Name = "url",
                 Location = "ApiBase/ApiBase",
             };
 
-        public string GetApiClassName(ITypeInfo type) => new Regex("(Api)?Controller").Replace(type.Name, "Api");
-        public string GetApiInterfaceName(ITypeInfo type) => "I" + GetApiClassName(type);
+        public virtual string GetApiClassName(ITypeInfo type) => new Regex("(Api)?Controller").Replace(type.Name, "Api");
+        public virtual string GetApiInterfaceName(ITypeInfo type) => "I" + GetApiClassName(type);
 
-        public string GetMethodName(IMethodInfo methodInfo) => IsUrlMethod(methodInfo)
-                                                                   ? $"urlFor{methodInfo.Name}"
-                                                                   : methodInfo.Name.ToLowerCamelCase();
+        public virtual string GetMethodName(IMethodInfo methodInfo) => IsUrlMethod(methodInfo)
+                                                                           ? $"urlFor{methodInfo.Name}"
+                                                                           : methodInfo.Name.ToLowerCamelCase();
 
-        public IMethodInfo[] GetApiMethods(ITypeInfo type) =>
+        public virtual IMethodInfo[] GetApiMethods(ITypeInfo type) =>
             type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
                 .Where(m => m.GetAttributes(inherit : false).Any(a => KnownTypeNames.HttpAttributeNames.Any(a.HasName)))
                 .ToArray();
 
-        public IParameterInfo[] GetMethodParameters(IMethodInfo methodInfo) =>
+        public virtual IParameterInfo[] GetMethodParameters(IMethodInfo methodInfo) =>
             methodInfo.GetParameters()
                       .Where(x => !x.ParameterType.Equals(TypeInfo.From<CancellationToken>()))
                       .ToArray();
 
-        public bool IsUrlMethod(IMethodInfo methodInfo)
+        public virtual bool IsUrlMethod(IMethodInfo methodInfo)
         {
             return GetMethodVerb(methodInfo) == "makeGetRequest" && ResolveReturnType(methodInfo.ReturnType).Equals(TypeInfo.From(typeof(void)));
         }
 
-        public bool IsAsyncMethod(IMethodInfo methodInfo) => false;
+        public virtual bool IsAsyncMethod(IMethodInfo methodInfo) => false;
 
-        public string GetMethodVerb(IMethodInfo methodInfo)
+        public virtual string GetMethodVerb(IMethodInfo methodInfo)
         {
             var attributes = methodInfo.GetAttributes(inherit : false);
 
@@ -74,7 +74,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             throw new NotSupportedException($"Unresolved http verb for method {methodInfo.Name} at controller {methodInfo.DeclaringType?.Name}");
         }
 
-        public string GetMethodRoute(IMethodInfo methodInfo)
+        public virtual string GetMethodRoute(IMethodInfo methodInfo)
         {
             var path = RouteTemplateHelper.GetRouteTemplate(methodInfo.DeclaringType!, methodInfo);
 
@@ -97,14 +97,14 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             return $"{path}{query}";
         }
 
-        public TypeScriptType GetMethodResultType(IMethodInfo methodInfo, Func<ITypeInfo, TypeScriptType> buildAndImportType)
+        public virtual TypeScriptType GetMethodResultType(IMethodInfo methodInfo, Func<ITypeInfo, TypeScriptType> buildAndImportType)
         {
             return IsUrlMethod(methodInfo)
                        ? (TypeScriptType)new TypeScriptTypeReference("string")
                        : new TypeScriptPromiseOfType(buildAndImportType(ResolveReturnType(methodInfo.ReturnType)));
         }
 
-        public TypeScriptExpression? GetMethodBodyExpression(IMethodInfo methodInfo)
+        public virtual TypeScriptExpression? GetMethodBodyExpression(IMethodInfo methodInfo)
         {
             var parameter = GetMethodParameters(methodInfo).SingleOrDefault(IsFromBody);
             return parameter == null
