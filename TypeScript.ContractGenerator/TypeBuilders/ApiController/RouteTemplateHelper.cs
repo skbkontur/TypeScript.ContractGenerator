@@ -8,7 +8,18 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
 {
     public static class RouteTemplateHelper
     {
-        public static RouteTemplate? FindFullRouteTemplate(ITypeInfo controller, IMethodInfo action)
+        public static string GetRouteTemplate(ITypeInfo controller, IMethodInfo action)
+        {
+            var rawTemplate = FindFullRouteTemplate(controller, action);
+
+            var valueWithoutConstraints = Regex.Replace(rawTemplate, @"{(\w+):\w+}", "{$1}");
+            if (valueWithoutConstraints.StartsWith("/"))
+                return valueWithoutConstraints;
+
+            return "/" + valueWithoutConstraints;
+        }
+
+        private static string FindFullRouteTemplate(ITypeInfo controller, IMethodInfo action)
         {
             var routePrefix = (controller
                                .GetAttributes(inherit : true)
@@ -26,15 +37,15 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                                 .Replace("[action]", action.Name);
 
             if (routeTemplate.StartsWith("~/"))
-                return new RouteTemplate(Regex.Replace(routeTemplate, "^~/?", ""));
+                return Regex.Replace(routeTemplate, "^~/?", "");
 
             if (string.IsNullOrEmpty(routePrefix))
-                return new RouteTemplate(routeTemplate);
+                return routeTemplate;
 
             if (string.IsNullOrEmpty(routeTemplate))
-                return new RouteTemplate(routePrefix);
+                return routePrefix;
 
-            return new RouteTemplate($"{routePrefix}/{routeTemplate}");
+            return $"{routePrefix}/{routeTemplate}";
         }
     }
 }

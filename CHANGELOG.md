@@ -1,4 +1,15 @@
 # Changelog
+## v2.1 - 2024.01.11
+- refactor ApiControllerTypeBuildingContext
+- use string templates with custom tag for urls in generated apis
+
+## v2.0.150 - 2024.01.09
+- Add net8.0 support to cli tool; run tests against net8.0 tfm
+- Fix tests to run on Linux
+
+## v2.0.142 - 2023.11.09
+- support type imports
+
 ## v2.0.135 - 2023.09.19
 - Update `Microsoft.CodeAnalysis.CSharp.Workspaces`
 

@@ -3,38 +3,23 @@
 import { User } from './../DataTypes/User';
 import { Guid } from './../DataTypes/Guid';
 import { ApiBase } from './../ApiBase/ApiBase';
+import { url } from './../ApiBase/ApiBase';
 
 export class UserApi extends ApiBase implements IUserApi {
-    async createUser(user: User): Promise<void> {
-        return this.makePostRequest(`/v1/users`, {
-            
-        }, {
-            ...user,
-        });
+    createUser(user: User): Promise<void> {
+        return this.makePostRequest(url`/v1/users`, user);
     }
 
-    async deleteUser(userId: Guid): Promise<void> {
-        return this.makeDeleteRequest(`/v1/users/${userId}`, {
-            
-        }, {
-            
-        });
+    deleteUser(userId: Guid): Promise<void> {
+        return this.makeDeleteRequest(url`/v1/users/${userId}`);
     }
 
-    async getUser(userId: Guid): Promise<User> {
-        return this.makeGetRequest(`/v1/users/${userId}`, {
-            
-        }, {
-            
-        });
+    getUser(userId: Guid): Promise<User> {
+        return this.makeGetRequest(url`/v1/users/${userId}`);
     }
 
-    async searchUsers(name: string): Promise<User[]> {
-        return this.makeGetRequest(`/v1/users`, {
-            ['name']: name,
-        }, {
-            
-        });
+    searchUsers(name: string): Promise<User[]> {
+        return this.makeGetRequest(url`/v1/users?name=${name}`);
     }
 
 };
