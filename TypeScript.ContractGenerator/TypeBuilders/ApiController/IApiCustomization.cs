@@ -7,8 +7,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
 {
     public interface IApiCustomization
     {
-        public TypeLocation GetApiBase(ITypeInfo type);
-        public TypeLocation GetUrlTag(ITypeInfo type);
+        public ApiBaseLocation GetApiBase(ITypeInfo type);
 
         string GetApiClassName(ITypeInfo type);
         string GetApiInterfaceName(ITypeInfo type);

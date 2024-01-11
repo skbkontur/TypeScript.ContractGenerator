@@ -23,10 +23,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             BuildAndImportType = t => typeGenerator.BuildAndImportType(Unit, t);
 
             var baseApi = ApiCustomization.GetApiBase(Type);
-            var urlTag = ApiCustomization.GetUrlTag(Type);
-
-            Unit.AddSymbolImport(baseApi.Name, baseApi.Location);
-            Unit.AddSymbolImport(urlTag.Name, urlTag.Location);
+            Unit.AddSymbolImport(baseApi.RequestMethodName, baseApi.Location);
+            Unit.AddSymbolImport(baseApi.UrlTagName, baseApi.Location);
 
             var apiName = ApiCustomization.GetApiClassName(Type);
             var interfaceName = ApiCustomization.GetApiInterfaceName(Type);
@@ -37,7 +35,6 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
 
             var apiClassDefinition = new TypeScriptClassDefinition
                 {
-                    BaseClass = new TypeScriptTypeReference(baseApi.Name),
                     ImplementedInterfaces = new TypeScriptType[] {new TypeScriptTypeReference(interfaceName)},
                 };
 
@@ -102,13 +99,17 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
                 return new TypeScriptReturnStatement(routeExpression);
             }
 
+            var requestMethodName = ApiCustomization.GetApiBase(methodInfo.DeclaringType!).RequestMethodName;
+            var verb = ApiCustomization.GetMethodVerb(methodInfo);
+            var requestExpression = new TypeScriptVariableReference(requestMethodName);
+            var methodExpression = (TypeScriptExpression)new TypeScriptStringLiteral(verb);
             var bodyExpression = ApiCustomization.GetMethodBodyExpression(methodInfo);
             var arguments = bodyExpression == null
-                                ? new[] {routeExpression}
-                                : new[] {routeExpression, bodyExpression};
+                                ? new[] {methodExpression, routeExpression}
+                                : new[] {methodExpression, routeExpression, bodyExpression};
 
             return new TypeScriptReturnStatement(
-                new TypeScriptMethodCallExpression(new TypeScriptThisReference(), ApiCustomization.GetMethodVerb(methodInfo), arguments)
+                new TypeScriptFunctionCallExpression(requestExpression, arguments)
             );
         }
 

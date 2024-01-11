@@ -2,24 +2,24 @@
 // TypeScriptContractGenerator's generated content
 import { User } from './../DataTypes/User';
 import { Guid } from './../DataTypes/Guid';
-import { ApiBase } from './../ApiBase/ApiBase';
+import { request } from './../ApiBase/ApiBase';
 import { url } from './../ApiBase/ApiBase';
 
-export class UserApi extends ApiBase implements IUserApi {
+export class UserApi implements IUserApi {
     createUser(user: User): Promise<void> {
-        return this.makePostRequest(url`/v1/users`, user);
+        return request('POST', url`/v1/users`, user);
     }
 
     deleteUser(userId: Guid): Promise<void> {
-        return this.makeDeleteRequest(url`/v1/users/${userId}`);
+        return request('DELETE', url`/v1/users/${userId}`);
     }
 
     getUser(userId: Guid): Promise<User> {
-        return this.makeGetRequest(url`/v1/users/${userId}`);
+        return request('GET', url`/v1/users/${userId}`);
     }
 
     searchUsers(name: string): Promise<User[]> {
-        return this.makeGetRequest(url`/v1/users?name=${name}`);
+        return request('GET', url`/v1/users?name=${name}`);
     }
 
 };

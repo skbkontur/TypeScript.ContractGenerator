@@ -26,6 +26,8 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             public const string HttpPut = "HttpPut";
             public const string HttpPatch = "HttpPatch";
             public const string HttpDelete = "HttpDelete";
+            public const string HttpHead = "HttpHead";
+            public const string HttpOptions = "HttpOptions";
             public const string FromBody = "FromBody";
         }
     }

@@ -2,20 +2,20 @@
 // TypeScriptContractGenerator's generated content
 import { WeatherForecast } from './../DataTypes/WeatherForecast';
 import { Guid } from './../DataTypes/Guid';
-import { ApiBase } from './../ApiBase/ApiBase';
+import { request } from './../ApiBase/ApiBase';
 import { url } from './../ApiBase/ApiBase';
 
-export class WeatherForecastApi extends ApiBase implements IWeatherForecastApi {
+export class WeatherForecastApi implements IWeatherForecastApi {
     get(): Promise<WeatherForecast[]> {
-        return this.makeGetRequest(url`/WeatherForecast`);
+        return request('GET', url`/WeatherForecast`);
     }
 
     update(city: string, forecast: WeatherForecast): Promise<void> {
-        return this.makePostRequest(url`/WeatherForecast/Update/${city}`, forecast);
+        return request('POST', url`/WeatherForecast/Update/${city}`, forecast);
     }
 
     reset(seed: number): Promise<void> {
-        return this.makePostRequest(url`/Reset?seed=${seed}`);
+        return request('POST', url`/Reset?seed=${seed}`);
     }
 
     urlForDownload(city: string): string {
@@ -27,7 +27,7 @@ export class WeatherForecastApi extends ApiBase implements IWeatherForecastApi {
     }
 
     newGuid(): Promise<Guid> {
-        return this.makeGetRequest(url`/WeatherForecast/none`);
+        return request('GET', url`/WeatherForecast/none`);
     }
 
 };

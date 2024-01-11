@@ -16,15 +16,10 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
 {
     public class DefaultApiCustomization : IApiCustomization
     {
-        public virtual TypeLocation GetApiBase(ITypeInfo type) => new TypeLocation
+        public virtual ApiBaseLocation GetApiBase(ITypeInfo type) => new ApiBaseLocation
             {
-                Name = "ApiBase",
-                Location = "ApiBase/ApiBase",
-            };
-
-        public virtual TypeLocation GetUrlTag(ITypeInfo type) => new TypeLocation
-            {
-                Name = "url",
+                RequestMethodName = "request",
+                UrlTagName = "url",
                 Location = "ApiBase/ApiBase",
             };
 
@@ -47,7 +42,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
 
         public virtual bool IsUrlMethod(IMethodInfo methodInfo)
         {
-            return GetMethodVerb(methodInfo) == "makeGetRequest" && ResolveReturnType(methodInfo.ReturnType).Equals(TypeInfo.From(typeof(void)));
+            return GetMethodVerb(methodInfo) == "GET" && ResolveReturnType(methodInfo.ReturnType).Equals(TypeInfo.From(typeof(void)));
         }
 
         public virtual bool IsAsyncMethod(IMethodInfo methodInfo) => false;
@@ -57,19 +52,25 @@ namespace SkbKontur.TypeScript.ContractGenerator.TypeBuilders.ApiController
             var attributes = methodInfo.GetAttributes(inherit : false);
 
             if (attributes.Any(x => x.HasName(KnownTypeNames.Attributes.HttpGet)))
-                return "makeGetRequest";
+                return "GET";
 
             if (attributes.Any(x => x.HasName(KnownTypeNames.Attributes.HttpPost)))
-                return "makePostRequest";
+                return "POST";
 
             if (attributes.Any(x => x.HasName(KnownTypeNames.Attributes.HttpPut)))
-                return "makePutRequest";
+                return "PUT";
 
             if (attributes.Any(x => x.HasName(KnownTypeNames.Attributes.HttpDelete)))
-                return "makeDeleteRequest";
+                return "DELETE";
 
             if (attributes.Any(x => x.HasName(KnownTypeNames.Attributes.HttpPatch)))
-                return "makePatchRequest";
+                return "PATCH";
+
+            if (attributes.Any(x => x.HasName(KnownTypeNames.Attributes.HttpHead)))
+                return "HEAD";
+
+            if (attributes.Any(x => x.HasName(KnownTypeNames.Attributes.HttpOptions)))
+                return "OPTIONS";
 
             throw new NotSupportedException($"Unresolved http verb for method {methodInfo.Name} at controller {methodInfo.DeclaringType?.Name}");
         }
