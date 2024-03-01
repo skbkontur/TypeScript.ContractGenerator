@@ -102,14 +102,14 @@ namespace SkbKontur.TypeScript.ContractGenerator
             if (NullableTypeBuildingContext.Accept(typeInfo))
                 return new NullableTypeBuildingContext(typeInfo);
 
+            if (typeInfo.IsGenericParameter)
+                return new GenericParameterTypeBuildingContext(typeInfo);
+
             if (typeInfo.IsEnum)
                 return new TypeScriptEnumTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), typeInfo);
 
             if (typeInfo.IsGenericType && !typeInfo.IsGenericTypeDefinition)
                 return new GenericTypeTypeBuildingContext(typeInfo);
-
-            if (typeInfo.IsGenericParameter)
-                return new GenericParameterTypeBuildingContext(typeInfo);
 
             if (typeInfo.IsGenericTypeDefinition)
                 return new CustomTypeTypeBuildingContext(typeUnitFactory.GetOrCreateTypeUnit(typeLocation), typeInfo);

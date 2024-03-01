@@ -1,4 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 
 using FluentAssertions;
 
@@ -13,28 +16,24 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [Test]
         public void CliGenerated()
         {
-            RunDotnetCommand($"{pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/{targetFramework}/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
-                             $"-a {pathToSlnDirectory}/AspNetCoreExample.Api/bin/{configuration}/{targetFramework}/AspNetCoreExample.Api.dll " +
-                             $"-o {TestContext.CurrentContext.TestDirectory}/cliOutput " +
-                             "--nullabilityMode NullableReference " +
-                             "--lintMode TsLint");
+            var output = Path.Combine(TestContext.CurrentContext.TestDirectory, "cliOutput");
 
-            var expectedDirectory = $"{pathToSlnDirectory}/AspNetCoreExample.Generator/output";
-            var actualDirectory = $"{TestContext.CurrentContext.TestDirectory}/cliOutput";
-            TestBase.CheckDirectoriesEquivalenceInner(expectedDirectory, actualDirectory, generatedOnly : true);
+            RunDotnetCommand($"{Tool()} -a {Assembly()} -o {output} --nullabilityMode NullableReference --lintMode TsLint");
+
+            var expectedDirectory = $"{repoRoot}/AspNetCoreExample.Generator/output";
+            TestBase.CheckDirectoriesEquivalenceInner(expectedDirectory, output, generatedOnly : true);
         }
 
         [Test]
         public void RoslynCliGenerated()
         {
-            RunDotnetCommand($"{pathToSlnDirectory}/TypeScript.ContractGenerator.Cli/bin/{configuration}/{targetFramework}/SkbKontur.TypeScript.ContractGenerator.Cli.dll " +
-                             $"-d {pathToSlnDirectory}/AspNetCoreExample.Api " +
-                             $"-a {typeof(ControllerBase).Assembly.Location} " +
-                             $"-o {TestContext.CurrentContext.TestDirectory}/roslynCliOutput " +
-                             "--nullabilityMode NullableReference " +
-                             "--lintMode TsLint");
+            var project = Path.Combine(repoRoot, "AspNetCoreExample.Api");
+            var assembly = typeof(ControllerBase).Assembly.Location;
+            var output = Path.Combine(TestContext.CurrentContext.TestDirectory, "roslynCliOutput");
 
-            var expectedDirectory = $"{pathToSlnDirectory}/AspNetCoreExample.Generator/output";
+            RunDotnetCommand($"{Tool()} -d {project} -a {assembly} -o {output} --nullabilityMode NullableReference --lintMode TsLint");
+
+            var expectedDirectory = $"{repoRoot}/AspNetCoreExample.Generator/output";
             var actualDirectory = $"{TestContext.CurrentContext.TestDirectory}/roslynCliOutput";
             TestBase.CheckDirectoriesEquivalenceInner(expectedDirectory, actualDirectory, generatedOnly : true);
         }
@@ -55,12 +54,47 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
             process.Start();
             process.WaitForExit();
 
-            process.ExitCode.Should().Be(0);
-            process.StandardOutput.ReadToEnd().Trim().Should().Be("Generating TypeScript");
             process.StandardError.ReadToEnd().Trim().Should().BeEmpty();
+            process.StandardOutput.ReadToEnd().Trim().Should().Be("Generating TypeScript");
+            process.ExitCode.Should().Be(0);
         }
 
-        private static readonly string pathToSlnDirectory = $"{TestContext.CurrentContext.TestDirectory}/../../../../";
+        private static string Tool()
+        {
+            return Path.Combine(
+                repoRoot,
+                "TypeScript.ContractGenerator.Cli",
+                "bin",
+                configuration,
+                targetFramework,
+                "SkbKontur.TypeScript.ContractGenerator.Cli.dll"
+            );
+        }
+
+        private static string Assembly()
+        {
+            return Path.Combine(
+                repoRoot,
+                "AspNetCoreExample.Api",
+                "bin",
+                configuration,
+                targetFramework,
+                "AspNetCoreExample.Api.dll"
+            );
+        }
+
+        private static string RootDirectory(DirectoryInfo? current = null)
+        {
+            current ??= new DirectoryInfo(TestContext.CurrentContext.TestDirectory);
+            while (current != null && current.EnumerateFiles().All(x => x.Name != "TypeScript.ContractGenerator.sln"))
+            {
+                current = current.Parent;
+            }
+
+            return current?.FullName ?? throw new InvalidOperationException("Cannot find root folder");
+        }
+
+        private static readonly string repoRoot = RootDirectory();
 
         private const string targetFramework = "net8.0";
 
