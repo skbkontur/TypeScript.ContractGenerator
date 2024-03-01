@@ -24,6 +24,7 @@ namespace SkbKontur.TypeScript.ContractGenerator.Tests
         [TestCase(typeof(ComplexRootType), "complex-types")]
         [TestCase(typeof(GenericRootType<>), "generic-root")]
         [TestCase(typeof(GenericContainingRootType), "generic-types")]
+        [TestCase(typeof(GenericInheritingType<>), "generic-inheriting-types")]
         [TestCase(typeof(ArrayRootType), "array-types")]
         [TestCase(typeof(NotNullRootType), "notnull-types")]
         [TestCase(typeof(NonDefaultConstructorRootType), "non-default-constructor")]
