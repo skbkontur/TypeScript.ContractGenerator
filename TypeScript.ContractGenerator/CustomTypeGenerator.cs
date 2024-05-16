@@ -107,7 +107,7 @@ namespace SkbKontur.TypeScript.ContractGenerator
             typeBuildingContextRules.Add(new TypeBuildingContextRule(accept, createContext));
             return this;
         }
-        
+
         public CustomTypeGenerator WithTypeBuildingContext(Func<ITypeInfo, bool> accept, Func<ITypeInfo, ITypeBuildingContext> createContext)
         {
             typeBuildingContextRules.Add(new TypeBuildingContextRule(accept, createContext));
